@@ -1,0 +1,24 @@
+# Các thư mục dependencies và build
+node_modules
+dist
+build
+coverage
+.next
+.output
+.nuxt
+
+# Các file static hoặc assets không cần format
+public
+*.min.js
+*.min.css
+
+# Lock files (không nên đụng vào)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Các file cấu hình hệ thống và môi trường
+.env*
+.vscode
+.idea
+.DS_Store
