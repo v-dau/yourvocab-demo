@@ -35,14 +35,14 @@ export const signUp = async (req, res) => {
 export const signIn = async (req, res) => {
   try {
     //extract user credentials from the request body
-    const { username, password } = req.body;
+    const { identifier, password } = req.body;
 
-    if (!username || !password) {
+    if (!identifier || !password) {
       return res.status(400).json({ message: 'Missing username or password' });
     }
 
     //delegate password verifiction and JWT generation to the service layer
-    const { user, accessToken, refreshToken } = await authService.signIn({ username, password });
+    const { user, accessToken, refreshToken } = await authService.signIn({ identifier, password });
 
     //set the refresh token in an HTTP-only cookie
     res.cookie('refreshToken', refreshToken, {
@@ -84,6 +84,26 @@ export const signOut = async (req, res) => {
   } catch (error) {
     console.error('Error during singOut', error);
 
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+//create new access token from the refresh token
+export const refreshToken = async (req, res) => {
+  try {
+    //get the refresh token from the cookie
+    const token = req.cookies?.refreshToken;
+    if (!token) {
+      return res.status(401).json({ message: 'Refresh token not found' });
+    }
+
+    //handle logic in the service layer
+    const accessToken = await authService.refreshToken(token);
+
+    //return new access token for the frontend
+    return res.status(200).json({ accessToken });
+  } catch (error) {
+    console.error('Error during refreshToken', error);
     return res.status(500).json({ message: 'Internal server error' });
   }
 };

@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import * as userRepository from '../repositories/userRepository.js';
 import { generateAccessToken, generateRefreshToken } from '../config/jwt.js';
+import jwt from 'jsonwebtoken';
 
 export const signUp = async ({ username, email, password }) => {
   // 1.check if username exists
@@ -28,24 +29,32 @@ export const signUp = async ({ username, email, password }) => {
   return newUser;
 };
 
-export const signIn = async ({ username, password }) => {
-  //1. find user by username
-  const user = await userRepository.findByUsername(username);
+export const signIn = async ({ identifier, password }) => {
+  //check if the user used username or email
+  const isEmail = identifier.includes('@');
+
+  let user;
+  if (isEmail) {
+    user = await userRepository.findByEmail(identifier);
+  } else {
+    user = await userRepository.findByUsername(identifier);
+  }
+
   if (!user) {
-    const error = new Error('Username or password is incorrect');
+    const error = new Error('Username, email or password is incorrect');
     error.statusCode = 401; //Unauthorized
     throw error;
   }
 
-  //2.compare the input password with the stored hashed password
+  //compare the input password with the stored hashed password
   const isMatch = await bcrypt.compare(password, user.password_hash);
   if (!isMatch) {
-    const error = new Error('Username or password is incorrect');
+    const error = new Error('Username, email or password is incorrect');
     error.statusCode = 401;
     throw error;
   }
 
-  //3.if matched, create an access token and a refresh token
+  //if matched, create an access token and a refresh token
   const accessToken = generateAccessToken(user.id);
   const refreshToken = generateRefreshToken(user.id);
 
@@ -53,4 +62,22 @@ export const signIn = async ({ username, password }) => {
   delete user.password_hash;
 
   return { user, accessToken, refreshToken };
+};
+
+export const refreshToken = async (token) => {
+  try {
+    //the verify function will automatically throw an error if the token expires or the signature is incorrect
+    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+
+    //get the id only, avoid attaching old token's 'exp' or 'iat' field to the new token
+    const newAccessToken = generateAccessToken(decoded.id);
+
+    return newAccessToken;
+  } catch (error) {
+    console.error('Refresh Token Error:', error.message);
+
+    const customError = new Error('Invalid or expired refresh token');
+    customError.statusCode = 403; //attach 403 status code so the controller can handle it accordingly
+    throw customError;
+  }
 };
