@@ -82,7 +82,7 @@ export const Card: React.FC<CardProps> = ({
       `}
     >
       {/* Row 1: Header - Word + Level Badge */}
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex items-center gap-3 mb-2">
         <h2 className="text-3xl font-bold text-primary flex-1 break-words">{card.word}</h2>
         {card.level && (
           <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold whitespace-nowrap">
@@ -93,14 +93,14 @@ export const Card: React.FC<CardProps> = ({
 
       {/* Row 2: IPA - Phát âm */}
       {card.ipa && (
-        <div className="flex items-center gap-4 text-gray-500 text-sm mb-4">
+        <div className="flex items-center gap-4 text-gray-500 text-sm">
           <Volume2 className="h-5 w-5" />
           <span className="font-mono text-gray-700">/{card.ipa}/</span>
         </div>
       )}
 
       {/* Row 3: Popularity & Actions */}
-      <div className="flex items-center justify-between mb-4 pt-2 border-t border-gray-100">
+      <div className="flex items-center justify-between mb-2 border-gray-100">
         {/* Left: Popularity */}
         <div className="flex items-center gap-2 mt-3">
           <Star className={`h-5 w-5 ${popularityStyle.iconColor}`} fill="currentColor" />
@@ -125,7 +125,7 @@ export const Card: React.FC<CardProps> = ({
 
       {/* Row 4: Part of Speech */}
       {card.partOfSpeech && (
-        <div className="mb-4 pt-2 border-t border-gray-100">
+        <div className="mb-1 pt-2 border-t border-gray-100">
           <p className="text-orange-500 font-semibold text-sm mt-2">{card.partOfSpeech}</p>
         </div>
       )}
