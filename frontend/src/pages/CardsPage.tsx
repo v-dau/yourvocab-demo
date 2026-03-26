@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import {
   CardSearchBar,
@@ -149,6 +150,7 @@ const MOCK_CARDS: Card[] = [
 ];
 
 const CardsPage = () => {
+  const navigate = useNavigate();
   const { cards, deleteCard } = useCardOperations(MOCK_CARDS);
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<CardFiltersState>({
@@ -168,14 +170,11 @@ const CardsPage = () => {
 
   // CRUD Operations
   const handleCreate = () => {
-    alert('Chuyển đến trang tạo thẻ mới');
-    // Chuyển hướng đến CreateEditCardPage
-    // navigate('/cards/create');
+    navigate('/cards/create');
   };
 
   const handleEdit = (card: Card) => {
-    alert(`Chỉnh sửa thẻ: ${card.word}`);
-    // navigate(`/cards/edit/${card.id}`);
+    navigate(`/cards/edit/${card.id}`);
   };
 
   const handleDelete = (cardId: string) => {
