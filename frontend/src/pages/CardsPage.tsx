@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { CardSearchBar, CardFilters, CardListView, CardDetailsModal } from '@/components/cards';
+import {
+  CardSearchBar,
+  CardFilters,
+  CardListView,
+  CardDetailsModal,
+  DisplayModeToolbar,
+} from '@/components/cards';
 import type { Card } from '@/types/card';
 import type { CardFiltersState } from '@/components/cards/CardFilters';
 import { useCardFilter, useCardOperations } from '@/hooks';
@@ -181,6 +187,12 @@ const CardsPage = () => {
     setSelectedCard(card);
   };
 
+  const handleResetAllCards = () => {
+    // This callback could be used to force refresh all cards
+    // For now, it's handled by the global display mode sync
+    window.location.reload();
+  };
+
   return (
     <div className="min-h-screen bg-background p-6 bg-gradient-blue">
       <div className="max-w-7xl mx-auto">
@@ -205,7 +217,10 @@ const CardsPage = () => {
           <div className="flex-1">
             <CardSearchBar searchQuery={searchQuery} onSearch={setSearchQuery} />
           </div>
-          <CardFilters onFilterChange={setFilters} />
+          <div className="flex items-center gap-2">
+            <CardFilters onFilterChange={setFilters} />
+            <DisplayModeToolbar onResetAllCards={handleResetAllCards} />
+          </div>
         </div>
 
         {/* Results Info */}

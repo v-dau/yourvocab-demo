@@ -98,88 +98,94 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
       </Button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-72 bg-background border border-border rounded-lg shadow-lg p-4 z-50">
-          {/* Levels */}
-          <div className="mb-4">
-            <h3 className="font-semibold text-sm mb-2">Mức độ</h3>
-            <div className="flex flex-wrap gap-2">
-              {LEVELS.map((level) => (
-                <button
-                  key={level}
-                  onClick={() => toggleLevel(level)}
-                  className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                    filters.levels.includes(level)
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-foreground hover:bg-muted/80'
-                  }`}
-                >
-                  {level}
-                </button>
-              ))}
+        <>
+          {/* Backdrop overlay */}
+          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+
+          {/* Filter dropdown */}
+          <div className="absolute top-full right-0 mt-2 w-80 max-h-96 bg-background border border-border rounded-lg shadow-lg p-4 z-50 overflow-y-auto">
+            {/* Levels */}
+            <div className="mb-4">
+              <h3 className="font-semibold text-sm mb-2">Mức độ</h3>
+              <div className="flex flex-wrap gap-2">
+                {LEVELS.map((level) => (
+                  <button
+                    key={level}
+                    onClick={() => toggleLevel(level)}
+                    className={`px-3 py-1 rounded-full text-sm transition-colors whitespace-nowrap ${
+                      filters.levels.includes(level)
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-foreground hover:bg-muted/80'
+                    }`}
+                  >
+                    {level}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Popularity */}
-          <div className="mb-4">
-            <h3 className="font-semibold text-sm mb-2">Độ nổi tiếng</h3>
-            <div className="flex flex-wrap gap-2">
-              {POPULARITY_LEVELS.map((pop) => (
-                <button
-                  key={pop}
-                  onClick={() => togglePopularity(pop as CardPopularity)}
-                  className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                    filters.popularity.includes(pop as CardPopularity)
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-foreground hover:bg-muted/80'
-                  }`}
-                  title={POPULARITY_LABELS[pop as CardPopularity]}
-                >
-                  {pop}
-                </button>
-              ))}
+            {/* Popularity */}
+            <div className="mb-4">
+              <h3 className="font-semibold text-sm mb-2">Độ phổ biến</h3>
+              <div className="flex flex-wrap gap-2">
+                {POPULARITY_LEVELS.map((pop) => (
+                  <button
+                    key={pop}
+                    onClick={() => togglePopularity(pop as CardPopularity)}
+                    className={`px-3 py-1 rounded-full text-sm transition-colors whitespace-nowrap ${
+                      filters.popularity.includes(pop as CardPopularity)
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-foreground hover:bg-muted/80'
+                    }`}
+                    title={POPULARITY_LABELS[pop as CardPopularity]}
+                  >
+                    {pop}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Part of Speech */}
-          <div className="mb-4">
-            <h3 className="font-semibold text-sm mb-2">Loại từ</h3>
-            <div className="flex flex-wrap gap-2">
-              {PARTS_OF_SPEECH.map((pos) => (
-                <button
-                  key={pos}
-                  onClick={() => togglePartOfSpeech(pos)}
-                  className={`px-3 py-1 rounded-full text-xs transition-colors ${
-                    filters.partOfSpeech.includes(pos)
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-foreground hover:bg-muted/80'
-                  }`}
-                >
-                  {pos}
-                </button>
-              ))}
+            {/* Part of Speech */}
+            <div className="mb-4">
+              <h3 className="font-semibold text-sm mb-2">Loại từ</h3>
+              <div className="flex flex-wrap gap-2">
+                {PARTS_OF_SPEECH.map((pos) => (
+                  <button
+                    key={pos}
+                    onClick={() => togglePartOfSpeech(pos)}
+                    className={`px-3 py-1 rounded-full text-xs transition-colors whitespace-nowrap ${
+                      filters.partOfSpeech.includes(pos)
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted text-foreground hover:bg-muted/80'
+                    }`}
+                  >
+                    {pos}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Has Example */}
-          <div className="mb-4">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={filters.hasExample === true}
-                onChange={toggleHasExample}
-                className="rounded"
-              />
-              <span className="text-sm">Có ví dụ</span>
-            </label>
-          </div>
+            {/* Has Example */}
+            <div className="mb-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filters.hasExample === true}
+                  onChange={toggleHasExample}
+                  className="rounded"
+                />
+                <span className="text-sm">Có ví dụ</span>
+              </label>
+            </div>
 
-          {/* Clear Button */}
-          {activeFilterCount > 0 && (
-            <Button variant="outline" size="sm" onClick={clearFilters} className="w-full">
-              Xóa tất cả bộ lọc
-            </Button>
-          )}
-        </div>
+            {/* Clear Button */}
+            {activeFilterCount > 0 && (
+              <Button variant="outline" size="sm" onClick={clearFilters} className="w-full">
+                Xóa tất cả bộ lọc
+              </Button>
+            )}
+          </div>
+        </>
       )}
 
       {isOpen && <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />}

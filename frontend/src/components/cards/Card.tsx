@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Volume2,
   Star,
@@ -8,8 +8,11 @@ import {
   Edit2,
   Trash2,
   Eye,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useDisplayMode } from '@/stores/displayModeStore';
 import type { Card as CardType } from '@/types/card';
 
 interface CardProps {
@@ -72,23 +75,48 @@ export const Card: React.FC<CardProps> = ({
   isSelected = false,
   showActions = false,
 }) => {
+  const { globalDisplayMode } = useDisplayMode();
+  const [localMode, setLocalMode] = useState<'basic' | 'full'>(globalDisplayMode);
   const popularityStyle = getPopularityStyle(card.popularity);
+
+  // Sync localMode với globalDisplayMode khi globalDisplayMode thay đổi
+  useEffect(() => {
+    setLocalMode(globalDisplayMode);
+  }, [globalDisplayMode]);
+
+  const toggleLocalMode = () => {
+    setLocalMode(localMode === 'basic' ? 'full' : 'basic');
+  };
 
   return (
     <div
       className={`
-        p-6 rounded-lg border transition-all
+        p-6 rounded-lg border transition-all duration-300
         ${isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-200 bg-white shadow-sm hover:shadow-md'}
       `}
     >
-      {/* Row 1: Header - Word + Level Badge */}
-      <div className="flex items-center gap-3 mb-2">
-        <h2 className="text-3xl font-bold text-primary flex-1 break-words">{card.word}</h2>
-        {card.level && (
-          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold whitespace-nowrap">
-            {card.level}
-          </span>
-        )}
+      {/* Row 1: Header - Word + Level Badge + Toggle Button */}
+      <div className="flex items-start justify-between gap-3 mb-2">
+        <div className="flex items-center gap-3 flex-1">
+          <h2 className="text-3xl font-bold text-primary break-words">{card.word}</h2>
+          {card.level && (
+            <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold whitespace-nowrap">
+              {card.level}
+            </span>
+          )}
+        </div>
+        {/* Toggle Display Mode Button */}
+        <button
+          onClick={toggleLocalMode}
+          className="p-1.5 hover:bg-gray-100 rounded-md transition-colors shrink-0"
+          title={localMode === 'basic' ? 'Expand' : 'Collapse'}
+        >
+          {localMode === 'basic' ? (
+            <Maximize2 className="h-5 w-5 text-gray-600" />
+          ) : (
+            <Minimize2 className="h-5 w-5 text-gray-600" />
+          )}
+        </button>
       </div>
 
       {/* Row 2: IPA - Phát âm */}
@@ -140,15 +168,7 @@ export const Card: React.FC<CardProps> = ({
         )}
       </div>
 
-      {/* Definition - Định nghĩa */}
-      {card.definition && (
-        <div className="mb-4">
-          <h4 className="text-sm font-semibold text-gray-700 mb-1">Định nghĩa</h4>
-          <p className="text-sm text-gray-600">{card.definition}</p>
-        </div>
-      )}
-
-      {/* Example - Ví dụ */}
+      {/* Row 6: Example - Always show in Basic mode */}
       {card.example && (
         <div className="mb-4">
           <h4 className="text-sm font-semibold text-gray-700 mb-1">Ví dụ</h4>
@@ -158,51 +178,71 @@ export const Card: React.FC<CardProps> = ({
         </div>
       )}
 
-      {/* Synonyms */}
-      {card.synonyms && (
-        <div className="mb-4">
-          <h4 className="text-sm font-semibold text-gray-700 mb-2">Từ đồng nghĩa</h4>
-          <div className="flex flex-wrap gap-2">
-            {card.synonyms.split(',').map((syn, idx) => (
-              <span key={idx} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
-                {syn.trim()}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* FULL MODE SECTION - Only show when localMode === 'full' */}
+      <div
+        className={`transition-all duration-500 ease-in-out overflow-hidden ${
+          localMode === 'full' ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="space-y-4">
+          {/* Definition - Định nghĩa */}
+          {card.definition && (
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold text-gray-700 mb-1">Định nghĩa</h4>
+              <p className="text-sm text-gray-600">{card.definition}</p>
+            </div>
+          )}
 
-      {/* Antonyms */}
-      {card.antonyms && (
-        <div className="mb-4">
-          <h4 className="text-sm font-semibold text-gray-700 mb-2">Từ trái nghĩa</h4>
-          <div className="flex flex-wrap gap-2">
-            {card.antonyms.split(',').map((ant, idx) => (
-              <span key={idx} className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">
-                {ant.trim()}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+          {/* Synonyms */}
+          {card.synonyms && (
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">Từ đồng nghĩa</h4>
+              <div className="flex flex-wrap gap-2">
+                {card.synonyms.split(',').map((syn, idx) => (
+                  <span key={idx} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                    {syn.trim()}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
 
-      {/* Near Synonyms */}
-      {card.nearSynonyms && (
-        <div>
-          <h4 className="text-sm font-semibold text-gray-700 mb-2">Từ gần đồng nghĩa</h4>
-          <div className="flex flex-wrap gap-2">
-            {card.nearSynonyms.split(',').map((near, idx) => (
-              <span key={idx} className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded">
-                {near.trim()}
-              </span>
-            ))}
-          </div>
+          {/* Antonyms */}
+          {card.antonyms && (
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">Từ trái nghĩa</h4>
+              <div className="flex flex-wrap gap-2">
+                {card.antonyms.split(',').map((ant, idx) => (
+                  <span key={idx} className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">
+                    {ant.trim()}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Near Synonyms */}
+          {card.nearSynonyms && (
+            <div>
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">Từ gần đồng nghĩa</h4>
+              <div className="flex flex-wrap gap-2">
+                {card.nearSynonyms.split(',').map((near, idx) => (
+                  <span
+                    key={idx}
+                    className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded"
+                  >
+                    {near.trim()}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="flex gap-2 pt-4 mt-4 border-t border-gray-200">
+        <div className="flex gap-2 pt-4 mt-4 border-t border-gray-200 transition-all duration-300">
           {onView && (
             <Button
               variant="ghost"
