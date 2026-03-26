@@ -4,6 +4,7 @@ import SignUpPage from './pages/SignUpPage';
 import DashboardPage from './pages/DashboardPage';
 import { Toaster } from 'sonner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import CardsPage from './pages/CardsPage';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           {/*protected routes*/}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/cards" element={<CardsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
