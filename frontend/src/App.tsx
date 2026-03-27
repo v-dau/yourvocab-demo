@@ -7,6 +7,7 @@ import CardsPage from './pages/CardsPage';
 import CreateEditCardPage from './pages/CreateEditCardPage';
 import ReviewPage from './pages/ReviewPage';
 import SettingsPage from './pages/SettingsPage';
+import FeedbackPage from './pages/FeedbackPage';
 import { Toaster } from 'sonner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { DisplayModeProvider } from './stores/displayModeStore';
@@ -124,6 +125,20 @@ function App() {
                     currentTheme={theme}
                   >
                     <SettingsPage />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/feedbacks"
+                element={
+                  <MainLayout
+                    isLoggedIn={!!user}
+                    username={user?.username || 'User'}
+                    onLogout={handleLogout}
+                    onThemeToggle={handleThemeToggle}
+                    currentTheme={theme}
+                  >
+                    <FeedbackPage />
                   </MainLayout>
                 }
               />

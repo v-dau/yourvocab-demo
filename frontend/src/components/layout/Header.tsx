@@ -43,7 +43,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="bg-transparent border-b border-border">
-      <div className="flex justify-between items-center py-4 px-6">
+      <div className="flex justify-between items-center py-4 px-10">
         {/* Left Section - Navigation */}
         <div className="flex items-center gap-6">
           {/* Logo */}
@@ -58,6 +58,12 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Navigation Links */}
           <nav className="hidden md:flex items-center gap-6">
             <Link
+              to="/dashboard"
+              className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
+            >
+              Dashboard
+            </Link>
+            <Link
               to="/cards"
               className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
             >
@@ -67,7 +73,7 @@ export const Header: React.FC<HeaderProps> = ({
               to="/review"
               className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
             >
-              Spaced Repetition
+              Spaced Repetition Review
             </Link>
           </nav>
         </div>

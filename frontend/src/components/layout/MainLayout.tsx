@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import { Header } from './Header';
+import { Footer } from './Footer';
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -34,7 +34,8 @@ export function MainLayout({
         onThemeToggle={onThemeToggle}
         currentTheme={currentTheme}
       />
-      <main className="flex-1 container mx-auto py-6">{children}</main>
+      <main className="flex-1 container mx-auto py-0">{children}</main>
+      <Footer />
     </div>
   );
 }
