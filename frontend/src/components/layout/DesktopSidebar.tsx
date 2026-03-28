@@ -230,7 +230,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
                 'hover:bg-blue-50 dark:hover:bg-blue-950 hover:border-blue-300 dark:hover:border-blue-700',
                 'h-11'
               )}
-              onClick={() => navigate('/settings')}
+              onClick={() => navigate('/profile-settings')}
               title={isCollapsed ? 'Settings' : undefined}
             >
               <Settings className="h-5 w-5 shrink-0" />

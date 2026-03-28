@@ -129,7 +129,7 @@ export const Header: React.FC<HeaderProps> = ({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem
-                  onClick={() => navigate('/settings')}
+                  onClick={() => navigate('/profile-settings')}
                   className="cursor-pointer gap-2"
                 >
                   <Settings className="h-4 w-4" />

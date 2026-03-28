@@ -97,7 +97,7 @@ const DashboardPage = () => {
             </Button>
 
             <Button
-              onClick={() => navigate('/settings')}
+              onClick={() => navigate('/profile-settings')}
               variant="outline"
               className="h-auto py-4 px-6 flex items-center justify-start gap-4"
             >

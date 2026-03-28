@@ -110,7 +110,7 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({
                 variant="outline"
                 size="lg"
                 className="w-full gap-2 justify-start font-medium h-11"
-                onClick={() => handleNavigate('/settings')}
+                onClick={() => handleNavigate('/profile-settings')}
               >
                 <Settings className="h-5 w-5" />
                 <span>Settings</span>

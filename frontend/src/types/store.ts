@@ -12,4 +12,5 @@ export interface AuthState {
   fetchMe: () => Promise<void>;
   refresh: () => Promise<void>;
   setAccessToken: (accessToken: string) => void;
+  setUser: (user: User | null) => void;
 }

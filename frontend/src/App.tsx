@@ -6,13 +6,14 @@ import DashboardPage from './pages/DashboardPage';
 import CardsPage from './pages/CardsPage';
 import CreateEditCardPage from './pages/CreateEditCardPage';
 import ReviewPage from './pages/ReviewPage';
-import SettingsPage from './pages/SettingsPage';
+import ProfileSettingsPage from './pages/ProfileSettingsPage';
 import FeedbackPage from './pages/FeedbackPage';
 import { Toaster } from 'sonner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { DisplayModeProvider } from './stores/displayModeStore';
 import { MainLayout } from './components/layout';
 import { useAuthStore } from './stores/authStore';
+import api from './lib/axios';
 
 function App() {
   const { user, signOut } = useAuthStore();
@@ -22,7 +23,7 @@ function App() {
     await signOut();
   };
 
-  const handleThemeToggle = () => {
+  const handleThemeToggle = async () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     // Apply theme to document
@@ -30,6 +31,14 @@ function App() {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
+    }
+
+    if (user) {
+      try {
+        await api.patch('/users/me/settings', { theme_preference: newTheme });
+      } catch (err) {
+        console.error('Failed to sync theme', err);
+      }
     }
   };
   return (
@@ -50,6 +59,7 @@ function App() {
                   <MainLayout
                     isLoggedIn={!!user}
                     username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
@@ -64,6 +74,7 @@ function App() {
                   <MainLayout
                     isLoggedIn={!!user}
                     username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
@@ -78,6 +89,7 @@ function App() {
                   <MainLayout
                     isLoggedIn={!!user}
                     username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
@@ -92,6 +104,7 @@ function App() {
                   <MainLayout
                     isLoggedIn={!!user}
                     username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
@@ -106,6 +119,7 @@ function App() {
                   <MainLayout
                     isLoggedIn={!!user}
                     username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
@@ -115,16 +129,17 @@ function App() {
                 }
               />
               <Route
-                path="/settings"
+                path="/profile-settings"
                 element={
                   <MainLayout
                     isLoggedIn={!!user}
                     username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
                   >
-                    <SettingsPage />
+                    <ProfileSettingsPage />
                   </MainLayout>
                 }
               />
@@ -134,6 +149,7 @@ function App() {
                   <MainLayout
                     isLoggedIn={!!user}
                     username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
