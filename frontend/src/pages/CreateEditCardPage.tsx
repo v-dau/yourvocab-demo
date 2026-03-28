@@ -1,15 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
+import * as cardService from '@/services/cardService';
+import { toast } from 'sonner';
+import type { CreateCardInput } from '@/types/card';
 
 const CreateEditCardPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEdit = !!id;
 
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     word: '',
     meaning: '',
@@ -21,7 +25,38 @@ const CreateEditCardPage = () => {
     popularity: 3,
     synonyms: '',
     antonyms: '',
+    nearSynonyms: '',
   });
+
+  useEffect(() => {
+    const fetchCard = async () => {
+      if (!isEdit || !id) return;
+      try {
+        setIsLoading(true);
+        const card = await cardService.getCardById(id);
+        setFormData({
+          word: card.word || '',
+          meaning: card.meaning || '',
+          partOfSpeech: card.partOfSpeech || '',
+          definition: card.definition || '',
+          ipa: card.ipa || '',
+          example: card.example || '',
+          level: card.level || 'B1',
+          popularity: card.popularity || 3,
+          synonyms: card.synonyms || '',
+          antonyms: card.antonyms || '',
+          nearSynonyms: card.nearSynonyms || '',
+        });
+      } catch (error) {
+        console.error('Failed to fetch card:', error);
+        toast.error('Failed to load card details.');
+        navigate('/cards');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCard();
+  }, [id, isEdit, navigate]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -29,15 +64,34 @@ const CreateEditCardPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === 'popularity' ? Number(value) : value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement API call to create/update card
-    console.log('Form submitted:', formData);
-    navigate('/cards');
+    try {
+      setIsLoading(true);
+      const cardInput = {
+        ...formData,
+        level: formData.level as any,
+        popularity: formData.popularity as any,
+      } as CreateCardInput;
+
+      if (isEdit && id) {
+        await cardService.updateCard(id, cardInput);
+        toast.success('Card updated successfully');
+      } else {
+        await cardService.createCard(cardInput);
+        toast.success('Card created successfully');
+      }
+      navigate('/cards');
+    } catch (error) {
+      console.error('Submit error:', error);
+      toast.error('An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -208,10 +262,16 @@ const CreateEditCardPage = () => {
 
             {/* Action Buttons */}
             <div className="flex gap-4 pt-4">
-              <Button type="submit" className="flex-1">
-                {isEdit ? 'Lưu thay đổi' : 'Tạo thẻ'}
+              <Button type="submit" className="flex-1" disabled={isLoading}>
+                {isLoading ? 'Đang xử lý...' : isEdit ? 'Lưu thay đổi' : 'Tạo thẻ'}
               </Button>
-              <Button type="button" variant="outline" className="flex-1" onClick={handleCancel}>
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                onClick={handleCancel}
+                disabled={isLoading}
+              >
                 Hủy
               </Button>
             </div>

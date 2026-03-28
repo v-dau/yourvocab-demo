@@ -24,6 +24,7 @@ export const useCardOperations = (initialCards: Card[]) => {
 
   return {
     cards,
+    setCards,
     addCard,
     updateCard,
     deleteCard,
