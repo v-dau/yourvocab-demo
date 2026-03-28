@@ -90,13 +90,20 @@ export const upsertSettings = async (userId, theme_preference, language) => {
     const res = await query(updateText, [userId, theme_preference, language]);
     return res.rows[0];
   } else {
-    // Default cho theme = system, en nếu không đẩy giá trị
+    // Default cho theme = light, vi nếu không đẩy giá trị
     const insertText = `
       INSERT INTO user_settings (user_id, theme_preference, language)
-      VALUES ($1, COALESCE($2, 'system'), COALESCE($3, 'en'))
+      VALUES ($1, COALESCE($2, 'light'), COALESCE($3, 'vi'))
       RETURNING *;
     `;
     const res = await query(insertText, [userId, theme_preference, language]);
     return res.rows[0];
   }
+};
+
+// ================= LẤY SETTINGS CỦA USER =================
+export const getSettingsByUserId = async (userId) => {
+  const text = 'SELECT * FROM user_settings WHERE user_id = $1';
+  const result = await query(text, [userId]);
+  return result.rows[0];
 };

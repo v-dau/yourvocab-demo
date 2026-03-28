@@ -8,6 +8,7 @@ import {
   changePassword,
   changeEmail,
   updateSettings,
+  getSettings,
 } from '../controllers/userController.js';
 
 const router = express.Router();
@@ -29,8 +30,10 @@ router.patch('/me/email', changeEmail);
 
 // 4. Update các Settings Users
 router.patch('/me/settings', updateSettings);
+router.get('/me/settings', getSettings);
 
 // Test
 router.get('/test', test);
 
 export default router;
+

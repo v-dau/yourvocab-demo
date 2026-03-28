@@ -71,3 +71,24 @@ export const updateSettings = async (req, res) => {
     return res.status(400).json({ message: error.message || 'Lỗi hệ thống' });
   }
 };
+
+export const getSettings = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const settings = await userService.getSettings(userId);
+
+    // Nếu chưa có, trả về mặc định để tiện thiết lập
+    if (!settings) {
+      return res.status(200).json({
+        settings: {
+          theme_preference: 'light',
+          language: 'vi',
+        },
+      });
+    }
+
+    return res.status(200).json({ settings });
+  } catch (error) {
+    return res.status(400).json({ message: error.message || 'Lỗi hệ thống' });
+  }
+};

@@ -9,13 +9,19 @@ if (process.env.CLOUDINARY_URL) {
 
 export const uploadStream = (buffer, folderName = 'avatars') => {
   return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream({ folder: folderName }, (error, result) => {
-      if (result) {
-        resolve(result);
-      } else {
-        reject(error);
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: folderName,
+        transformation: [{ width: 200, height: 200, crop: 'fill', gravity: 'face' }],
+      },
+      (error, result) => {
+        if (result) {
+          resolve(result);
+        } else {
+          reject(error);
+        }
       }
-    });
+    );
     stream.end(buffer);
   });
 };

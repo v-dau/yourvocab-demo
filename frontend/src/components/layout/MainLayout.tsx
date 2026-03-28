@@ -11,6 +11,8 @@ interface MainLayoutProps {
   onLogout?: () => void;
   onThemeToggle?: () => void;
   currentTheme?: 'light' | 'dark';
+  currentLanguage?: 'en' | 'vi';
+  onLanguageChange?: (lang: 'en' | 'vi') => void;
 }
 
 /**
@@ -25,6 +27,8 @@ export function MainLayout({
   onLogout,
   onThemeToggle,
   currentTheme = 'light',
+  currentLanguage = 'vi',
+  onLanguageChange,
 }: MainLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(true);
 
@@ -50,6 +54,8 @@ export function MainLayout({
         onToggleCollapse={setSidebarCollapsed}
         onThemeToggle={onThemeToggle}
         currentTheme={currentTheme}
+        currentLanguage={currentLanguage}
+        onLanguageChange={onLanguageChange}
       />
 
       {/* Main Content Area */}
@@ -66,3 +72,4 @@ export function MainLayout({
 }
 
 export default MainLayout;
+

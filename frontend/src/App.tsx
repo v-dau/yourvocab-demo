@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import DashboardPage from './pages/DashboardPage';
@@ -18,9 +18,42 @@ import api from './lib/axios';
 function App() {
   const { user, signOut } = useAuthStore();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [language, setLanguage] = useState<'vi' | 'en'>('vi');
+
+  useEffect(() => {
+    if (user) {
+      api
+        .get('/users/me/settings')
+        .then((res) => {
+          const fetchedTheme = res.data?.settings?.theme_preference || 'light';
+          const fetchedLanguage = res.data?.settings?.language || 'vi';
+
+          setTheme(fetchedTheme);
+          setLanguage(fetchedLanguage);
+
+          if (fetchedTheme === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        })
+        .catch((err) => console.error('Failed to load user settings', err));
+    }
+  }, [user]);
 
   const handleLogout = async () => {
     await signOut();
+  };
+
+  const handleLanguageChange = async (newLang: 'en' | 'vi') => {
+    setLanguage(newLang);
+    if (user) {
+      try {
+        await api.patch('/users/me/settings', { language: newLang });
+      } catch (err) {
+        console.error('Failed to sync language', err);
+      }
+    }
   };
 
   const handleThemeToggle = async () => {
@@ -63,6 +96,8 @@ function App() {
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
                   >
                     <DashboardPage />
                   </MainLayout>
@@ -78,6 +113,8 @@ function App() {
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
                   >
                     <CardsPage />
                   </MainLayout>
@@ -93,6 +130,8 @@ function App() {
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
                   >
                     <CreateEditCardPage />
                   </MainLayout>
@@ -108,6 +147,8 @@ function App() {
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
                   >
                     <CreateEditCardPage />
                   </MainLayout>
@@ -123,6 +164,8 @@ function App() {
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
                   >
                     <ReviewPage />
                   </MainLayout>
@@ -138,6 +181,8 @@ function App() {
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
                   >
                     <ProfileSettingsPage />
                   </MainLayout>
@@ -153,6 +198,8 @@ function App() {
                     onLogout={handleLogout}
                     onThemeToggle={handleThemeToggle}
                     currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
                   >
                     <FeedbackPage />
                   </MainLayout>

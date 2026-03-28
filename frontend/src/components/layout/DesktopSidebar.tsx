@@ -32,6 +32,8 @@ interface DesktopSidebarProps {
   onToggleCollapse?: (collapsed: boolean) => void;
   onThemeToggle?: () => void;
   currentTheme?: 'light' | 'dark';
+  currentLanguage?: 'en' | 'vi';
+  onLanguageChange?: (lang: 'en' | 'vi') => void;
 }
 
 export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
@@ -43,14 +45,10 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   onToggleCollapse = () => {},
   onThemeToggle = () => {},
   currentTheme = 'light',
+  currentLanguage = 'vi',
+  onLanguageChange = () => {},
 }) => {
   const navigate = useNavigate();
-  const [language, setLanguage] = useState<'en' | 'vi'>('vi');
-
-  const handleLanguageChange = (lang: 'en' | 'vi') => {
-    setLanguage(lang);
-    console.log(`Language changed to: ${lang}`);
-  };
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -166,18 +164,18 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
             >
               <Globe className="h-4 w-4" />
               {!isCollapsed && (
-                <span className="text-xs font-medium">{language.toUpperCase()}</span>
+                <span className="text-xs font-medium">{currentLanguage.toUpperCase()}</span>
               )}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-40">
-            <DropdownMenuItem onClick={() => handleLanguageChange('en')} className="cursor-pointer">
+            <DropdownMenuItem onClick={() => onLanguageChange('en')} className="cursor-pointer">
               <span>English</span>
-              {language === 'en' && <span className="ml-auto">✓</span>}
+              {currentLanguage === 'en' && <span className="ml-auto">✓</span>}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleLanguageChange('vi')} className="cursor-pointer">
+            <DropdownMenuItem onClick={() => onLanguageChange('vi')} className="cursor-pointer">
               <span>Tiếng Việt</span>
-              {language === 'vi' && <span className="ml-auto">✓</span>}
+              {currentLanguage === 'vi' && <span className="ml-auto">✓</span>}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

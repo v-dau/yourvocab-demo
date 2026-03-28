@@ -62,3 +62,7 @@ export const updateSettings = async (userId, theme_preference, language) => {
   const settings = await userRepository.upsertSettings(userId, theme_preference, language);
   return settings;
 };
+export const getSettings = async (userId) => {
+  const settings = await userRepository.getSettingsByUserId(userId);
+  return settings;
+};
