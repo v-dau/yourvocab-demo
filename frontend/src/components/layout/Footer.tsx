@@ -17,7 +17,7 @@ export const Footer: React.FC<FooterProps> = ({ onFeedbackClick = () => {} }) =>
   };
 
   return (
-    <footer className="bg-transparent border-t border-border">
+    <footer className="bg-card border-t border-border">
       <div className="px-6 py-8">
         {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">

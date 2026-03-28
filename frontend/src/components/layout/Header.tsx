@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router';
+import React from 'react';
+import { Link, useLocation, useNavigate } from 'react-router';
 import { Button } from '../ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { Sun, Moon, Globe, User, LogOut, Settings, BookOpen } from 'lucide-react';
+import { User, LogOut, Settings, BookOpen } from 'lucide-react';
+import { MobileSidebar } from './MobileSidebar';
+import { cn } from '@/lib/utils';
 
 interface HeaderProps {
   isLoggedIn?: boolean;
   username?: string;
   userAvatar?: string;
   onLogout?: () => void;
-  onThemeToggle?: () => void;
-  currentTheme?: 'light' | 'dark';
+  sidebarCollapsed?: boolean;
+  onToggleSidebar?: (collapsed: boolean) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -24,108 +26,89 @@ export const Header: React.FC<HeaderProps> = ({
   username = 'User',
   userAvatar = '',
   onLogout = () => {},
-  onThemeToggle = () => {},
-  currentTheme = 'light',
 }) => {
+  const location = useLocation();
   const navigate = useNavigate();
-  const [language, setLanguage] = useState<'en' | 'vi'>('vi');
 
   const handleLogout = () => {
     onLogout();
     navigate('/signin');
   };
 
-  const handleLanguageChange = (lang: 'en' | 'vi') => {
-    setLanguage(lang);
-    // TODO: Implement language change logic
-    console.log(`Language changed to: ${lang}`);
-  };
+  // Check if current path matches nav item
+  const isActive = (path: string) => location.pathname === path;
 
   return (
-    <header className="bg-transparent border-b border-border">
-      <div className="flex justify-between items-center py-4 px-10">
-        {/* Left Section - Navigation */}
-        <div className="flex items-center gap-6">
-          {/* Logo */}
+    <header className="relative bg-transparent">
+      <div className="flex justify-between items-center py-4 px-6 md:px-10">
+        {/* Left Section - Mobile Sidebar Trigger + Logo */}
+        <div className="flex items-center gap-3 md:gap-6 flex-1 md:flex-none">
+          {/* Mobile Sidebar Trigger */}
+          <MobileSidebar
+            isLoggedIn={isLoggedIn}
+            username={username}
+            userAvatar={userAvatar}
+            onLogout={onLogout}
+          />
+
+          {/* Header toggle removed per request - sidebar controls toggle now */}
+
+          {/* Logo - visible on desktop */}
           <Link
             to="/dashboard"
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity ml-16"
           >
             <BookOpen className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold text-foreground">Yourvocab</span>
+            <span className="text-lg font-bold text-foreground">Yourvocab</span>
           </Link>
-
-          {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6">
-            <Link
-              to="/dashboard"
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/cards"
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-            >
-              Cards
-            </Link>
-            <Link
-              to="/review"
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium"
-            >
-              Spaced Repetition Review
-            </Link>
-          </nav>
         </div>
 
-        {/* Right Section - Actions & User */}
-        <div className="flex items-center gap-4">
-          {/* Theme Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onThemeToggle}
-            className="h-9 w-9"
-            title={`Switch to ${currentTheme === 'light' ? 'dark' : 'light'} mode`}
+        {/* Navigation Links (Desktop Only) */}
+        <nav className="hidden md:flex items-center gap-8">
+          <Link
+            to="/dashboard"
+            className={cn(
+              'transition-colors text-sm font-medium',
+              isActive('/dashboard')
+                ? 'text-primary border-b-2 border-primary pb-1'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
           >
-            {currentTheme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-          </Button>
+            Dashboard
+          </Link>
+          <Link
+            to="/cards"
+            className={cn(
+              'transition-colors text-sm font-medium',
+              isActive('/cards')
+                ? 'text-primary border-b-2 border-primary pb-1'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            Cards
+          </Link>
+          <Link
+            to="/review"
+            className={cn(
+              'transition-colors text-sm font-medium',
+              isActive('/review')
+                ? 'text-primary border-b-2 border-primary pb-1'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            Spaced Repetition
+          </Link>
+        </nav>
 
-          {/* Language Selector */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9">
-                <div className="flex items-center gap-1">
-                  <Globe className="h-4 w-4" />
-                  <span className="text-xs font-medium">{language.toUpperCase()}</span>
-                </div>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem
-                onClick={() => handleLanguageChange('en')}
-                className="cursor-pointer"
-              >
-                <span>English (en)</span>
-                {language === 'en' && <span className="ml-auto">✓</span>}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleLanguageChange('vi')}
-                className="cursor-pointer"
-              >
-                <span>Tiếng Việt (vi)</span>
-                {language === 'vi' && <span className="ml-auto">✓</span>}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
+        {/* Right Section - User */}
+        <div className="flex items-center gap-4">
           {/* User Section */}
           {!isLoggedIn ? (
             // Login Button
             <Link to="/signin">
               <Button variant="ghost" size="sm" className="gap-2">
                 <User className="h-4 w-4" />
-                <span className="text-sm font-medium">Login</span>
+                <span className="text-sm font-medium hidden sm:inline">Login</span>
               </Button>
             </Link>
           ) : (

@@ -22,3 +22,12 @@ export { Input } from './input';
 export { Label } from './label';
 export { Separator } from './separator';
 export { Field } from './field';
+export {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetOverlay,
+} from './sheet';

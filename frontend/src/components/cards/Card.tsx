@@ -12,6 +12,7 @@ import {
   Minimize2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card as CardUI } from '@/components/ui/card';
 import { useDisplayMode } from '@/stores/displayModeStore';
 import type { Card as CardType } from '@/types/card';
 
@@ -89,18 +90,15 @@ export const Card: React.FC<CardProps> = ({
   };
 
   return (
-    <div
-      className={`
-        p-6 rounded-lg border transition-all duration-300
-        ${isSelected ? 'border-primary bg-primary/5 shadow-md' : 'border-gray-200 bg-white shadow-sm hover:shadow-md'}
-      `}
+    <CardUI
+      className={`p-6 transition-all duration-300 ${isSelected ? 'ring-1 ring-primary/20 shadow-md' : 'shadow-sm hover:shadow-md'}`}
     >
       {/* Row 1: Header - Word + Level Badge + Toggle Button */}
-      <div className="flex items-start justify-between gap-3 mb-2">
+      <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 flex-1">
           <h2 className="text-3xl font-bold text-primary break-words">{card.word}</h2>
           {card.level && (
-            <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold whitespace-nowrap">
+            <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-full text-sm font-semibold whitespace-nowrap">
               {card.level}
             </span>
           )}
@@ -108,29 +106,29 @@ export const Card: React.FC<CardProps> = ({
         {/* Toggle Display Mode Button */}
         <button
           onClick={toggleLocalMode}
-          className="p-1.5 hover:bg-gray-100 rounded-md transition-colors shrink-0"
+          className="p-1.5 hover:bg-muted/60 rounded-md transition-colors shrink-0"
           title={localMode === 'basic' ? 'Expand' : 'Collapse'}
         >
           {localMode === 'basic' ? (
-            <Maximize2 className="h-5 w-5 text-gray-600" />
+            <Maximize2 className="h-5 w-5 text-muted-foreground" />
           ) : (
-            <Minimize2 className="h-5 w-5 text-gray-600" />
+            <Minimize2 className="h-5 w-5 text-muted-foreground" />
           )}
         </button>
       </div>
 
       {/* Row 2: IPA - Phát âm */}
       {card.ipa && (
-        <div className="flex items-center gap-4 text-gray-500 text-sm">
+        <div className="flex items-center gap-1 text-sm text-muted-foreground">
           <Volume2 className="h-5 w-5" />
-          <span className="font-mono text-gray-700">/{card.ipa}/</span>
+          <span className="font-mono text-card-foreground">/{card.ipa}/</span>
         </div>
       )}
 
       {/* Row 3: Popularity & Actions */}
-      <div className="flex items-center justify-between mb-2 border-gray-100">
+      <div className="flex items-center justify-between">
         {/* Left: Popularity */}
-        <div className="flex items-center gap-2 mt-3">
+        <div className="flex items-center gap-2">
           <Star className={`h-5 w-5 ${popularityStyle.iconColor}`} fill="currentColor" />
           <span className={`text-sm font-medium ${popularityStyle.iconColor}`}>
             {popularityStyle.text}
@@ -139,28 +137,28 @@ export const Card: React.FC<CardProps> = ({
 
         {/* Right: Action Icons */}
         <div className="flex items-center gap-2">
-          <button className="p-1.5 hover:bg-gray-100 rounded-md transition-colors" title="Image">
-            <ImageIcon className="h-4 w-4 text-gray-500" />
+          <button className="p-1.5 hover:bg-muted/60 rounded-md transition-colors" title="Image">
+            <ImageIcon className="h-4 w-4 text-muted-foreground" />
           </button>
-          <button className="p-1.5 hover:bg-gray-100 rounded-md transition-colors" title="Google">
-            <Globe className="h-4 w-4 text-gray-500" />
+          <button className="p-1.5 hover:bg-muted/60 rounded-md transition-colors" title="Google">
+            <Globe className="h-4 w-4 text-muted-foreground" />
           </button>
-          <button className="p-1.5 hover:bg-gray-100 rounded-md transition-colors" title="Wiki">
-            <BookOpen className="h-4 w-4 text-gray-500" />
+          <button className="p-1.5 hover:bg-muted/60 rounded-md transition-colors" title="Wiki">
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
           </button>
         </div>
       </div>
 
       {/* Row 4: Part of Speech */}
       {card.partOfSpeech && (
-        <div className="mb-1 pt-2 border-t border-gray-100">
+        <div className="border-t border-t-muted">
           <p className="text-orange-500 font-semibold text-sm mt-2">{card.partOfSpeech}</p>
         </div>
       )}
 
       {/* Row 5: Meaning - Nghĩa tiếng Việt */}
-      <div className="bg-gray-50 p-3 rounded-md flex justify-between items-center mb-4">
-        <p className="text-gray-800 font-medium flex-1">{card.meaning}</p>
+      <div className="bg-muted p-3 rounded-md flex justify-between items-center mb-4">
+        <p className="text-card-foreground font-medium flex-1">{card.meaning}</p>
         {onAddMeaning && (
           <Button size="sm" className="ml-3 whitespace-nowrap" onClick={onAddMeaning}>
             + Add
@@ -171,8 +169,8 @@ export const Card: React.FC<CardProps> = ({
       {/* Row 6: Example - Always show in Basic mode */}
       {card.example && (
         <div className="mb-4">
-          <h4 className="text-sm font-semibold text-gray-700 mb-1">Ví dụ</h4>
-          <p className="text-sm italic text-gray-600 bg-gray-50 p-2 rounded border-l-4 border-primary">
+          <h4 className="text-sm font-semibold text-card-foreground mb-1">Ví dụ</h4>
+          <p className="text-sm italic bg-muted p-2 rounded border-l-4 border-primary text-card-foreground">
             "{card.example}"
           </p>
         </div>
@@ -188,8 +186,8 @@ export const Card: React.FC<CardProps> = ({
           {/* Definition - Định nghĩa */}
           {card.definition && (
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-gray-700 mb-1">Định nghĩa</h4>
-              <p className="text-sm text-gray-600">{card.definition}</p>
+              <h4 className="text-sm font-semibold text-card-foreground mb-1">Định nghĩa</h4>
+              <p className="text-sm text-muted-foreground">{card.definition}</p>
             </div>
           )}
 
@@ -199,7 +197,10 @@ export const Card: React.FC<CardProps> = ({
               <h4 className="text-sm font-semibold text-gray-700 mb-2">Từ đồng nghĩa</h4>
               <div className="flex flex-wrap gap-2">
                 {card.synonyms.split(',').map((syn, idx) => (
-                  <span key={idx} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded">
+                  <span
+                    key={idx}
+                    className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 text-xs rounded"
+                  >
                     {syn.trim()}
                   </span>
                 ))}
@@ -213,7 +214,10 @@ export const Card: React.FC<CardProps> = ({
               <h4 className="text-sm font-semibold text-gray-700 mb-2">Từ trái nghĩa</h4>
               <div className="flex flex-wrap gap-2">
                 {card.antonyms.split(',').map((ant, idx) => (
-                  <span key={idx} className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded">
+                  <span
+                    key={idx}
+                    className="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-100 text-xs rounded"
+                  >
                     {ant.trim()}
                   </span>
                 ))}
@@ -229,7 +233,7 @@ export const Card: React.FC<CardProps> = ({
                 {card.nearSynonyms.split(',').map((near, idx) => (
                   <span
                     key={idx}
-                    className="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded"
+                    className="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-100 text-xs rounded"
                   >
                     {near.trim()}
                   </span>
@@ -242,7 +246,7 @@ export const Card: React.FC<CardProps> = ({
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="flex gap-2 pt-4 mt-4 border-t border-gray-200 transition-all duration-300">
+        <div className="flex gap-2 pt-4 mt-4 border-t border-t-muted transition-all duration-300">
           {onView && (
             <Button
               variant="ghost"
@@ -285,6 +289,6 @@ export const Card: React.FC<CardProps> = ({
           )}
         </div>
       )}
-    </div>
+    </CardUI>
   );
 };

@@ -103,7 +103,7 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
 
           {/* Filter dropdown */}
-          <div className="absolute top-full right-0 mt-2 w-80 max-h-96 bg-background border border-border rounded-lg shadow-lg p-4 z-50 overflow-y-auto">
+          <div className="absolute top-full left-0 mt-2 w-80 max-h-96 bg-background border border-border rounded-lg shadow-lg p-4 z-50 overflow-y-auto">
             {/* Levels */}
             <div className="mb-4">
               <h3 className="font-semibold text-sm mb-2">Mức độ</h3>
