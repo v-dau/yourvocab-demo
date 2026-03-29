@@ -60,3 +60,31 @@ export const deleteCard = async (id, user_id) => {
 
   return isDeleted;
 };
+export const getTrashCards = async (user_id) => {
+  if (!user_id) throw new Error('User ID is required');
+  return await cardRepository.getDeletedCardsByUserId(user_id);
+};
+
+export const restoreCard = async (id, user_id) => {
+  if (!id || !user_id) throw new Error('ID and User ID are required');
+  const isRestored = await cardRepository.restoreCard(id, user_id);
+  if (!isRestored) throw new Error('Card not found in trash or unauthorized');
+  return isRestored;
+};
+
+export const hardDeleteCard = async (id, user_id) => {
+  if (!id || !user_id) throw new Error('ID and User ID are required');
+  const isDeleted = await cardRepository.hardDeleteCard(id, user_id);
+  if (!isDeleted) throw new Error('Card not found in trash or unauthorized');
+  return isDeleted;
+};
+
+export const restoreAllCards = async (user_id) => {
+  if (!user_id) throw new Error('User ID is required');
+  return await cardRepository.restoreAllCards(user_id);
+};
+
+export const emptyTrash = async (user_id) => {
+  if (!user_id) throw new Error('User ID is required');
+  return await cardRepository.emptyTrash(user_id);
+};

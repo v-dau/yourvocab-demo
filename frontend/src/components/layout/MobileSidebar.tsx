@@ -1,10 +1,11 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router';
 import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Menu, BookOpen, LogOut, Settings } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import * as cardService from '@/services/cardService';
 
 interface MobileSidebarProps {
   isLoggedIn?: boolean;
@@ -20,7 +21,20 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({
   onLogout = () => {},
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [open, setOpen] = React.useState(false);
+  const [trashCount, setTrashCount] = useState(0);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      cardService
+        .getTrashCards()
+        .then((cards) => {
+          setTrashCount(cards.length);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [isLoggedIn, location.pathname]);
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -75,6 +89,19 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({
             className="text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
           >
             Spaced Repetition
+          </button>
+          <button
+            onClick={() => handleNavigate('/trash')}
+            className="flex items-center justify-between text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
+          >
+            <div className="flex items-center gap-2">
+              <span>Thùng rác</span>
+            </div>
+            {trashCount > 0 && (
+              <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">
+                {trashCount}
+              </span>
+            )}
           </button>
         </nav>
 

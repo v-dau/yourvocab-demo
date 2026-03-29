@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
   CardSearchBar,
@@ -17,6 +18,7 @@ import { toast } from 'sonner';
 
 const CardsPage = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { cards, setCards, deleteCard } = useCardOperations([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -62,15 +64,15 @@ const CardsPage = () => {
   };
 
   const handleDelete = async (cardId: string) => {
-    if (!window.confirm('Are you sure you want to delete this card?')) return;
+    if (!window.confirm(t('cards_page.confirm_trash'))) return;
 
     try {
       await cardService.deleteCard(cardId);
       deleteCard(cardId);
-      toast.success('Card deleted successfully');
+      toast.success(t('cards_page.success_trash'));
     } catch (error) {
       console.error('Failed to delete card:', error);
-      toast.error('Failed to delete card. Please try again.');
+      toast.error(t('cards_page.error_trash'));
     }
   };
 
@@ -91,14 +93,14 @@ const CardsPage = () => {
         <div className="mb-8">
           <div className="flex items-center justify-between gap-4 mb-2">
             <div>
-              <h1 className="text-4xl font-bold text-foreground">Danh sách thẻ</h1>
+              <h1 className="text-4xl font-bold text-foreground">{t('cards_page.title')}</h1>
               <p className="text-muted-foreground mt-1">
-                Quản lý {filteredCards.length} thẻ từ vựng
+                {t('cards_page.desc', { count: filteredCards.length })}
               </p>
             </div>
             <Button onClick={handleCreate} className="gap-2 h-10 px-4">
               <Plus className="h-5 w-5" />
-              <span>Thêm thẻ mới</span>
+              <span>{t('cards_page.add_new')}</span>
             </Button>
           </div>
         </div>
@@ -117,11 +119,11 @@ const CardsPage = () => {
         {/* Results Info */}
         <div className="mb-4 text-sm text-muted-foreground">
           {isLoading ? (
-            'Đang tải...'
+            t('cards_page.loading')
           ) : (
             <>
-              Hiển thị {filteredCards.length} trên {cards.length} thẻ
-              {searchQuery && ` (tìm kiếm: "${searchQuery}")`}
+              {t('cards_page.showing', { filtered: filteredCards.length, total: cards.length })}
+              {searchQuery && t('cards_page.search_for', { query: searchQuery })}
             </>
           )}
         </div>
@@ -129,7 +131,7 @@ const CardsPage = () => {
         {/* Cards Grid */}
         {isLoading ? (
           <div className="flex justify-center items-center py-12">
-            <p className="text-xl text-muted-foreground">Loading cards...</p>
+            <p className="text-xl text-muted-foreground">{t('cards_page.loading')}</p>
           </div>
         ) : (
           <CardListView

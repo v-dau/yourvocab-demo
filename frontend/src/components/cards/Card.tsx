@@ -10,11 +10,15 @@ import {
   Eye,
   Maximize2,
   Minimize2,
+  RotateCcw,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card as CardUI } from '@/components/ui/card';
 import { useDisplayMode } from '@/stores/displayModeStore';
 import type { Card as CardType } from '@/types/card';
+import { formatDistanceToNow, addDays } from 'date-fns';
+import { vi, enUS } from 'date-fns/locale';
+import { useTranslation } from 'react-i18next';
 
 interface CardProps {
   card: CardType;
@@ -22,44 +26,56 @@ interface CardProps {
   onEdit?: (card: CardType) => void;
   onDelete?: (cardId: string) => void;
   onView?: (card: CardType) => void;
+  onRestore?: (cardId: string) => void;
+  onHardDelete?: (cardId: string) => void;
   isSelected?: boolean;
   showActions?: boolean;
+  isTrashMode?: boolean;
 }
 
 /**
  * Helper function: Returns popularity styling based on value
  */
-const getPopularityStyle = (popularity?: number | null) => {
+//eslint-disable-next-line @typescript-eslint/no-explicit-any
+const getPopularityStyle = (popularity?: number | null, t?: any) => {
   const value = popularity ?? 0;
+
+  if (!t)
+    return {
+      iconColor: 'text-gray-400',
+      text: 'N/A',
+      bgColor: 'bg-gray-100',
+    };
+
   const config = {
     0: {
       iconColor: 'text-gray-400',
-      text: 'N/A',
+      text: t('card.popularity.na'),
       bgColor: 'bg-gray-100',
     },
     1: {
       iconColor: 'text-red-500',
-      text: 'Extremely rare',
+      text: t('card.popularity.extremely_rare'),
       bgColor: 'bg-red-50',
     },
     2: {
       iconColor: 'text-orange-500',
-      text: 'Rare',
+      text: t('card.popularity.rare'),
       bgColor: 'bg-orange-50',
     },
     3: {
       iconColor: 'text-yellow-500',
-      text: 'Uncommon',
+      text: t('card.popularity.uncommon'),
       bgColor: 'bg-yellow-50',
     },
     4: {
       iconColor: 'text-green-500',
-      text: 'Common',
+      text: t('card.popularity.common'),
       bgColor: 'bg-green-50',
     },
     5: {
       iconColor: 'text-blue-500',
-      text: 'Essentials',
+      text: t('card.popularity.essentials'),
       bgColor: 'bg-blue-50',
     },
   } as const;
@@ -75,10 +91,15 @@ export const Card: React.FC<CardProps> = ({
   onView,
   isSelected = false,
   showActions = false,
+  isTrashMode = false,
+  onRestore,
+  onHardDelete,
 }) => {
   const { globalDisplayMode } = useDisplayMode();
   const [localMode, setLocalMode] = useState<'basic' | 'full'>(globalDisplayMode);
-  const popularityStyle = getPopularityStyle(card.popularity);
+  const { t, i18n } = useTranslation();
+  const popularityStyle = getPopularityStyle(card.popularity, t);
+  const currentLocale = i18n.language === 'vi' ? vi : enUS;
 
   // Sync localMode với globalDisplayMode khi globalDisplayMode thay đổi
   useEffect(() => {
@@ -161,7 +182,7 @@ export const Card: React.FC<CardProps> = ({
         <p className="text-card-foreground font-medium flex-1">{card.meaning}</p>
         {onAddMeaning && (
           <Button size="sm" className="ml-3 whitespace-nowrap" onClick={onAddMeaning}>
-            + Add
+            {t('card.add')}
           </Button>
         )}
       </div>
@@ -169,7 +190,7 @@ export const Card: React.FC<CardProps> = ({
       {/* Row 6: Example - Always show in Basic mode */}
       {card.example && (
         <div className="mb-4">
-          <h4 className="text-sm font-semibold text-card-foreground mb-1">Ví dụ</h4>
+          <h4 className="text-sm font-semibold text-card-foreground mb-1">{t('card.example')}</h4>
           <p className="text-sm italic bg-muted p-2 rounded border-l-4 border-primary text-card-foreground">
             "{card.example}"
           </p>
@@ -186,7 +207,9 @@ export const Card: React.FC<CardProps> = ({
           {/* Definition - Định nghĩa */}
           {card.definition && (
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-card-foreground mb-1">Định nghĩa</h4>
+              <h4 className="text-sm font-semibold text-card-foreground mb-1">
+                {t('card.definition')}
+              </h4>
               <p className="text-sm text-muted-foreground">{card.definition}</p>
             </div>
           )}
@@ -194,7 +217,7 @@ export const Card: React.FC<CardProps> = ({
           {/* Synonyms */}
           {card.synonyms && (
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2">Từ đồng nghĩa</h4>
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('card.synonyms')}</h4>
               <div className="flex flex-wrap gap-2">
                 {card.synonyms.split(',').map((syn, idx) => (
                   <span
@@ -211,7 +234,7 @@ export const Card: React.FC<CardProps> = ({
           {/* Antonyms */}
           {card.antonyms && (
             <div className="mb-4">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2">Từ trái nghĩa</h4>
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('card.antonyms')}</h4>
               <div className="flex flex-wrap gap-2">
                 {card.antonyms.split(',').map((ant, idx) => (
                   <span
@@ -228,7 +251,9 @@ export const Card: React.FC<CardProps> = ({
           {/* Near Synonyms */}
           {card.nearSynonyms && (
             <div>
-              <h4 className="text-sm font-semibold text-gray-700 mb-2">Từ gần đồng nghĩa</h4>
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                {t('card.near_synonyms')}
+              </h4>
               <div className="flex flex-wrap gap-2">
                 {card.nearSynonyms.split(',').map((near, idx) => (
                   <span
@@ -244,6 +269,17 @@ export const Card: React.FC<CardProps> = ({
         </div>
       </div>
 
+      {/* Trash info */}
+      {isTrashMode && card.deletedAt && (
+        <div className="mt-2 text-xs text-red-500 font-medium">
+          {t('card.trash_info', {
+            time: formatDistanceToNow(addDays(new Date(card.deletedAt), 14), {
+              locale: currentLocale,
+            }),
+          })}
+        </div>
+      )}
+
       {/* Action Buttons */}
       {showActions && (
         <div className="flex gap-2 pt-4 mt-4 border-t border-t-muted transition-all duration-300">
@@ -252,39 +288,58 @@ export const Card: React.FC<CardProps> = ({
               variant="ghost"
               size="sm"
               onClick={() => onView(card)}
-              title="Xem chi tiết"
+              title={t('card.actions.view_title')}
               className="flex-1 gap-2"
             >
               <Eye className="h-4 w-4" />
-              <span className="text-xs hidden sm:inline">Xem</span>
+              <span className="text-xs hidden sm:inline">{t('card.actions.view')}</span>
             </Button>
           )}
-          {onEdit && (
+          {!isTrashMode && onEdit && (
             <Button
               variant="outline"
               size="sm"
               onClick={() => onEdit(card)}
-              title="Chỉnh sửa"
+              title={t('card.actions.edit_title')}
               className="flex-1 gap-2"
             >
               <Edit2 className="h-4 w-4" />
-              <span className="text-xs hidden sm:inline">Sửa</span>
+              <span className="text-xs hidden sm:inline">{t('card.actions.edit')}</span>
             </Button>
           )}
-          {onDelete && (
+          {!isTrashMode && onDelete && (
             <Button
               variant="destructive"
               size="sm"
-              onClick={() => {
-                if (window.confirm(`Xác nhận xóa thẻ "${card.word}"?`)) {
-                  onDelete(card.id);
-                }
-              }}
-              title="Xóa"
+              onClick={() => onDelete(card.id)}
+              title={t('card.actions.move_to_trash')}
               className="flex-1 gap-2"
             >
               <Trash2 className="h-4 w-4" />
-              <span className="text-xs hidden sm:inline">Xóa</span>
+            </Button>
+          )}
+          {isTrashMode && onRestore && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onRestore(card.id)}
+              title={t('card.actions.restore_title')}
+              className="flex-1 gap-2 text-blue-600 border-blue-200 hover:bg-blue-50"
+            >
+              <RotateCcw className="h-4 w-4" />
+              <span className="text-xs hidden sm:inline">{t('card.actions.restore')}</span>
+            </Button>
+          )}
+          {isTrashMode && onHardDelete && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => onHardDelete(card.id)}
+              title={t('card.actions.hard_delete_title')}
+              className="flex-1 gap-2"
+            >
+              <Trash2 className="h-4 w-4" />
+              <span className="text-xs hidden sm:inline">{t('card.actions.hard_delete')}</span>
             </Button>
           )}
         </div>

@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { Navigate } from 'react-router';
 
 export default function SignInPage() {
-  const { accessToken, user, loading } = useAuthStore();
+  const { accessToken } = useAuthStore();
 
   if (accessToken) {
     return (

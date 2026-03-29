@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router';
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import DashboardPage from './pages/DashboardPage';
@@ -8,6 +9,7 @@ import CreateEditCardPage from './pages/CreateEditCardPage';
 import ReviewPage from './pages/ReviewPage';
 import ProfileSettingsPage from './pages/ProfileSettingsPage';
 import FeedbackPage from './pages/FeedbackPage';
+import TrashPage from './pages/TrashPage';
 import { Toaster } from 'sonner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { DisplayModeProvider } from './stores/displayModeStore';
@@ -19,6 +21,7 @@ function App() {
   const { user, signOut } = useAuthStore();
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const [language, setLanguage] = useState<'vi' | 'en'>('vi');
+  const { i18n } = useTranslation();
 
   useEffect(() => {
     if (user) {
@@ -30,6 +33,7 @@ function App() {
 
           setTheme(fetchedTheme);
           setLanguage(fetchedLanguage);
+          i18n.changeLanguage(fetchedLanguage);
 
           if (fetchedTheme === 'dark') {
             document.documentElement.classList.add('dark');
@@ -39,7 +43,7 @@ function App() {
         })
         .catch((err) => console.error('Failed to load user settings', err));
     }
-  }, [user]);
+  }, [user, i18n]);
 
   const handleLogout = async () => {
     await signOut();
@@ -47,6 +51,7 @@ function App() {
 
   const handleLanguageChange = async (newLang: 'en' | 'vi') => {
     setLanguage(newLang);
+    i18n.changeLanguage(newLang);
     if (user) {
       try {
         await api.patch('/users/me/settings', { language: newLang });
@@ -168,6 +173,23 @@ function App() {
                     onLanguageChange={handleLanguageChange}
                   >
                     <ReviewPage />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/trash"
+                element={
+                  <MainLayout
+                    isLoggedIn={!!user}
+                    username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
+                    onLogout={handleLogout}
+                    onThemeToggle={handleThemeToggle}
+                    currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
+                  >
+                    <TrashPage />
                   </MainLayout>
                 }
               />

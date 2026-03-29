@@ -4,10 +4,13 @@ import type { Card as CardType } from '@/types/card';
 
 interface CardListViewProps {
   cards: CardType[];
-  onEdit: (card: CardType) => void;
-  onDelete: (cardId: string) => void;
-  onView: (card: CardType) => void;
+  onEdit?: (card: CardType) => void;
+  onDelete?: (cardId: string) => void;
+  onView?: (card: CardType) => void;
+  onRestore?: (cardId: string) => void;
+  onHardDelete?: (cardId: string) => void;
   isLoading?: boolean;
+  isTrashMode?: boolean;
 }
 
 export const CardListView: React.FC<CardListViewProps> = ({
@@ -15,7 +18,10 @@ export const CardListView: React.FC<CardListViewProps> = ({
   onEdit,
   onDelete,
   onView,
+  onRestore,
+  onHardDelete,
   isLoading = false,
+  isTrashMode = false,
 }) => {
   if (isLoading) {
     return (
@@ -43,7 +49,10 @@ export const CardListView: React.FC<CardListViewProps> = ({
           onEdit={onEdit}
           onDelete={onDelete}
           onView={onView}
+          onRestore={onRestore}
+          onHardDelete={onHardDelete}
           showActions={true}
+          isTrashMode={isTrashMode}
         />
       ))}
     </div>

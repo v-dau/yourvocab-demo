@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import {
@@ -29,6 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleLogout = () => {
     onLogout();
@@ -74,7 +76,7 @@ export const Header: React.FC<HeaderProps> = ({
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            Dashboard
+            {t('sidebar.dashboard')}
           </Link>
           <Link
             to="/cards"
@@ -85,7 +87,7 @@ export const Header: React.FC<HeaderProps> = ({
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            Cards
+            {t('sidebar.cards')}
           </Link>
           <Link
             to="/review"
@@ -96,7 +98,7 @@ export const Header: React.FC<HeaderProps> = ({
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
-            Spaced Repetition
+            {t('sidebar.review')}
           </Link>
         </nav>
 
@@ -133,14 +135,14 @@ export const Header: React.FC<HeaderProps> = ({
                   className="cursor-pointer gap-2"
                 >
                   <Settings className="h-4 w-4" />
-                  <span>Settings</span>
+                  <span>{t('header.settings')}</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleLogout}
                   className="cursor-pointer gap-2 text-red-600 focus:text-red-600 focus:bg-red-50 dark:focus:bg-red-950"
                 >
                   <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
+                  <span>{t('header.logout')}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

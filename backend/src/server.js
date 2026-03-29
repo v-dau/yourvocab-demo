@@ -7,6 +7,7 @@ import cardRoute from './routes/cardRoute.js';
 import cookieParser from 'cookie-parser';
 import { protectedRoute } from './middlewares/authMiddleware.js';
 import cors from 'cors';
+import { startCronJobs } from './utils/cron.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +27,9 @@ app.use('/api/cards', cardRoute);
 
 // connect to the DB before running the server
 connectDB().then(() => {
+  // Bật cron jobs
+  startCronJobs();
+
   app.listen(PORT, () => {
     console.log(`server started on port ${PORT} `);
   });

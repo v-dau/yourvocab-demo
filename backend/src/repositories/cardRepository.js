@@ -107,3 +107,57 @@ export const deleteCard = async (id, user_id) => {
   const result = await pool.query(query, [id, user_id]);
   return result.rowCount > 0;
 };
+
+export const getDeletedCardsByUserId = async (user_id) => {
+  const query = `
+    SELECT * FROM public.cards 
+    WHERE user_id = $1 
+      AND deleted_at IS NOT NULL 
+      AND deleted_at > NOW() - INTERVAL '14 days'
+    ORDER BY deleted_at DESC;
+  `;
+  const result = await pool.query(query, [user_id]);
+  return result.rows;
+};
+
+export const restoreCard = async (id, user_id) => {
+  const query = `
+    UPDATE public.cards
+    SET deleted_at = NULL
+    WHERE id = $1 AND user_id = $2 AND deleted_at IS NOT NULL
+    RETURNING id;
+  `;
+  const result = await pool.query(query, [id, user_id]);
+  return result.rowCount > 0;
+};
+
+export const hardDeleteCard = async (id, user_id) => {
+  const query = `
+    DELETE FROM public.cards
+    WHERE id = $1 AND user_id = $2 AND deleted_at IS NOT NULL
+    RETURNING id;
+  `;
+  const result = await pool.query(query, [id, user_id]);
+  return result.rowCount > 0;
+};
+
+export const restoreAllCards = async (user_id) => {
+  const query = `
+    UPDATE public.cards
+    SET deleted_at = NULL
+    WHERE user_id = $1 AND deleted_at IS NOT NULL AND deleted_at > NOW() - INTERVAL '14 days'
+    RETURNING id;
+  `;
+  const result = await pool.query(query, [user_id]);
+  return result.rowCount;
+};
+
+export const emptyTrash = async (user_id) => {
+  const query = `
+    DELETE FROM public.cards
+    WHERE user_id = $1 AND deleted_at IS NOT NULL
+    RETURNING id;
+  `;
+  const result = await pool.query(query, [user_id]);
+  return result.rowCount;
+};

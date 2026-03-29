@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,6 +12,7 @@ import type { CreateCardInput } from '@/types/card';
 const CreateEditCardPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const isEdit = !!id;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -49,14 +51,14 @@ const CreateEditCardPage = () => {
         });
       } catch (error) {
         console.error('Failed to fetch card:', error);
-        toast.error('Failed to load card details.');
+        toast.error(t('create_edit_page.error_load'));
         navigate('/cards');
       } finally {
         setIsLoading(false);
       }
     };
     fetchCard();
-  }, [id, isEdit, navigate]);
+  }, [id, isEdit, navigate, t]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -80,15 +82,15 @@ const CreateEditCardPage = () => {
 
       if (isEdit && id) {
         await cardService.updateCard(id, cardInput);
-        toast.success('Card updated successfully');
+        toast.success(t('create_edit_page.success_update'));
       } else {
         await cardService.createCard(cardInput);
-        toast.success('Card created successfully');
+        toast.success(t('create_edit_page.success_create'));
       }
       navigate('/cards');
     } catch (error) {
       console.error('Submit error:', error);
-      toast.error('An error occurred. Please try again.');
+      toast.error(t('create_edit_page.error_submit'));
     } finally {
       setIsLoading(false);
     }
@@ -103,12 +105,10 @@ const CreateEditCardPage = () => {
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-2">
-            {isEdit ? 'Chỉnh sửa thẻ từ' : 'Tạo thẻ từ mới'}
+            {isEdit ? t('create_edit_page.title_edit') : t('create_edit_page.title_create')}
           </h1>
           <p className="text-muted-foreground">
-            {isEdit
-              ? `Chỉnh sửa thẻ từ với ID: ${id}`
-              : 'Tạo một thẻ từ vựng mới để bổ sung vào kho của bạn'}
+            {isEdit ? t('create_edit_page.desc_edit', { id }) : t('create_edit_page.desc_create')}
           </p>
         </div>
 
@@ -117,24 +117,24 @@ const CreateEditCardPage = () => {
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="word">Từ vựng</Label>
+                <Label htmlFor="word">{t('create_edit_page.word')}</Label>
                 <Input
                   id="word"
                   name="word"
                   value={formData.word}
                   onChange={handleChange}
-                  placeholder="Nhập từ vựng"
+                  placeholder={t('create_edit_page.word_placeholder')}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="ipa">Phát âm (IPA)</Label>
+                <Label htmlFor="ipa">{t('create_edit_page.ipa')}</Label>
                 <Input
                   id="ipa"
                   name="ipa"
                   value={formData.ipa}
                   onChange={handleChange}
-                  placeholder="Nhập IPA"
+                  placeholder={t('create_edit_page.ipa_placeholder')}
                 />
               </div>
             </div>
@@ -142,18 +142,18 @@ const CreateEditCardPage = () => {
             {/* Meaning & Part of Speech */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="meaning">Nghĩa (Tiếng Việt)</Label>
+                <Label htmlFor="meaning">{t('create_edit_page.meaning')}</Label>
                 <Input
                   id="meaning"
                   name="meaning"
                   value={formData.meaning}
                   onChange={handleChange}
-                  placeholder="Nhập nghĩa tiếng Việt"
+                  placeholder={t('create_edit_page.meaning_placeholder')}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="partOfSpeech">Phần từ (Part of Speech)</Label>
+                <Label htmlFor="partOfSpeech">{t('create_edit_page.part_of_speech')}</Label>
                 <select
                   id="partOfSpeech"
                   name="partOfSpeech"
@@ -161,7 +161,7 @@ const CreateEditCardPage = () => {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-input rounded-lg bg-background text-foreground"
                 >
-                  <option value="">Chọn phần từ</option>
+                  <option value="">{t('create_edit_page.select_pos')}</option>
                   <option value="Noun">Danh từ (Noun)</option>
                   <option value="Verb">Động từ (Verb)</option>
                   <option value="Adjective">Tính từ (Adjective)</option>
@@ -176,25 +176,25 @@ const CreateEditCardPage = () => {
 
             {/* Definition & Example */}
             <div className="space-y-2">
-              <Label htmlFor="definition">Định nghĩa (Tiếng Anh)</Label>
+              <Label htmlFor="definition">{t('create_edit_page.definition')}</Label>
               <textarea
                 id="definition"
                 name="definition"
                 value={formData.definition}
                 onChange={handleChange}
-                placeholder="Nhập định nghĩa tiếng Anh"
+                placeholder={t('create_edit_page.definition_placeholder')}
                 className="w-full px-3 py-2 border border-input rounded-lg bg-background text-foreground min-h-24"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="example">Ví dụ</Label>
+              <Label htmlFor="example">{t('create_edit_page.example')}</Label>
               <textarea
                 id="example"
                 name="example"
                 value={formData.example}
                 onChange={handleChange}
-                placeholder="Nhập ví dụ về cách sử dụng từ"
+                placeholder={t('create_edit_page.example_placeholder')}
                 className="w-full px-3 py-2 border border-input rounded-lg bg-background text-foreground min-h-24"
               />
             </div>
@@ -202,23 +202,23 @@ const CreateEditCardPage = () => {
             {/* Synonyms & Antonyms */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="synonyms">Từ đồng nghĩa</Label>
+                <Label htmlFor="synonyms">{t('create_edit_page.synonyms')}</Label>
                 <Input
                   id="synonyms"
                   name="synonyms"
                   value={formData.synonyms}
                   onChange={handleChange}
-                  placeholder="Nhập các từ đồng nghĩa (cách nhau bằng dấu phẩy)"
+                  placeholder={t('create_edit_page.synonyms_placeholder')}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="antonyms">Từ trái nghĩa</Label>
+                <Label htmlFor="antonyms">{t('create_edit_page.antonyms')}</Label>
                 <Input
                   id="antonyms"
                   name="antonyms"
                   value={formData.antonyms}
                   onChange={handleChange}
-                  placeholder="Nhập các từ trái nghĩa (cách nhau bằng dấu phẩy)"
+                  placeholder={t('create_edit_page.antonyms_placeholder')}
                 />
               </div>
             </div>
@@ -226,7 +226,7 @@ const CreateEditCardPage = () => {
             {/* Level & Popularity */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="level">Cấp độ</Label>
+                <Label htmlFor="level">{t('create_edit_page.level')}</Label>
                 <select
                   id="level"
                   name="level"
@@ -243,7 +243,7 @@ const CreateEditCardPage = () => {
                 </select>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="popularity">Độ phổ biến (1-5)</Label>
+                <Label htmlFor="popularity">{t('create_edit_page.popularity')}</Label>
                 <select
                   id="popularity"
                   name="popularity"
@@ -251,11 +251,11 @@ const CreateEditCardPage = () => {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-input rounded-lg bg-background text-foreground"
                 >
-                  <option value="1">1 - Rất hiếm</option>
-                  <option value="2">2 - Hiếm</option>
-                  <option value="3">3 - Bình thường</option>
-                  <option value="4">4 - Phổ biến</option>
-                  <option value="5">5 - Rất phổ biến</option>
+                  <option value="1">{t('create_edit_page.pop_1')}</option>
+                  <option value="2">{t('create_edit_page.pop_2')}</option>
+                  <option value="3">{t('create_edit_page.pop_3')}</option>
+                  <option value="4">{t('create_edit_page.pop_4')}</option>
+                  <option value="5">{t('create_edit_page.pop_5')}</option>
                 </select>
               </div>
             </div>
@@ -263,7 +263,11 @@ const CreateEditCardPage = () => {
             {/* Action Buttons */}
             <div className="flex gap-4 pt-4">
               <Button type="submit" className="flex-1" disabled={isLoading}>
-                {isLoading ? 'Đang xử lý...' : isEdit ? 'Lưu thay đổi' : 'Tạo thẻ'}
+                {isLoading
+                  ? t('create_edit_page.processing')
+                  : isEdit
+                    ? t('create_edit_page.save_changes')
+                    : t('create_edit_page.create_card')}
               </Button>
               <Button
                 type="button"
@@ -272,7 +276,7 @@ const CreateEditCardPage = () => {
                 onClick={handleCancel}
                 disabled={isLoading}
               >
-                Hủy
+                {t('create_edit_page.cancel')}
               </Button>
             </div>
           </form>

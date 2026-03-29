@@ -19,6 +19,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
+import { t } from 'i18next';
 
 const ProfileSettingsPage = () => {
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ const ProfileSettingsPage = () => {
       setIsEmailDialogOpen(false);
       setNewEmail('');
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi đổi email');
+      toast.error(error.response?.data?.message || t('profile_settings.error_change_email'));
     } finally {
       setIsUpdatingEmail(false);
     }
@@ -96,23 +97,23 @@ const ProfileSettingsPage = () => {
 
   const handleUpdatePassword = async () => {
     if (!oldPassword.trim() || !newPassword.trim()) {
-      toast.error('Vui lòng nhập đủ các trường mật khẩu');
+      toast.error(t('profile_settings.error_empty_fields'));
       return;
     }
     if (newPassword.length < 8) {
-      toast.error('Mật khẩu mới phải có ít nhất 8 ký tự');
+      toast.error(`${t('profile_settings.new_password')} must be at least 8 characters`);
       return;
     }
 
     setIsUpdatingPassword(true);
     try {
       await api.patch('/users/me/password', { oldPassword, newPassword });
-      toast.success('Đổi mật khẩu thành công');
+      toast.success(`${t('profile_settings.sidebar_change_password')} (Success)`);
       setIsPasswordDialogOpen(false);
       setOldPassword('');
       setNewPassword('');
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Sai mật khẩu hoặc có lỗi');
+      toast.error(error.response?.data?.message || t('profile_settings.error_change_password'));
     } finally {
       setIsUpdatingPassword(false);
     }
@@ -120,39 +121,45 @@ const ProfileSettingsPage = () => {
 
   return (
     <div className="container max-w-4xl mx-auto py-10 px-4 sm:px-6 md:px-8">
-      <h1 className="text-3xl font-bold mb-8 text-foreground">Profile Settings</h1>
+      <h1 className="text-3xl font-bold mb-8 text-foreground">
+        {t('profile_settings.title_main')}
+      </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* LEFT COLUMN */}
         <div className="md:col-span-1 space-y-6">
           <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4 text-foreground">Hành động</h2>
+            <h2 className="text-xl font-semibold mb-4 text-foreground">
+              {t('profile_settings.actions')}
+            </h2>
             <div className="space-y-4">
               <Button
                 variant="outline"
                 className="w-full justify-start"
                 onClick={() => navigate('/feedbacks')}
               >
-                Gửi Feedback
+                {t('profile_settings.submit_feedback')}
               </Button>
               <Button variant="destructive" className="w-full justify-start" onClick={handleLogout}>
-                Đăng xuất
+                {t('profile_settings.logout')}
               </Button>
             </div>
           </Card>
 
           <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-2 text-foreground">Đồng bộ Settings</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              Ngôn ngữ và Color Theme sẽ tự động lưu xuống Database khi bạn thay đổi thông qua menu.
-            </p>
+            <h2 className="text-xl font-semibold mb-2 text-foreground">
+              {t('profile_settings.sync_settings')}
+            </h2>
+            <p className="text-sm text-muted-foreground mb-4">{t('profile_settings.sync_desc')}</p>
           </Card>
         </div>
 
         {/* RIGHT COLUMN */}
         <div className="md:col-span-2 space-y-6">
           <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4 text-foreground">Hồ sơ cá nhân</h2>
+            <h2 className="text-xl font-semibold mb-4 text-foreground">
+              {t('profile_settings.personal_profile')}
+            </h2>
 
             <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
               <Avatar className="h-24 w-24">
@@ -163,9 +170,11 @@ const ProfileSettingsPage = () => {
               </Avatar>
               <div className="flex flex-col gap-2">
                 <Button onClick={() => fileInputRef.current?.click()} disabled={isUploadingAvatar}>
-                  {isUploadingAvatar ? 'Đang tải lên...' : 'Đổi Avatar'}
+                  {isUploadingAvatar
+                    ? t('profile_settings.uploading')
+                    : t('profile_settings.change_avatar')}
                 </Button>
-                <p className="text-xs text-muted-foreground">Khuyên dùng ảnh vuông, tối đa 5MB</p>
+                <p className="text-xs text-muted-foreground">{t('profile_settings.avatar_hint')}</p>
                 <input
                   type="file"
                   accept="image/*"
@@ -180,19 +189,21 @@ const ProfileSettingsPage = () => {
 
             <div className="space-y-4">
               <div className="grid gap-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="username">{t('profile_settings.username')}</Label>
                 <Input id="username" value={user?.username || ''} disabled readOnly />
               </div>
             </div>
           </Card>
 
           <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4 text-foreground">Tài khoản & Bảo mật</h2>
+            <h2 className="text-xl font-semibold mb-4 text-foreground">
+              {t('profile_settings.account_security')}
+            </h2>
 
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center">
                 <div className="grid gap-2 flex-1 w-full">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">{t('profile_settings.email')}</Label>
                   <Input id="email" value={user?.email || ''} disabled readOnly />
                 </div>
                 <Button
@@ -200,7 +211,7 @@ const ProfileSettingsPage = () => {
                   onClick={() => setIsEmailDialogOpen(true)}
                   className="w-full sm:w-auto"
                 >
-                  Đổi Email
+                  {t('profile_settings.change_email')}
                 </Button>
               </div>
 
@@ -208,11 +219,16 @@ const ProfileSettingsPage = () => {
 
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium text-foreground">Mật khẩu</h3>
-                  <p className="text-sm text-muted-foreground">Đổi mật khẩu để tăng tính bảo mật</p>
+                  <h3 className="font-medium text-foreground">
+                    {t('profile_settings.sidebar_change_password')}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {t('profile_settings.sidebar_change_password')}{' '}
+                    {t('profile_settings.security_desc_suffix')}
+                  </p>
                 </div>
                 <Button variant="secondary" onClick={() => setIsPasswordDialogOpen(true)}>
-                  Đổi Mật Khẩu
+                  {t('profile_settings.sidebar_change_password')}
                 </Button>
               </div>
             </div>
@@ -224,12 +240,12 @@ const ProfileSettingsPage = () => {
       <Dialog open={isEmailDialogOpen} onOpenChange={setIsEmailDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Cập nhật Email</DialogTitle>
-            <DialogDescription>Nhập email mới bạn muốn sử dụng.</DialogDescription>
+            <DialogTitle>{t('profile_settings.update_email_title')}</DialogTitle>
+            <DialogDescription>{t('profile_settings.update_email_desc')}</DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="new-email">Email mới</Label>
+              <Label htmlFor="new-email">{t('profile_settings.new_email')}</Label>
               <Input
                 id="new-email"
                 type="email"
@@ -241,10 +257,10 @@ const ProfileSettingsPage = () => {
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setIsEmailDialogOpen(false)}>
-              Hủy
+              {t('profile_settings.cancel')}
             </Button>
             <Button onClick={handleUpdateEmail} disabled={isUpdatingEmail}>
-              {isUpdatingEmail ? 'Đang lưu...' : 'Lưu thay đổi'}
+              {isUpdatingEmail ? t('profile_settings.saving') : t('profile_settings.save_changes')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -253,12 +269,14 @@ const ProfileSettingsPage = () => {
       <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Đổi Mật Khẩu</DialogTitle>
-            <DialogDescription>Nhập mật khẩu cũ và tài khoản mới.</DialogDescription>
+            <DialogTitle>{t('profile_settings.change_password_dialog_title')}</DialogTitle>
+            <DialogDescription>
+              {t('profile_settings.change_password_dialog_desc')}
+            </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="old-pw">Mật khẩu cũ</Label>
+              <Label htmlFor="old-pw">{t('profile_settings.old_password')}</Label>
               <Input
                 id="old-pw"
                 type="password"
@@ -267,7 +285,7 @@ const ProfileSettingsPage = () => {
               />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="new-pw">Mật khẩu mới</Label>
+              <Label htmlFor="new-pw">{t('profile_settings.new_password')}</Label>
               <Input
                 id="new-pw"
                 type="password"
@@ -278,10 +296,12 @@ const ProfileSettingsPage = () => {
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setIsPasswordDialogOpen(false)}>
-              Hủy
+              {t('profile_settings.cancel')}
             </Button>
             <Button onClick={handleUpdatePassword} disabled={isUpdatingPassword}>
-              {isUpdatingPassword ? 'Đang lưu...' : 'Lưu thay đổi'}
+              {isUpdatingPassword
+                ? t('profile_settings.saving')
+                : t('profile_settings.save_changes')}
             </Button>
           </DialogFooter>
         </DialogContent>

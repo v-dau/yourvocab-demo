@@ -63,3 +63,24 @@ export const updateCard = async (id: string, data: Partial<CreateCardInput>): Pr
 export const deleteCard = async (id: string): Promise<void> => {
   await api.delete(`/cards/${id}`);
 };
+
+export const getTrashCards = async (): Promise<Card[]> => {
+  const response = await api.get('/cards/trash');
+  return response.data.data.map(mapToFrontendCard);
+};
+
+export const restoreCard = async (id: string): Promise<void> => {
+  await api.post(`/cards/${id}/restore`);
+};
+
+export const hardDeleteCard = async (id: string): Promise<void> => {
+  await api.delete(`/cards/${id}/hard`);
+};
+
+export const restoreAllCards = async (): Promise<void> => {
+  await api.post('/cards/trash/restore-all');
+};
+
+export const emptyTrash = async (): Promise<void> => {
+  await api.delete('/cards/trash/empty');
+};

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { CardLevel, CardPopularity } from '@/types/card';
 
 interface CardFiltersProps {
@@ -18,17 +19,8 @@ const LEVELS: CardLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
 const POPULARITY_LEVELS: CardPopularity[] = [1, 2, 3, 4, 5];
 const PARTS_OF_SPEECH = ['Noun', 'Verb', 'Adjective', 'Adverb', 'Pronoun', 'Preposition'];
 
-// Map popularity levels to their labels
-const POPULARITY_LABELS: Record<CardPopularity, string> = {
-  0: 'N/A',
-  1: 'Extremely rare',
-  2: 'Rare',
-  3: 'Uncommon',
-  4: 'Common',
-  5: 'Essentials',
-};
-
 export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState<CardFiltersState>({
     levels: [],
@@ -88,7 +80,7 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
   return (
     <div className="relative">
       <Button variant="outline" onClick={() => setIsOpen(!isOpen)} className="gap-2">
-        Bộ lọc
+        {t('cards_page.filters.filter_btn')}
         {activeFilterCount > 0 && (
           <span className="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold leading-none text-white transform bg-red-600 rounded-full">
             {activeFilterCount}
@@ -106,7 +98,7 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
           <div className="absolute top-full left-0 mt-2 w-80 max-h-96 bg-background border border-border rounded-lg shadow-lg p-4 z-50 overflow-y-auto">
             {/* Levels */}
             <div className="mb-4">
-              <h3 className="font-semibold text-sm mb-2">Mức độ</h3>
+              <h3 className="font-semibold text-sm mb-2">{t('cards_page.filters.level')}</h3>
               <div className="flex flex-wrap gap-2">
                 {LEVELS.map((level) => (
                   <button
@@ -126,7 +118,7 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
 
             {/* Popularity */}
             <div className="mb-4">
-              <h3 className="font-semibold text-sm mb-2">Độ phổ biến</h3>
+              <h3 className="font-semibold text-sm mb-2">{t('cards_page.filters.popularity')}</h3>
               <div className="flex flex-wrap gap-2">
                 {POPULARITY_LEVELS.map((pop) => (
                   <button
@@ -137,7 +129,9 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
                         ? 'bg-primary text-primary-foreground'
                         : 'bg-muted text-foreground hover:bg-muted/80'
                     }`}
-                    title={POPULARITY_LABELS[pop as CardPopularity]}
+                    title={t(
+                      `card.popularity.${['na', 'extremely_rare', 'rare', 'uncommon', 'common', 'essentials'][pop as number] || 'na'}`
+                    )}
                   >
                     {pop}
                   </button>
@@ -147,7 +141,9 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
 
             {/* Part of Speech */}
             <div className="mb-4">
-              <h3 className="font-semibold text-sm mb-2">Loại từ</h3>
+              <h3 className="font-semibold text-sm mb-2">
+                {t('cards_page.filters.part_of_speech')}
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {PARTS_OF_SPEECH.map((pos) => (
                   <button
@@ -174,14 +170,14 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
                   onChange={toggleHasExample}
                   className="rounded"
                 />
-                <span className="text-sm">Có ví dụ</span>
+                <span className="text-sm">{t('cards_page.filters.has_example')}</span>
               </label>
             </div>
 
             {/* Clear Button */}
             {activeFilterCount > 0 && (
               <Button variant="outline" size="sm" onClick={clearFilters} className="w-full">
-                Xóa tất cả bộ lọc
+                {t('cards_page.filters.clear_all')}
               </Button>
             )}
           </div>

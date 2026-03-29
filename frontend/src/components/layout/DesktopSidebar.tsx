@@ -1,3 +1,5 @@
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate, useLocation } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,6 +14,7 @@ import {
   Sun,
   Moon,
   Globe,
+  Trash2,
 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -21,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import * as cardService from '@/services/cardService';
 
 interface DesktopSidebarProps {
   isLoggedIn?: boolean;
@@ -48,6 +52,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   onLanguageChange = () => {},
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleNavigate = (path: string) => {
     navigate(path);
@@ -58,13 +63,31 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     navigate('/signin');
   };
 
-  const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-    { icon: FileText, label: 'Cards', path: '/cards' },
-    { icon: RotateCw, label: 'Review', path: '/review' },
-  ];
-
+  const [trashCount, setTrashCount] = useState(0);
   const location = useLocation();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      cardService
+        .getTrashCards()
+        .then((cards) => {
+          setTrashCount(cards.length);
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [isLoggedIn, location.pathname]); // Re-fetch when route changes as well
+
+  const navItems = [
+    { icon: LayoutDashboard, label: t('sidebar.dashboard'), path: '/dashboard' },
+    { icon: FileText, label: t('sidebar.cards'), path: '/cards' },
+    { icon: RotateCw, label: t('sidebar.review'), path: '/review' },
+    {
+      icon: Trash2,
+      label: t('sidebar.trash'),
+      path: '/trash',
+      badge: trashCount > 0 ? trashCount : null,
+    },
+  ];
 
   return (
     <aside
@@ -124,7 +147,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
               key={item.path}
               onClick={() => handleNavigate(item.path)}
               className={cn(
-                'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200',
+                'flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 relative',
                 isActive
                   ? 'bg-primary/10 text-primary font-semibold'
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted',
@@ -132,8 +155,20 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
               )}
               title={isCollapsed ? item.label : undefined}
             >
-              <Icon className="h-5 w-5 shrink-0" />
+              <div className="relative">
+                <Icon className="h-5 w-5 shrink-0" />
+                {item.badge !== undefined && item.badge !== null && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                    {item.badge}
+                  </span>
+                )}
+              </div>
               {!isCollapsed && <span className="text-sm font-medium">{item.label}</span>}
+              {!isCollapsed && item.badge !== undefined && item.badge !== null && (
+                <span className="ml-auto text-xs font-semibold bg-red-100 text-red-600 px-2 py-0.5 rounded-full">
+                  {item.badge}
+                </span>
+              )}
             </button>
           );
         })}
@@ -150,7 +185,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
           title={`Switch to ${currentTheme === 'light' ? 'dark' : 'light'} mode`}
         >
           {currentTheme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-          {!isCollapsed && <span className="text-xs font-medium">Theme</span>}
+          {!isCollapsed && <span className="text-xs font-medium">{t('sidebar.theme')}</span>}
         </Button>
 
         {/* Language Selector */}
@@ -169,11 +204,11 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-40">
             <DropdownMenuItem onClick={() => onLanguageChange('en')} className="cursor-pointer">
-              <span>English</span>
+              <span>{t('sidebar.english')}</span>
               {currentLanguage === 'en' && <span className="ml-auto">✓</span>}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onLanguageChange('vi')} className="cursor-pointer">
-              <span>Tiếng Việt</span>
+              <span>{t('sidebar.vietnamese')}</span>
               {currentLanguage === 'vi' && <span className="ml-auto">✓</span>}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -228,20 +263,20 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
                 'h-11'
               )}
               onClick={() => navigate('/profile-settings')}
-              title={isCollapsed ? 'Settings' : undefined}
+              title={isCollapsed ? t('header.settings') : undefined}
             >
               <Settings className="h-5 w-5 shrink-0" />
-              {!isCollapsed && <span>Settings</span>}
+              {!isCollapsed && <span>{t('header.settings')}</span>}
             </Button>
 
             <Button
               variant="destructive"
               className={cn('gap-2 justify-start font-medium transition-all duration-200', 'h-11')}
               onClick={handleLogout}
-              title={isCollapsed ? 'Logout' : undefined}
+              title={isCollapsed ? t('header.logout') : undefined}
             >
               <LogOut className="h-5 w-5 shrink-0" />
-              {!isCollapsed && <span>Logout</span>}
+              {!isCollapsed && <span>{t('header.logout')}</span>}
             </Button>
           </>
         )}
