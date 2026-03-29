@@ -4,4 +4,5 @@ export { CardFilters } from './CardFilters';
 export { CardListView } from './CardListView';
 export { CardDetailsModal } from './CardDetailsModal';
 export { PopularityBadge } from './PopularityBadge';
+export { CardsPagination } from './CardsPagination';
 export { DisplayModeToolbar } from './DisplayModeToolbar';

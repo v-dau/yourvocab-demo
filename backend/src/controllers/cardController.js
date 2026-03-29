@@ -25,11 +25,15 @@ export const createCard = async (req, res) => {
 
 export const getCards = async (req, res) => {
   try {
-    const cards = await cardService.getCards(req.user.id);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+
+    const result = await cardService.getCards({ ...req.query, user_id: req.user.id }, page, limit);
 
     res.status(200).json({
       success: true,
-      data: cards,
+      data: result.data,
+      pagination: result.pagination,
     });
   } catch (error) {
     console.error('Get cards error:', error);

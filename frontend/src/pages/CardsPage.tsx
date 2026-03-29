@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,16 +8,18 @@ import {
   CardListView,
   CardDetailsModal,
   DisplayModeToolbar,
+  CardsPagination,
 } from '@/components/cards';
 import type { Card } from '@/types/card';
 import type { CardFiltersState } from '@/components/cards/CardFilters';
-import { useCardFilter, useCardOperations } from '@/hooks';
+import { useCardOperations } from '@/hooks';
 import { Plus } from 'lucide-react';
 import * as cardService from '@/services/cardService';
 import { toast } from 'sonner';
 
 const CardsPage = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { t } = useTranslation();
   const { cards, setCards, deleteCard } = useCardOperations([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -28,14 +30,36 @@ const CardsPage = () => {
     partOfSpeech: [],
     hasExample: null,
   });
+  const [pagination, setPagination] = useState({ totalPages: 1, totalItems: 0, limit: 12 });
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+
+  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+
+  const handlePageChange = (page: number) => {
+    setSearchParams((prev: URLSearchParams) => {
+      prev.set('page', page.toString());
+      return prev;
+    });
+  };
 
   useEffect(() => {
     const fetchCards = async () => {
       try {
         setIsLoading(true);
-        const fetchedCards = await cardService.getCards();
-        setCards(fetchedCards);
+        const params: Record<string, string | number | boolean> = {
+          page: currentPage,
+          limit: 12,
+        };
+
+        if (searchQuery) params.search = searchQuery;
+        if (filters.levels.length > 0) params.levels = filters.levels.join(',');
+        if (filters.popularity.length > 0) params.popularity = filters.popularity.join(',');
+        if (filters.partOfSpeech.length > 0) params.partOfSpeech = filters.partOfSpeech.join(',');
+        if (filters.hasExample) params.hasExample = true;
+
+        const result = await cardService.getCards(params);
+        setCards(result.data);
+        setPagination(result.pagination);
       } catch (error) {
         console.error('Failed to fetch cards:', error);
         toast.error('Failed to load cards. Please try again.');
@@ -44,15 +68,12 @@ const CardsPage = () => {
       }
     };
 
-    fetchCards();
-  }, [setCards]);
+    const timer = setTimeout(() => {
+      fetchCards();
+    }, 300);
 
-  // Use hook để filter danh sách thẻ
-  const filteredCards = useCardFilter({
-    cards,
-    searchQuery,
-    filters,
-  });
+    return () => clearTimeout(timer);
+  }, [setCards, currentPage, searchQuery, filters]);
 
   // CRUD Operations
   const handleCreate = () => {
@@ -95,7 +116,7 @@ const CardsPage = () => {
             <div>
               <h1 className="text-4xl font-bold text-foreground">{t('cards_page.title')}</h1>
               <p className="text-muted-foreground mt-1">
-                {t('cards_page.desc', { count: filteredCards.length })}
+                {t('cards_page.desc', { count: pagination.totalItems })}
               </p>
             </div>
             <Button onClick={handleCreate} className="gap-2 h-10 px-4">
@@ -116,13 +137,22 @@ const CardsPage = () => {
           </div>
         </div>
 
+        {/* Pagination Top */}
+        {!isLoading && pagination.totalPages > 1 && (
+          <CardsPagination
+            currentPage={currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
+
         {/* Results Info */}
         <div className="mb-4 text-sm text-muted-foreground">
           {isLoading ? (
             t('cards_page.loading')
           ) : (
             <>
-              {t('cards_page.showing', { filtered: filteredCards.length, total: cards.length })}
+              {t('cards_page.showing', { filtered: cards.length, total: pagination.totalItems })}
               {searchQuery && t('cards_page.search_for', { query: searchQuery })}
             </>
           )}
@@ -135,10 +165,19 @@ const CardsPage = () => {
           </div>
         ) : (
           <CardListView
-            cards={filteredCards}
+            cards={cards}
             onEdit={handleEdit}
             onDelete={handleDelete}
             onView={handleView}
+          />
+        )}
+
+        {/* Pagination Bottom */}
+        {!isLoading && pagination.totalPages > 1 && (
+          <CardsPagination
+            currentPage={currentPage}
+            totalPages={pagination.totalPages}
+            onPageChange={handlePageChange}
           />
         )}
 

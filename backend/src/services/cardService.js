@@ -18,9 +18,20 @@ export const createCard = async (cardData) => {
   return await cardRepository.createCard(cardData);
 };
 
-export const getCards = async (user_id) => {
-  if (!user_id) throw new Error('User ID is required');
-  return await cardRepository.getCardsByUserId(user_id);
+export const getCards = async (filters, page = 1, limit = 12) => {
+  if (!filters.user_id) throw new Error('User ID is required');
+  const offset = (page - 1) * limit;
+  const result = await cardRepository.getCardsByUserId(filters, limit, offset);
+
+  return {
+    data: result.data,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(result.total / limit),
+      totalItems: parseInt(result.total),
+      limit: limit,
+    },
+  };
 };
 
 export const getCardById = async (id, user_id) => {

@@ -38,9 +38,24 @@ const mapToBackendCardInput = (data: CreateCardInput | Partial<CreateCardInput>)
   return result;
 };
 
-export const getCards = async (): Promise<Card[]> => {
-  const response = await api.get('/cards');
-  return response.data.data.map(mapToFrontendCard);
+export interface PaginationResponse {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  limit: number;
+}
+
+export interface GetCardsResponse {
+  data: Card[];
+  pagination: PaginationResponse;
+}
+
+export const getCards = async (params?: any): Promise<GetCardsResponse> => {
+  const response = await api.get('/cards', { params });
+  return {
+    data: response.data.data.map(mapToFrontendCard),
+    pagination: response.data.pagination,
+  };
 };
 
 export const getCardById = async (id: string): Promise<Card> => {

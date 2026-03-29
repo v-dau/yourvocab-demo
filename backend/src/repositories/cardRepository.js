@@ -44,14 +44,70 @@ export const createCard = async (cardData) => {
   return result.rows[0];
 };
 
-export const getCardsByUserId = async (user_id) => {
-  const query = `
-    SELECT * FROM public.cards 
-    WHERE user_id = $1 AND deleted_at IS NULL
-    ORDER BY created_at DESC;
-  `;
-  const result = await pool.query(query, [user_id]);
-  return result.rows;
+export const getCardsByUserId = async (filters, limit, offset) => {
+  let queryStr = `SELECT * FROM public.cards WHERE user_id = $1 AND deleted_at IS NULL`;
+  let countQueryStr = `SELECT COUNT(*) FROM public.cards WHERE user_id = $1 AND deleted_at IS NULL`;
+  const params = [filters.user_id];
+  let paramIdx = 2;
+
+  if (filters.search) {
+    const searchLower = `%${filters.search.toLowerCase()}%`;
+    const searchClause = ` AND (LOWER(word) LIKE $${paramIdx} OR LOWER(meaning) LIKE $${paramIdx} OR LOWER(definition) LIKE $${paramIdx} OR LOWER(example) LIKE $${paramIdx})`;
+    queryStr += searchClause;
+    countQueryStr += searchClause;
+    params.push(searchLower);
+    paramIdx++;
+  }
+
+  if (filters.levels) {
+    const levelsArray = filters.levels.split(',');
+    const levelParams = levelsArray.map((_, i) => `$${paramIdx + i}`).join(',');
+    const levelClause = ` AND level IN (${levelParams})`;
+    queryStr += levelClause;
+    countQueryStr += levelClause;
+    params.push(...levelsArray);
+    paramIdx += levelsArray.length;
+  }
+
+  if (filters.popularity) {
+    const popArray = filters.popularity.split(',').map(Number);
+    const popParams = popArray.map((_, i) => `$${paramIdx + i}`).join(',');
+    const popClause = ` AND popularity IN (${popParams})`;
+    queryStr += popClause;
+    countQueryStr += popClause;
+    params.push(...popArray);
+    paramIdx += popArray.length;
+  }
+
+  if (filters.partOfSpeech) {
+    const posArray = filters.partOfSpeech.split(',');
+    const posParams = posArray.map((_, i) => `$${paramIdx + i}`).join(',');
+    const posClause = ` AND part_of_speech IN (${posParams})`;
+    queryStr += posClause;
+    countQueryStr += posClause;
+    params.push(...posArray);
+    paramIdx += posArray.length;
+  }
+
+  if (filters.hasExample === 'true') {
+    const exampleClause = ` AND example IS NOT NULL AND example != ''`;
+    queryStr += exampleClause;
+    countQueryStr += exampleClause;
+  }
+
+  queryStr += ` ORDER BY created_at DESC LIMIT $${paramIdx} OFFSET $${paramIdx + 1};`;
+
+  const queryParams = [...params, limit, offset];
+
+  const [result, countResult] = await Promise.all([
+    pool.query(queryStr, queryParams),
+    pool.query(countQueryStr, params),
+  ]);
+
+  return {
+    data: result.rows,
+    total: countResult.rows[0].count,
+  };
 };
 
 export const getCardByIdAndUserId = async (id, user_id) => {
