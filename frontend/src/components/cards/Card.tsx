@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import {
   Volume2,
   Star,
@@ -108,7 +108,7 @@ export const Card: React.FC<CardProps> = ({
   const popularityStyle = getPopularityStyle(card.popularity, t);
   const currentLocale = i18n.language === 'vi' ? vi : enUS;
 
-  // Sync localMode với globalDisplayMode khi globalDisplayMode thay đổi
+  // Sync localMode vá»›i globalDisplayMode khi globalDisplayMode thay Ä‘á»•i
   useEffect(() => {
     setLocalMode(globalDisplayMode);
   }, [globalDisplayMode]);
@@ -145,13 +145,11 @@ export const Card: React.FC<CardProps> = ({
         </button>
       </div>
 
-      {/* Row 2: IPA - Phát âm */}
-      {card.ipa && (
-        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-          <Volume2 className="h-5 w-5" />
-          <span className="font-mono text-card-foreground">/{card.ipa}/</span>
-        </div>
-      )}
+      {/* Row 2: IPA - PhÃ¡t Ã¢m */}
+      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+        <Volume2 className="h-5 w-5" />
+        {card.ipa && <span className="font-mono text-card-foreground">/{card.ipa}/</span>}
+      </div>
 
       {/* Row 3: Popularity & Actions */}
       <div className="flex items-center justify-between">
@@ -193,13 +191,15 @@ export const Card: React.FC<CardProps> = ({
       </div>
 
       {/* Row 4: Part of Speech */}
-      {card.partOfSpeech && (
-        <div className="border-t border-t-muted">
-          <p className="text-orange-500 font-semibold text-sm mt-2">{card.partOfSpeech}</p>
-        </div>
-      )}
+      <div className="border-t border-t-muted">
+        <p
+          className={`font-semibold text-sm mt-2 ${card.partOfSpeech ? 'text-orange-500' : 'text-gray-600 dark:text-gray-300'}`}
+        >
+          {card.partOfSpeech || 'N/A'}
+        </p>
+      </div>
 
-      {/* Row 5: Meaning - Nghĩa tiếng Việt */}
+      {/* Row 5: Meaning - NghÄ©a tiáº¿ng Viá»‡t */}
       <div className="bg-muted p-3 rounded-md flex justify-between items-center mb-4">
         <p className="text-card-foreground font-medium flex-1">{card.meaning}</p>
         {onAddMeaning && (
@@ -226,7 +226,7 @@ export const Card: React.FC<CardProps> = ({
         }`}
       >
         <div className="space-y-4">
-          {/* Definition - Định nghĩa */}
+          {/* Definition - Äá»‹nh nghÄ©a */}
           {card.definition && (
             <div className="mb-4">
               <h4 className="text-sm font-semibold text-card-foreground mb-1">

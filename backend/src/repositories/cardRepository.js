@@ -33,7 +33,7 @@ export const createCard = async (cardData, client = pool) => {
     ipa || null,
     example || null,
     level || null,
-    popularity || null,
+    popularity === 0 ? null : popularity || null,
     synonyms || null,
     antonyms || null,
     near_synonyms || null,
@@ -151,7 +151,12 @@ export const updateCard = async (id, user_id, cardData, client = pool) => {
   for (const [key, value] of Object.entries(cardData)) {
     if (value !== undefined && key !== 'id' && key !== 'user_id' && key !== 'created_at') {
       fields.push(`${key} = $${paramIndex}`);
-      values.push(value);
+      // Handle special empty/falsy values for nullification
+      if (value === '' || (key === 'popularity' && value === 0)) {
+        values.push(null);
+      } else {
+        values.push(value);
+      }
       paramIndex++;
     }
   }

@@ -24,7 +24,7 @@ const cardSchema = z.object({
   ipa: z.string().optional(),
   example: z.string().optional(),
   level: z.string().optional(),
-  popularity: z.coerce.number().min(1).max(5).optional(),
+  popularity: z.coerce.number().min(0).max(5).optional(),
   synonyms: z.string().optional(),
   antonyms: z.string().optional(),
   nearSynonyms: z.string().optional(),
@@ -65,8 +65,8 @@ const CreateEditCardPage = () => {
       definition: '',
       ipa: '',
       example: '',
-      level: 'B1',
-      popularity: 3,
+      level: '',
+      popularity: 0,
       synonyms: '',
       antonyms: '',
       nearSynonyms: '',
@@ -116,8 +116,8 @@ const CreateEditCardPage = () => {
           definition: card.definition || '',
           ipa: card.ipa || '',
           example: card.example || '',
-          level: card.level || 'B1',
-          popularity: card.popularity || 3,
+          level: card.level ?? '',
+          popularity: card.popularity ?? 0,
           synonyms: card.synonyms || '',
           antonyms: card.antonyms || '',
           nearSynonyms: card.nearSynonyms || '',
@@ -231,7 +231,7 @@ const CreateEditCardPage = () => {
                 <select
                   id="partOfSpeech"
                   {...register('partOfSpeech')}
-                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground bg-background"
+                  className="flex h-10 w-full rounded-md border border-input bg-background dark:bg-zinc-950 px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground"
                 >
                   <option value="">{t('create_edit_page.select_pos')}</option>
                   <option value="Noun">Danh từ (Noun)</option>
@@ -294,8 +294,9 @@ const CreateEditCardPage = () => {
                 <select
                   id="level"
                   {...register('level')}
-                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground bg-background"
+                  className="flex h-10 w-full rounded-md border border-input bg-background dark:bg-zinc-950 px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground"
                 >
+                  <option value="">N/A</option>
                   <option value="A1">A1 - Beginner</option>
                   <option value="A2">A2 - Elementary</option>
                   <option value="B1">B1 - Intermediate</option>
@@ -309,8 +310,9 @@ const CreateEditCardPage = () => {
                 <select
                   id="popularity"
                   {...register('popularity')}
-                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground bg-background"
+                  className="flex h-10 w-full rounded-md border border-input bg-background dark:bg-zinc-950 px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground"
                 >
+                  <option value="0">0 - N/A</option>
                   <option value="1">{t('create_edit_page.pop_1')}</option>
                   <option value="2">{t('create_edit_page.pop_2')}</option>
                   <option value="3">{t('create_edit_page.pop_3')}</option>
@@ -366,3 +368,4 @@ const CreateEditCardPage = () => {
 };
 
 export default CreateEditCardPage;
+

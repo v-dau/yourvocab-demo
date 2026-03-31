@@ -19,8 +19,8 @@ export const createCard = async (cardData) => {
   }
 
   // Basic validation for popularity
-  if (cardData.popularity && (cardData.popularity < 1 || cardData.popularity > 5)) {
-    throw new Error('Invalid popularity provided. Allowed values: 1-5');
+  if (cardData.popularity && (cardData.popularity < 0 || cardData.popularity > 5)) {
+    throw new Error('Invalid popularity provided. Allowed values: 0-5');
   }
 
   const { tags, ...cardFields } = cardData;
@@ -83,11 +83,15 @@ export const getCardById = async (id, user_id) => {
 export const updateCard = async (id, user_id, updateData) => {
   if (!id || !user_id) throw new Error('ID and User ID are required');
 
-  if (updateData.level && !['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(updateData.level)) {
+  if (
+    updateData.level &&
+    updateData.level !== '' &&
+    !['A1', 'A2', 'B1', 'B2', 'C1', 'C2'].includes(updateData.level)
+  ) {
     throw new Error('Invalid level provided. Allowed values: A1, A2, B1, B2, C1, C2');
   }
-  if (updateData.popularity && (updateData.popularity < 1 || updateData.popularity > 5)) {
-    throw new Error('Invalid popularity provided. Allowed values: 1-5');
+  if (updateData.popularity && (updateData.popularity < 0 || updateData.popularity > 5)) {
+    throw new Error('Invalid popularity provided. Allowed values: 0-5');
   }
 
   const { tags, ...updateFields } = updateData;
