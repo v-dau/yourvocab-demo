@@ -1,13 +1,45 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
+import { TagCreatableSelect } from '@/components/ui/TagCreatableSelect';
+import type { TagOption } from '@/components/ui/TagCreatableSelect';
 import * as cardService from '@/services/cardService';
+import * as tagService from '@/services/tagService';
 import { toast } from 'sonner';
 import type { CreateCardInput } from '@/types/card';
+
+// Zod schema for card validation
+const cardSchema = z.object({
+  word: z.string().min(1, 'Word is required'),
+  meaning: z.string().min(1, 'Meaning is required'),
+  partOfSpeech: z.string().optional(),
+  definition: z.string().optional(),
+  ipa: z.string().optional(),
+  example: z.string().optional(),
+  level: z.string().optional(),
+  popularity: z.coerce.number().min(1).max(5).optional(),
+  synonyms: z.string().optional(),
+  antonyms: z.string().optional(),
+  nearSynonyms: z.string().optional(),
+  tags: z
+    .array(
+      z.object({
+        value: z.string(),
+        label: z.string(),
+        __isNew__: z.boolean().optional(),
+      })
+    )
+    .optional(),
+});
+
+type CardFormValues = z.infer<typeof cardSchema>;
 
 const CreateEditCardPage = () => {
   const { id } = useParams();
@@ -16,27 +48,68 @@ const CreateEditCardPage = () => {
   const isEdit = !!id;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    word: '',
-    meaning: '',
-    partOfSpeech: '',
-    definition: '',
-    ipa: '',
-    example: '',
-    level: 'B1',
-    popularity: 3,
-    synonyms: '',
-    antonyms: '',
-    nearSynonyms: '',
+  const [tagOptions, setTagOptions] = useState<TagOption[]>([]);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<CardFormValues>({
+    resolver: zodResolver(cardSchema),
+    defaultValues: {
+      word: '',
+      meaning: '',
+      partOfSpeech: '',
+      definition: '',
+      ipa: '',
+      example: '',
+      level: 'B1',
+      popularity: 3,
+      synonyms: '',
+      antonyms: '',
+      nearSynonyms: '',
+      tags: [],
+    },
   });
 
+  // Fetch tags for dropdown
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const tags = await tagService.getUserTags();
+        const formattedOptions = tags.map((tag) => ({
+          value: tag.id,
+          label: tag.tagName, // Backend returns property as tagName
+        }));
+        setTagOptions(formattedOptions);
+      } catch (error) {
+        console.error('Failed to fetch tags', error);
+      }
+    };
+    fetchTags();
+  }, []);
+
+  // Fetch existing card data if Edit mode
   useEffect(() => {
     const fetchCard = async () => {
       if (!isEdit || !id) return;
       try {
         setIsLoading(true);
         const card = await cardService.getCardById(id);
-        setFormData({
+
+        let formattedTags: TagOption[] = [];
+        if (card.tags && Array.isArray(card.tags)) {
+          formattedTags = card.tags.map(
+            (t: { id: string; tagName?: string; tag_name?: string }) => ({
+              value: t.id,
+              label: t.tagName || t.tag_name || 'Tag',
+            })
+          );
+        }
+
+        reset({
           word: card.word || '',
           meaning: card.meaning || '',
           partOfSpeech: card.partOfSpeech || '',
@@ -48,6 +121,7 @@ const CreateEditCardPage = () => {
           synonyms: card.synonyms || '',
           antonyms: card.antonyms || '',
           nearSynonyms: card.nearSynonyms || '',
+          tags: formattedTags,
         });
       } catch (error) {
         console.error('Failed to fetch card:', error);
@@ -58,26 +132,28 @@ const CreateEditCardPage = () => {
       }
     };
     fetchCard();
-  }, [id, isEdit, navigate, t]);
+  }, [id, isEdit, navigate, t, reset]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === 'popularity' ? Number(value) : value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: CardFormValues) => {
     try {
       setIsLoading(true);
+
+      // Convert tags array to an array of values (UUIDs or new plain text)
+      const tagsPayload = data.tags ? data.tags.map((tag) => tag.value.toLowerCase().trim()) : [];
+
       const cardInput = {
-        ...formData,
-        level: formData.level as any,
-        popularity: formData.popularity as any,
+        word: data.word,
+        meaning: data.meaning,
+        partOfSpeech: data.partOfSpeech,
+        definition: data.definition,
+        ipa: data.ipa,
+        example: data.example,
+        level: data.level as CreateCardInput['level'],
+        popularity: data.popularity as CreateCardInput['popularity'],
+        synonyms: data.synonyms,
+        antonyms: data.antonyms,
+        nearSynonyms: data.nearSynonyms,
+        tags: tagsPayload,
       } as CreateCardInput;
 
       if (isEdit && id) {
@@ -113,28 +189,25 @@ const CreateEditCardPage = () => {
         </div>
 
         <Card className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="word">{t('create_edit_page.word')}</Label>
                 <Input
                   id="word"
-                  name="word"
-                  value={formData.word}
-                  onChange={handleChange}
                   placeholder={t('create_edit_page.word_placeholder')}
-                  required
+                  {...register('word')}
+                  className={errors.word ? 'border-red-500 focus-visible:ring-red-500' : ''}
                 />
+                {errors.word && <span className="text-sm text-red-500">{errors.word.message}</span>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="ipa">{t('create_edit_page.ipa')}</Label>
                 <Input
                   id="ipa"
-                  name="ipa"
-                  value={formData.ipa}
-                  onChange={handleChange}
                   placeholder={t('create_edit_page.ipa_placeholder')}
+                  {...register('ipa')}
                 />
               </div>
             </div>
@@ -145,21 +218,20 @@ const CreateEditCardPage = () => {
                 <Label htmlFor="meaning">{t('create_edit_page.meaning')}</Label>
                 <Input
                   id="meaning"
-                  name="meaning"
-                  value={formData.meaning}
-                  onChange={handleChange}
                   placeholder={t('create_edit_page.meaning_placeholder')}
-                  required
+                  {...register('meaning')}
+                  className={errors.meaning ? 'border-red-500 focus-visible:ring-red-500' : ''}
                 />
+                {errors.meaning && (
+                  <span className="text-sm text-red-500">{errors.meaning.message}</span>
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="partOfSpeech">{t('create_edit_page.part_of_speech')}</Label>
                 <select
                   id="partOfSpeech"
-                  name="partOfSpeech"
-                  value={formData.partOfSpeech}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-input rounded-lg bg-background text-foreground"
+                  {...register('partOfSpeech')}
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground bg-background"
                 >
                   <option value="">{t('create_edit_page.select_pos')}</option>
                   <option value="Noun">Danh từ (Noun)</option>
@@ -179,11 +251,9 @@ const CreateEditCardPage = () => {
               <Label htmlFor="definition">{t('create_edit_page.definition')}</Label>
               <textarea
                 id="definition"
-                name="definition"
-                value={formData.definition}
-                onChange={handleChange}
                 placeholder={t('create_edit_page.definition_placeholder')}
-                className="w-full px-3 py-2 border border-input rounded-lg bg-background text-foreground min-h-24"
+                {...register('definition')}
+                className="flex w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground bg-background min-h-24"
               />
             </div>
 
@@ -191,11 +261,9 @@ const CreateEditCardPage = () => {
               <Label htmlFor="example">{t('create_edit_page.example')}</Label>
               <textarea
                 id="example"
-                name="example"
-                value={formData.example}
-                onChange={handleChange}
                 placeholder={t('create_edit_page.example_placeholder')}
-                className="w-full px-3 py-2 border border-input rounded-lg bg-background text-foreground min-h-24"
+                {...register('example')}
+                className="flex w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground bg-background min-h-24"
               />
             </div>
 
@@ -205,20 +273,16 @@ const CreateEditCardPage = () => {
                 <Label htmlFor="synonyms">{t('create_edit_page.synonyms')}</Label>
                 <Input
                   id="synonyms"
-                  name="synonyms"
-                  value={formData.synonyms}
-                  onChange={handleChange}
                   placeholder={t('create_edit_page.synonyms_placeholder')}
+                  {...register('synonyms')}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="antonyms">{t('create_edit_page.antonyms')}</Label>
                 <Input
                   id="antonyms"
-                  name="antonyms"
-                  value={formData.antonyms}
-                  onChange={handleChange}
                   placeholder={t('create_edit_page.antonyms_placeholder')}
+                  {...register('antonyms')}
                 />
               </div>
             </div>
@@ -229,10 +293,8 @@ const CreateEditCardPage = () => {
                 <Label htmlFor="level">{t('create_edit_page.level')}</Label>
                 <select
                   id="level"
-                  name="level"
-                  value={formData.level}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-input rounded-lg bg-background text-foreground"
+                  {...register('level')}
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground bg-background"
                 >
                   <option value="A1">A1 - Beginner</option>
                   <option value="A2">A2 - Elementary</option>
@@ -246,10 +308,8 @@ const CreateEditCardPage = () => {
                 <Label htmlFor="popularity">{t('create_edit_page.popularity')}</Label>
                 <select
                   id="popularity"
-                  name="popularity"
-                  value={formData.popularity}
-                  onChange={handleChange}
-                  className="w-full px-3 py-2 border border-input rounded-lg bg-background text-foreground"
+                  {...register('popularity')}
+                  className="flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground bg-background"
                 >
                   <option value="1">{t('create_edit_page.pop_1')}</option>
                   <option value="2">{t('create_edit_page.pop_2')}</option>
@@ -258,6 +318,25 @@ const CreateEditCardPage = () => {
                   <option value="5">{t('create_edit_page.pop_5')}</option>
                 </select>
               </div>
+            </div>
+
+            {/* Tags Multiple Select */}
+            <div className="space-y-2">
+              <Label>Tags</Label>
+              <Controller
+                name="tags"
+                control={control}
+                render={({ field }) => (
+                  <TagCreatableSelect
+                    value={field.value as TagOption[]}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                    options={tagOptions}
+                    error={!!errors.tags}
+                  />
+                )}
+              />
+              {errors.tags && <span className="text-sm text-red-500">{errors.tags.message}</span>}
             </div>
 
             {/* Action Buttons */}

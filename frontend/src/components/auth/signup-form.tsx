@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router'; //redirect pages
 const signUpSchema = z
   .object({
     username: z.string().min(3, 'Tên đăng nhập phải có ít nhất 3 kí tự'),
-    email: z.email('Email không hợp lệ'),
+    email: z.string().email('Email không hợp lệ'),
     password: z.string().min(8, 'Mật khẩu phải có ít nhất 8 kí tự'),
     confirmPassword: z.string(),
   })

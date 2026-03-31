@@ -9,6 +9,7 @@ import {
   CardDetailsModal,
   DisplayModeToolbar,
   CardsPagination,
+  TagManagerDialog,
 } from '@/components/cards';
 import type { Card } from '@/types/card';
 import type { CardFiltersState } from '@/components/cards/CardFilters';
@@ -132,6 +133,7 @@ const CardsPage = () => {
             <CardSearchBar searchQuery={searchQuery} onSearch={setSearchQuery} />
           </div>
           <div className="flex items-center gap-2">
+            <TagManagerDialog />
             <CardFilters onFilterChange={setFilters} />
             <DisplayModeToolbar onResetAllCards={handleResetAllCards} />
           </div>

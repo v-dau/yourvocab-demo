@@ -6,3 +6,4 @@ export { CardDetailsModal } from './CardDetailsModal';
 export { PopularityBadge } from './PopularityBadge';
 export { CardsPagination } from './CardsPagination';
 export { DisplayModeToolbar } from './DisplayModeToolbar';
+export * from './TagManagerDialog';

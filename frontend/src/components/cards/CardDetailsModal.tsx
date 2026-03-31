@@ -126,6 +126,28 @@ export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClos
             )}
           </div>
 
+          {/* Tags */}
+          {card.tags && card.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-6">
+              {card.tags.map((tag) => {
+                const currentTag = tag as { id: string; tagName?: string; tag_name?: string };
+                const tagNameStr = (
+                  currentTag.tagName ||
+                  currentTag.tag_name ||
+                  'tag'
+                ).toLowerCase();
+                return (
+                  <span
+                    key={tag.id}
+                    className="bg-secondary text-secondary-foreground rounded-sm px-1.5 py-0.5 text-xs inline-flex items-center"
+                  >
+                    #{tagNameStr}
+                  </span>
+                );
+              })}
+            </div>
+          )}
+
           {/* Metadata */}
           <div className="text-xs text-muted-foreground space-y-1 pb-6 border-b">
             <p>

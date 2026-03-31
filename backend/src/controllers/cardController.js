@@ -1,4 +1,5 @@
 import * as cardService from '../services/cardService.js';
+import { pool } from '../config/db.js'; // Added for debug querying
 
 export const createCard = async (req, res) => {
   try {

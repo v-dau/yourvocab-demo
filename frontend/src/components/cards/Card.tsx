@@ -19,6 +19,7 @@ import type { Card as CardType } from '@/types/card';
 import { formatDistanceToNow, addDays } from 'date-fns';
 import { vi, enUS } from 'date-fns/locale';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 
 interface CardProps {
   card: CardType;
@@ -36,8 +37,7 @@ interface CardProps {
 /**
  * Helper function: Returns popularity styling based on value
  */
-//eslint-disable-next-line @typescript-eslint/no-explicit-any
-const getPopularityStyle = (popularity?: number | null, t?: any) => {
+const getPopularityStyle = (popularity?: number | null, t?: TFunction) => {
   const value = popularity ?? 0;
 
   if (!t)
@@ -45,6 +45,7 @@ const getPopularityStyle = (popularity?: number | null, t?: any) => {
       iconColor: 'text-gray-400',
       text: 'N/A',
       bgColor: 'bg-gray-100',
+      innerTextColor: 'text-transparent',
     };
 
   const config = {
@@ -52,31 +53,37 @@ const getPopularityStyle = (popularity?: number | null, t?: any) => {
       iconColor: 'text-gray-400',
       text: t('card.popularity.na'),
       bgColor: 'bg-gray-100',
+      innerTextColor: 'text-transparent',
     },
     1: {
       iconColor: 'text-red-500',
       text: t('card.popularity.extremely_rare'),
       bgColor: 'bg-red-50',
+      innerTextColor: 'text-white',
     },
     2: {
       iconColor: 'text-orange-500',
       text: t('card.popularity.rare'),
       bgColor: 'bg-orange-50',
+      innerTextColor: 'text-white',
     },
     3: {
       iconColor: 'text-yellow-500',
       text: t('card.popularity.uncommon'),
       bgColor: 'bg-yellow-50',
+      innerTextColor: 'text-yellow-950 dark:text-yellow-950',
     },
     4: {
       iconColor: 'text-green-500',
       text: t('card.popularity.common'),
       bgColor: 'bg-green-50',
+      innerTextColor: 'text-white',
     },
     5: {
       iconColor: 'text-blue-500',
       text: t('card.popularity.essentials'),
       bgColor: 'bg-blue-50',
+      innerTextColor: 'text-white',
     },
   } as const;
 
@@ -150,7 +157,22 @@ export const Card: React.FC<CardProps> = ({
       <div className="flex items-center justify-between">
         {/* Left: Popularity */}
         <div className="flex items-center gap-2">
-          <Star className={`h-5 w-5 ${popularityStyle.iconColor}`} fill="currentColor" />
+          <div className="relative flex items-center justify-center">
+            {!card.popularity ? (
+              <Star className={`h-6 w-6 ${popularityStyle.iconColor}`} />
+            ) : (
+              <>
+                <Star
+                  className={`h-6 w-6 ${popularityStyle.iconColor}`}
+                  fill="currentColor"
+                  strokeWidth={1.5}
+                />
+                <span className="absolute text-[11px] font-bold leading-none text-white pt-[1.5px]">
+                  {card.popularity}
+                </span>
+              </>
+            )}
+          </div>
           <span className={`text-sm font-medium ${popularityStyle.iconColor}`}>
             {popularityStyle.text}
           </span>
@@ -269,6 +291,25 @@ export const Card: React.FC<CardProps> = ({
         </div>
       </div>
 
+      {/* Tags Display */}
+      {card.tags && card.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mt-1">
+          {card.tags.map((tag) => {
+            // Use type narrowing to safely access tag properties
+            const currentTag = tag as { id: string; tagName?: string; tag_name?: string };
+            const tagNameStr = (currentTag.tagName || currentTag.tag_name || 'tag').toLowerCase();
+            return (
+              <span
+                key={tag.id}
+                className="bg-secondary text-muted-foreground rounded-sm px-1.5 py-0.5 text-xs inline-flex items-center"
+              >
+                #{tagNameStr}
+              </span>
+            );
+          })}
+        </div>
+      )}
+
       {/* Trash info */}
       {isTrashMode && card.deletedAt && (
         <div className="mt-2 text-xs text-red-500 font-medium">
@@ -282,7 +323,7 @@ export const Card: React.FC<CardProps> = ({
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="flex gap-2 pt-4 mt-4 border-t border-t-muted transition-all duration-300">
+        <div className="flex gap-2 pt-4 border-t border-t-muted transition-all duration-300">
           {onView && (
             <Button
               variant="ghost"

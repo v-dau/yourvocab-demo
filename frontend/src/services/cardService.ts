@@ -20,6 +20,7 @@ const mapToFrontendCard = (data: any): Card => ({
   createdAt: data.created_at,
   modifiedAt: data.modified_at,
   deletedAt: data.deleted_at,
+  tags: data.tags,
 });
 
 // Helper function to map camelCase to snake_case

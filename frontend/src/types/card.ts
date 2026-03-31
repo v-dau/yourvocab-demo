@@ -30,6 +30,7 @@ export interface Card {
   createdAt: string | Date; // ISO 8601 timestamp
   modifiedAt: string | Date; // ISO 8601 timestamp
   deletedAt?: string | Date | null; // For soft delete
+  tags?: { id: string; tagName?: string }[];
 }
 
 /**
@@ -47,6 +48,7 @@ export interface CreateCardInput {
   synonyms?: string;
   antonyms?: string;
   nearSynonyms?: string;
+  tags?: string[];
 }
 
 /**
@@ -64,6 +66,7 @@ export interface UpdateCardInput {
   synonyms?: string;
   antonyms?: string;
   nearSynonyms?: string;
+  tags?: string[];
 }
 
 /**

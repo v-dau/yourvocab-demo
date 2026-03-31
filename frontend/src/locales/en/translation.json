@@ -223,5 +223,10 @@
     "change_password_dialog_title": "Change Password",
     "change_password_dialog_desc": "Enter old password and new password.",
     "old_password": "Old password"
+  },
+  "common": {
+    "typeToCreateTags": "Type to create or select tags...",
+    "createTag": "Create tag {{inputValue}}",
+    "noTagsFound": "No tags found"
   }
 }

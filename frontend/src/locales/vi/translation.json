@@ -223,5 +223,10 @@
     "change_password_dialog_title": "Đổi Mật Khẩu",
     "change_password_dialog_desc": "Nhập mật khẩu cũ và tài khoản mới.",
     "old_password": "Mật khẩu cũ"
+  },
+  "common": {
+    "typeToCreateTags": "Nhập để tạo hoặc chọn nhãn dán...",
+    "createTag": "Tạo tag mới {{inputValue}}",
+    "noTagsFound": "Không tìm thấy nhãn dán"
   }
 }

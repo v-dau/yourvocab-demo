@@ -1,4 +1,12 @@
 import * as cardRepository from '../repositories/cardRepository.js';
+import tagRepository from '../repositories/tagRepository.js';
+import cardTagRepository from '../repositories/cardTagRepository.js';
+import { pool } from '../config/db.js';
+
+const isUUID = (uuid) => {
+  const regex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/i;
+  return regex.test(uuid);
+};
 
 export const createCard = async (cardData) => {
   if (!cardData.word || !cardData.meaning || !cardData.user_id) {
@@ -15,7 +23,36 @@ export const createCard = async (cardData) => {
     throw new Error('Invalid popularity provided. Allowed values: 1-5');
   }
 
-  return await cardRepository.createCard(cardData);
+  const { tags, ...cardFields } = cardData;
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    const newCard = await cardRepository.createCard(cardFields, client);
+
+    if (tags && Array.isArray(tags)) {
+      const finalTagIds = [];
+      for (const tag of tags) {
+        if (isUUID(tag)) {
+          finalTagIds.push(tag);
+        } else {
+          const newTag = await tagRepository.createTag(cardData.user_id, tag, client);
+          finalTagIds.push(newTag.id);
+        }
+      }
+
+      await cardTagRepository.linkCardTags(newCard.id, finalTagIds, client);
+    }
+
+    await client.query('COMMIT');
+    return newCard;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 export const getCards = async (filters, page = 1, limit = 12) => {
@@ -53,12 +90,42 @@ export const updateCard = async (id, user_id, updateData) => {
     throw new Error('Invalid popularity provided. Allowed values: 1-5');
   }
 
-  const updatedCard = await cardRepository.updateCard(id, user_id, updateData);
-  if (!updatedCard) {
-    throw new Error('Card not found or unauthorized');
-  }
+  const { tags, ...updateFields } = updateData;
+  const client = await pool.connect();
+  let updatedCard;
 
-  return updatedCard;
+  try {
+    await client.query('BEGIN');
+
+    updatedCard = await cardRepository.updateCard(id, user_id, updateFields, client);
+    if (!updatedCard) {
+      await client.query('ROLLBACK');
+      throw new Error('Card not found or unauthorized');
+    }
+
+    if (tags && Array.isArray(tags)) {
+      const finalTagIds = [];
+      for (const tag of tags) {
+        if (isUUID(tag)) {
+          finalTagIds.push(tag);
+        } else {
+          // It's a plain text new tag
+          const newTag = await tagRepository.createTag(user_id, tag, client);
+          finalTagIds.push(newTag.id);
+        }
+      }
+
+      await cardTagRepository.linkCardTags(id, finalTagIds, client);
+    }
+
+    await client.query('COMMIT');
+    return updatedCard;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 export const deleteCard = async (id, user_id) => {
