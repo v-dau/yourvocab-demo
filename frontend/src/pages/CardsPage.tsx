@@ -30,6 +30,11 @@ const CardsPage = () => {
     popularity: [],
     partOfSpeech: [],
     hasExample: null,
+    hasIpa: null,
+    hasSynonyms: null,
+    hasAntonyms: null,
+    hasNearSynonyms: null,
+    hasDefinition: null,
   });
   const [pagination, setPagination] = useState({ totalPages: 1, totalItems: 0, limit: 12 });
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
@@ -53,10 +58,16 @@ const CardsPage = () => {
         };
 
         if (searchQuery) params.search = searchQuery;
+        if (filters.search) params.search = filters.search;
         if (filters.levels.length > 0) params.levels = filters.levels.join(',');
         if (filters.popularity.length > 0) params.popularity = filters.popularity.join(',');
         if (filters.partOfSpeech.length > 0) params.partOfSpeech = filters.partOfSpeech.join(',');
         if (filters.hasExample) params.hasExample = true;
+        if (filters.hasIpa) params.hasIpa = true;
+        if (filters.hasSynonyms) params.hasSynonyms = true;
+        if (filters.hasAntonyms) params.hasAntonyms = true;
+        if (filters.hasNearSynonyms) params.hasNearSynonyms = true;
+        if (filters.hasDefinition) params.hasDefinition = true;
 
         const result = await cardService.getCards(params);
         setCards(result.data);

@@ -115,7 +115,12 @@
       "popularity": "Popularity",
       "part_of_speech": "Part of speech",
       "has_example": "Has example",
-      "clear_all": "Clear all filters"
+      "clear_all": "Clear all filters",
+      "has_ipa": "Has IPA",
+      "has_definition": "Has definition",
+      "has_synonyms": "Has synonyms",
+      "has_antonyms": "Has antonyms",
+      "has_near_synonyms": "Has near-synonyms"
     }
   },
   "dashboard_page": {

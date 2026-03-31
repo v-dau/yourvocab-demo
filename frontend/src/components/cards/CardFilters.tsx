@@ -9,15 +9,30 @@ interface CardFiltersProps {
 }
 
 export interface CardFiltersState {
-  levels: CardLevel[];
+  search?: string;
+  levels: (CardLevel | 'N/A')[];
   popularity: CardPopularity[];
   partOfSpeech: string[];
   hasExample: boolean | null;
+  hasIpa: boolean | null;
+  hasSynonyms: boolean | null;
+  hasAntonyms: boolean | null;
+  hasNearSynonyms: boolean | null;
+  hasDefinition: boolean | null;
 }
 
-const LEVELS: CardLevel[] = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-const POPULARITY_LEVELS: CardPopularity[] = [1, 2, 3, 4, 5];
-const PARTS_OF_SPEECH = ['Noun', 'Verb', 'Adjective', 'Adverb', 'Pronoun', 'Preposition'];
+const LEVELS: (CardLevel | 'N/A')[] = ['N/A', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+const POPULARITY_LEVELS: CardPopularity[] = [0, 1, 2, 3, 4, 5];
+const PARTS_OF_SPEECH = [
+  'Noun',
+  'Verb',
+  'Adjective',
+  'Adverb',
+  'Pronoun',
+  'Preposition',
+  'Conjunction',
+  'Interjection',
+];
 
 export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
   const { t } = useTranslation();
@@ -27,6 +42,11 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
     popularity: [],
     partOfSpeech: [],
     hasExample: null,
+    hasIpa: null,
+    hasSynonyms: null,
+    hasAntonyms: null,
+    hasNearSynonyms: null,
+    hasDefinition: null,
   });
 
   const handleFilterChange = (newFilters: CardFiltersState) => {
@@ -34,7 +54,7 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
     onFilterChange(newFilters);
   };
 
-  const toggleLevel = (level: CardLevel) => {
+  const toggleLevel = (level: CardLevel | 'N/A') => {
     const updatedLevels = filters.levels.includes(level)
       ? filters.levels.filter((l) => l !== level)
       : [...filters.levels, level];
@@ -55,9 +75,9 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
     handleFilterChange({ ...filters, partOfSpeech: updatedPOS });
   };
 
-  const toggleHasExample = () => {
-    const newValue = filters.hasExample === true ? null : true;
-    handleFilterChange({ ...filters, hasExample: newValue });
+  const toggleBooleanFilter = (key: keyof CardFiltersState) => {
+    const newValue = filters[key] === true ? null : true;
+    handleFilterChange({ ...filters, [key]: newValue });
   };
 
   const clearFilters = () => {
@@ -66,6 +86,11 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
       popularity: [],
       partOfSpeech: [],
       hasExample: null,
+      hasIpa: null,
+      hasSynonyms: null,
+      hasAntonyms: null,
+      hasNearSynonyms: null,
+      hasDefinition: null,
     };
     setFilters(emptyFilters);
     onFilterChange(emptyFilters);
@@ -75,7 +100,12 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
     filters.levels.length +
     filters.popularity.length +
     filters.partOfSpeech.length +
-    (filters.hasExample !== null ? 1 : 0);
+    (filters.hasExample !== null ? 1 : 0) +
+    (filters.hasIpa !== null ? 1 : 0) +
+    (filters.hasSynonyms !== null ? 1 : 0) +
+    (filters.hasAntonyms !== null ? 1 : 0) +
+    (filters.hasNearSynonyms !== null ? 1 : 0) +
+    (filters.hasDefinition !== null ? 1 : 0);
 
   return (
     <div className="relative">
@@ -161,16 +191,76 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
               </div>
             </div>
 
-            {/* Has Example */}
-            <div className="mb-4">
+            {/* Boolean Filters */}
+            <div className="mb-4 grid grid-cols-2 gap-2">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={filters.hasExample === true}
-                  onChange={toggleHasExample}
+                  onChange={() => toggleBooleanFilter('hasExample')}
                   className="rounded"
                 />
-                <span className="text-sm">{t('cards_page.filters.has_example')}</span>
+                <span className="text-sm">
+                  {t('cards_page.filters.has_example', 'Has example')}
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filters.hasIpa === true}
+                  onChange={() => toggleBooleanFilter('hasIpa')}
+                  className="rounded"
+                />
+                <span className="text-sm">{t('cards_page.filters.has_ipa', 'Has IPA')}</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filters.hasDefinition === true}
+                  onChange={() => toggleBooleanFilter('hasDefinition')}
+                  className="rounded"
+                />
+                <span className="text-sm">
+                  {t('cards_page.filters.has_definition', 'Has definition')}
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filters.hasSynonyms === true}
+                  onChange={() => toggleBooleanFilter('hasSynonyms')}
+                  className="rounded"
+                />
+                <span className="text-sm">
+                  {t('cards_page.filters.has_synonyms', 'Has synonyms')}
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filters.hasAntonyms === true}
+                  onChange={() => toggleBooleanFilter('hasAntonyms')}
+                  className="rounded"
+                />
+                <span className="text-sm">
+                  {t('cards_page.filters.has_antonyms', 'Has antonyms')}
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={filters.hasNearSynonyms === true}
+                  onChange={() => toggleBooleanFilter('hasNearSynonyms')}
+                  className="rounded"
+                />
+                <span className="text-sm">
+                  {t('cards_page.filters.has_near_synonyms', 'Has near-synonyms')}
+                </span>
               </label>
             </div>
 

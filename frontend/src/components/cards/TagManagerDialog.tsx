@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -23,13 +23,7 @@ export const TagManagerDialog = () => {
   const [editValue, setEditValue] = useState('');
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (open) {
-      loadTags();
-    }
-  }, [open]);
-
-  const loadTags = async () => {
+  const loadTags = useCallback(async () => {
     try {
       setLoading(true);
       const data = await tagService.getUserTags();
@@ -40,7 +34,13 @@ export const TagManagerDialog = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    if (open) {
+      loadTags();
+    }
+  }, [open, loadTags]);
 
   const handleDelete = async (id: string) => {
     try {

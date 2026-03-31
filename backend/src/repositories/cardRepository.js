@@ -74,20 +74,54 @@ export const getCardsByUserId = async (filters, limit, offset) => {
 
   if (filters.levels) {
     const levelsArray = filters.levels.split(',');
-    const levelParams = levelsArray.map((_, i) => `$${paramIdx + i}`).join(',');
-    whereClause += ` AND c.level IN (${levelParams})`;
-    countQueryStr += ` AND c.level IN (${levelParams})`;
-    params.push(...levelsArray);
-    paramIdx += levelsArray.length;
+
+    // Check if N/A is in the selected levels
+    const hasNA = levelsArray.includes('N/A');
+    const validLevels = levelsArray.filter((l) => l !== 'N/A');
+
+    if (validLevels.length > 0) {
+      if (hasNA) {
+        const levelParams = validLevels.map((_, i) => `$${paramIdx + i}`).join(',');
+        whereClause += ` AND (c.level IN (${levelParams}) OR c.level IS NULL OR c.level = '')`;
+        countQueryStr += ` AND (c.level IN (${levelParams}) OR c.level IS NULL OR c.level = '')`;
+        params.push(...validLevels);
+        paramIdx += validLevels.length;
+      } else {
+        const levelParams = validLevels.map((_, i) => `$${paramIdx + i}`).join(',');
+        whereClause += ` AND c.level IN (${levelParams})`;
+        countQueryStr += ` AND c.level IN (${levelParams})`;
+        params.push(...validLevels);
+        paramIdx += validLevels.length;
+      }
+    } else if (hasNA) {
+      whereClause += ` AND (c.level IS NULL OR c.level = '')`;
+      countQueryStr += ` AND (c.level IS NULL OR c.level = '')`;
+    }
   }
 
   if (filters.popularity) {
     const popArray = filters.popularity.split(',').map(Number);
-    const popParams = popArray.map((_, i) => `$${paramIdx + i}`).join(',');
-    whereClause += ` AND c.popularity IN (${popParams})`;
-    countQueryStr += ` AND c.popularity IN (${popParams})`;
-    params.push(...popArray);
-    paramIdx += popArray.length;
+    const hasZero = popArray.includes(0);
+    const validPops = popArray.filter((p) => p > 0);
+
+    if (validPops.length > 0) {
+      if (hasZero) {
+        const popParams = validPops.map((_, i) => `$${paramIdx + i}`).join(',');
+        whereClause += ` AND (c.popularity IN (${popParams}) OR c.popularity IS NULL OR c.popularity = 0)`;
+        countQueryStr += ` AND (c.popularity IN (${popParams}) OR c.popularity IS NULL OR c.popularity = 0)`;
+        params.push(...validPops);
+        paramIdx += validPops.length;
+      } else {
+        const popParams = validPops.map((_, i) => `$${paramIdx + i}`).join(',');
+        whereClause += ` AND c.popularity IN (${popParams})`;
+        countQueryStr += ` AND c.popularity IN (${popParams})`;
+        params.push(...validPops);
+        paramIdx += validPops.length;
+      }
+    } else if (hasZero) {
+      whereClause += ` AND (c.popularity IS NULL OR c.popularity = 0)`;
+      countQueryStr += ` AND (c.popularity IS NULL OR c.popularity = 0)`;
+    }
   }
 
   if (filters.partOfSpeech) {
@@ -102,6 +136,31 @@ export const getCardsByUserId = async (filters, limit, offset) => {
   if (filters.hasExample === 'true') {
     whereClause += ` AND c.example IS NOT NULL AND c.example != ''`;
     countQueryStr += ` AND c.example IS NOT NULL AND c.example != ''`;
+  }
+
+  if (filters.hasIpa === 'true') {
+    whereClause += ` AND c.ipa IS NOT NULL AND c.ipa != ''`;
+    countQueryStr += ` AND c.ipa IS NOT NULL AND c.ipa != ''`;
+  }
+
+  if (filters.hasSynonyms === 'true') {
+    whereClause += ` AND c.synonyms IS NOT NULL AND c.synonyms != ''`;
+    countQueryStr += ` AND c.synonyms IS NOT NULL AND c.synonyms != ''`;
+  }
+
+  if (filters.hasAntonyms === 'true') {
+    whereClause += ` AND c.antonyms IS NOT NULL AND c.antonyms != ''`;
+    countQueryStr += ` AND c.antonyms IS NOT NULL AND c.antonyms != ''`;
+  }
+
+  if (filters.hasNearSynonyms === 'true') {
+    whereClause += ` AND c.near_synonyms IS NOT NULL AND c.near_synonyms != ''`;
+    countQueryStr += ` AND c.near_synonyms IS NOT NULL AND c.near_synonyms != ''`;
+  }
+
+  if (filters.hasDefinition === 'true') {
+    whereClause += ` AND c.definition IS NOT NULL AND c.definition != ''`;
+    countQueryStr += ` AND c.definition IS NOT NULL AND c.definition != ''`;
   }
 
   let queryStr =

@@ -115,7 +115,12 @@
       "popularity": "Độ phổ biến",
       "part_of_speech": "Loại từ",
       "has_example": "Có ví dụ",
-      "clear_all": "Xóa tất cả bộ lọc"
+      "clear_all": "Xóa tất cả bộ lọc",
+      "has_ipa": "Có phiên âm (IPA)",
+      "has_definition": "Có định nghĩa",
+      "has_synonyms": "Có từ đồng nghĩa",
+      "has_antonyms": "Có từ trái nghĩa",
+      "has_near_synonyms": "Có từ gần nghĩa"
     }
   },
   "dashboard_page": {

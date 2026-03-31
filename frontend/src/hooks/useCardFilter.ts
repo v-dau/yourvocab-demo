@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { Card, CardLevel, CardPopularity } from '@/types/card';
+import type { Card, CardPopularity } from '@/types/card';
 import type { CardFiltersState } from '@/components/cards/CardFilters';
 
 interface UseCardFilterOptions {
@@ -22,16 +22,18 @@ export const useCardFilter = ({ cards, searchQuery, filters }: UseCardFilterOpti
       if (!matchesSearch) return false;
 
       // Level filter
-      if (filters.levels.length > 0 && !filters.levels.includes(card.level as CardLevel)) {
-        return false;
+      if (filters.levels.length > 0) {
+        const hasNA = filters.levels.includes('N/A');
+        const levelMatches = filters.levels.includes(card.level as any) || (hasNA && !card.level);
+        if (!levelMatches) return false;
       }
 
       // Popularity filter
-      if (
-        filters.popularity.length > 0 &&
-        !filters.popularity.includes(card.popularity as CardPopularity)
-      ) {
-        return false;
+      if (filters.popularity.length > 0) {
+        const popValue = card.popularity ?? 0;
+        if (!filters.popularity.includes(popValue as CardPopularity)) {
+          return false;
+        }
       }
 
       // Part of Speech filter
@@ -42,10 +44,13 @@ export const useCardFilter = ({ cards, searchQuery, filters }: UseCardFilterOpti
         return false;
       }
 
-      // Has Example filter
-      if (filters.hasExample === true && !card.example) {
-        return false;
-      }
+      // Boolean filters
+      if (filters.hasExample === true && !card.example) return false;
+      if (filters.hasIpa === true && !card.ipa) return false;
+      if (filters.hasDefinition === true && !card.definition) return false;
+      if (filters.hasSynonyms === true && !card.synonyms) return false;
+      if (filters.hasAntonyms === true && !card.antonyms) return false;
+      if (filters.hasNearSynonyms === true && !card.nearSynonyms) return false;
 
       return true;
     });

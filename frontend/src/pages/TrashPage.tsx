@@ -31,6 +31,11 @@ export default function TrashPage() {
     popularity: [],
     partOfSpeech: [],
     hasExample: null,
+    hasIpa: null,
+    hasSynonyms: null,
+    hasAntonyms: null,
+    hasNearSynonyms: null,
+    hasDefinition: null,
   });
 
   useEffect(() => {
