@@ -1,4 +1,5 @@
 ﻿import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card as CardUI } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { PopularityBadge } from './PopularityBadge';
@@ -11,6 +12,8 @@ interface CardDetailsModalProps {
 }
 
 export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClose }) => {
+  const { t } = useTranslation();
+
   if (!card) return null;
 
   return (
@@ -38,7 +41,7 @@ export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClos
             <div className="flex flex-wrap gap-3">
               {card.level && (
                 <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-full font-medium">
-                  Má»©c {card.level}
+                  {t('create_edit_page.level')} {card.level}
                 </span>
               )}
               <PopularityBadge popularity={card.popularity} />
@@ -46,7 +49,7 @@ export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClos
 
             {/* IPA */}
             <div>
-              <h3 className="font-semibold mb-2">Phát âm</h3>
+              <h3 className="font-semibold mb-2">{t('card.ipa', 'Phát âm')}</h3>
               <div className="flex items-center gap-2">
                 <Volume2 className="h-5 w-5 text-muted-foreground" />
                 {card.ipa && <p className="text-lg font-medium">/{card.ipa}/</p>}
@@ -55,14 +58,14 @@ export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClos
 
             {/* Meaning */}
             <div>
-              <h3 className="font-semibold mb-2">NghÄ©a</h3>
+              <h3 className="font-semibold mb-2">{t('card.meaning', 'Nghĩa')}</h3>
               <p className="text-base">{card.meaning}</p>
             </div>
 
             {/* Definition */}
             {card.definition && (
               <div>
-                <h3 className="font-semibold mb-2">Äá»‹nh nghÄ©a</h3>
+                <h3 className="font-semibold mb-2">{t('card.definition', 'Định nghĩa')}</h3>
                 <p className="text-sm text-muted-foreground">{card.definition}</p>
               </div>
             )}
@@ -70,7 +73,7 @@ export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClos
             {/* Example */}
             {card.example && (
               <div>
-                <h3 className="font-semibold mb-2">VÃ­ dá»¥</h3>
+                <h3 className="font-semibold mb-2">{t('card.example', 'Ví dụ')}</h3>
                 <p className="text-sm italic bg-muted p-3 rounded-lg border-l-4 border-primary">
                   "{card.example}"
                 </p>
@@ -82,7 +85,7 @@ export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClos
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             {card.synonyms && (
               <div>
-                <h3 className="font-semibold mb-2">Tá»« Ä‘á»“ng nghÄ©a</h3>
+                <h3 className="font-semibold mb-2">{t('card.synonyms', 'Từ đồng nghĩa')}</h3>
                 <div className="flex flex-wrap gap-2">
                   {card.synonyms.split(',').map((syn, idx) => (
                     <span
@@ -98,7 +101,7 @@ export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClos
 
             {card.antonyms && (
               <div>
-                <h3 className="font-semibold mb-2">Tá»« trÃ¡i nghÄ©a</h3>
+                <h3 className="font-semibold mb-2">{t('card.antonyms', 'Từ trái nghĩa')}</h3>
                 <div className="flex flex-wrap gap-2">
                   {card.antonyms.split(',').map((ant, idx) => (
                     <span
@@ -114,7 +117,9 @@ export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClos
 
             {card.nearSynonyms && (
               <div>
-                <h3 className="font-semibold mb-2">Tá»« gáº§n Ä‘á»“ng nghÄ©a</h3>
+                <h3 className="font-semibold mb-2">
+                  {t('card.near_synonyms', 'Từ gần đồng nghĩa')}
+                </h3>
                 <div className="flex flex-wrap gap-2">
                   {card.nearSynonyms.split(',').map((near, idx) => (
                     <span
@@ -154,11 +159,11 @@ export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClos
           {/* Metadata */}
           <div className="text-xs text-muted-foreground space-y-1 pb-6 border-b">
             <p>
-              <span className="font-medium">Táº¡o lÃºc:</span>{' '}
+              <span className="font-medium">{t('card.created_at', 'Tạo lúc:')}</span>{' '}
               {new Date(card.createdAt).toLocaleString('vi-VN')}
             </p>
             <p>
-              <span className="font-medium">Cáº­p nháº­t:</span>{' '}
+              <span className="font-medium">{t('card.updated_at', 'Cập nhật:')}</span>{' '}
               {new Date(card.modifiedAt).toLocaleString('vi-VN')}
             </p>
           </div>
@@ -166,7 +171,7 @@ export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClos
           {/* Close Button */}
           <div className="flex justify-end gap-2 mt-6">
             <Button variant="outline" onClick={onClose}>
-              ÄÃ³ng
+              {t('common.close', 'Đóng')}
             </Button>
           </div>
         </div>

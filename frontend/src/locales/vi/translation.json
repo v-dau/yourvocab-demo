@@ -14,6 +14,9 @@
     "logout": "Đăng xuất"
   },
   "card": {
+    "ipa": "Phát âm",
+    "created_at": "Tạo lúc:",
+    "updated_at": "Cập nhật:",
     "popularity": {
       "na": "N/A",
       "extremely_rare": "Cực kỳ hiếm",
@@ -44,6 +47,20 @@
     }
   },
   "create_edit_page": {
+    "pos_noun": "Danh từ (Noun)",
+    "pos_verb": "Động từ (Verb)",
+    "pos_adj": "Tính từ (Adjective)",
+    "pos_adv": "Trạng từ (Adverb)",
+    "pos_pronoun": "Đại từ (Pronoun)",
+    "pos_prep": "Giới từ (Preposition)",
+    "pos_conj": "Liên từ (Conjunction)",
+    "pos_interj": "Thán từ (Interjection)",
+    "level_a1": "Beginner (Sơ cấp)",
+    "level_a2": "Elementary (Sơ trung cấp)",
+    "level_b1": "Intermediate (Trung cấp)",
+    "level_b2": "Upper Intermediate (Thượng trung cấp)",
+    "level_c1": "Advanced (Cao cấp)",
+    "level_c2": "Mastery (Thành thạo)",
     "title_create": "Tạo thẻ từ mới",
     "desc_create": "Tạo một thẻ từ vựng mới để bổ sung vào kho của bạn",
     "title_edit": "Chỉnh sửa thẻ từ",
@@ -228,5 +245,21 @@
     "typeToCreateTags": "Nhập để tạo hoặc chọn nhãn dán...",
     "createTag": "Tạo tag mới {{inputValue}}",
     "noTagsFound": "Không tìm thấy nhãn dán"
+  },
+  "tag": {
+    "btn": "Nhãn",
+    "manager_title": "Quản lý nhãn dán",
+    "search_placeholder": "Tìm kiếm nhãn dán...",
+    "loading": "Đang tải...",
+    "no_tags": "Không có nhãn dán nào",
+    "card_count": "{{count}} thẻ",
+    "load_error": "Gặp lỗi khi tải nhãn dán",
+    "delete_confirm": "Bạn có chắc chắn? Các thẻ liên kết sẽ không bị xóa.",
+    "delete_success": "Xóa nhãn dán thành công",
+    "delete_error": "Lỗi khi xóa nhãn dán",
+    "update_success": "Cập nhật nhãn dán thành công",
+    "update_error": "Lỗi khi cập nhật nhãn dán",
+    "confirm_delete_short": "Xóa nhãn này?",
+    "delete_btn": "Xóa"
   }
 }

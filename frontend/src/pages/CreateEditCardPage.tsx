@@ -234,14 +234,14 @@ const CreateEditCardPage = () => {
                   className="flex h-10 w-full rounded-md border border-input bg-background dark:bg-zinc-950 px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground"
                 >
                   <option value="">{t('create_edit_page.select_pos')}</option>
-                  <option value="Noun">Danh từ (Noun)</option>
-                  <option value="Verb">Động từ (Verb)</option>
-                  <option value="Adjective">Tính từ (Adjective)</option>
-                  <option value="Adverb">Trạng từ (Adverb)</option>
-                  <option value="Pronoun">Đại từ (Pronoun)</option>
-                  <option value="Preposition">Giới từ (Preposition)</option>
-                  <option value="Conjunction">Liên từ (Conjunction)</option>
-                  <option value="Interjection">Thán từ (Interjection)</option>
+                  <option value="Noun">{t('create_edit_page.pos_noun', 'Danh từ (Noun)')}</option>
+                  <option value="Verb">{t('create_edit_page.pos_verb', 'Động từ (Verb)')}</option>
+                  <option value="Adjective">{t('create_edit_page.pos_adj', 'Tính từ (Adjective)')}</option>
+                  <option value="Adverb">{t('create_edit_page.pos_adv', 'Trạng từ (Adverb)')}</option>
+                  <option value="Pronoun">{t('create_edit_page.pos_pronoun', 'Đại từ (Pronoun)')}</option>
+                  <option value="Preposition">{t('create_edit_page.pos_prep', 'Giới từ (Preposition)')}</option>
+                  <option value="Conjunction">{t('create_edit_page.pos_conj', 'Liên từ (Conjunction)')}</option>
+                  <option value="Interjection">{t('create_edit_page.pos_interj', 'Thán từ (Interjection)')}</option>
                 </select>
               </div>
             </div>
@@ -297,12 +297,12 @@ const CreateEditCardPage = () => {
                   className="flex h-10 w-full rounded-md border border-input bg-background dark:bg-zinc-950 px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground"
                 >
                   <option value="">N/A</option>
-                  <option value="A1">A1 - Beginner</option>
-                  <option value="A2">A2 - Elementary</option>
-                  <option value="B1">B1 - Intermediate</option>
-                  <option value="B2">B2 - Upper Intermediate</option>
-                  <option value="C1">C1 - Advanced</option>
-                  <option value="C2">C2 - Mastery</option>
+                  <option value="A1">A1 - {t('create_edit_page.level_a1', 'Beginner (Sơ cấp)')}</option>
+                  <option value="A2">A2 - {t('create_edit_page.level_a2', 'Elementary (Sơ trung cấp)')}</option>
+                  <option value="B1">B1 - {t('create_edit_page.level_b1', 'Intermediate (Trung cấp)')}</option>
+                  <option value="B2">B2 - {t('create_edit_page.level_b2', 'Upper Intermediate (Thượng trung cấp)')}</option>
+                  <option value="C1">C1 - {t('create_edit_page.level_c1', 'Advanced (Cao cấp)')}</option>
+                  <option value="C2">C2 - {t('create_edit_page.level_c2', 'Mastery (Thành thạo)')}</option>
                 </select>
               </div>
               <div className="space-y-2">
@@ -368,4 +368,6 @@ const CreateEditCardPage = () => {
 };
 
 export default CreateEditCardPage;
+
+
 

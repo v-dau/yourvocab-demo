@@ -133,9 +133,9 @@ const CardsPage = () => {
             <CardSearchBar searchQuery={searchQuery} onSearch={setSearchQuery} />
           </div>
           <div className="flex items-center gap-2">
-            <TagManagerDialog />
             <CardFilters onFilterChange={setFilters} />
             <DisplayModeToolbar onResetAllCards={handleResetAllCards} />
+            <TagManagerDialog />
           </div>
         </div>
 

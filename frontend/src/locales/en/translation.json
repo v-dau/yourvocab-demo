@@ -14,6 +14,9 @@
     "logout": "Log out"
   },
   "card": {
+    "ipa": "Pronunciation",
+    "created_at": "Created at:",
+    "updated_at": "Updated at:",
     "popularity": {
       "na": "N/A",
       "extremely_rare": "Extremely rare",
@@ -44,6 +47,20 @@
     }
   },
   "create_edit_page": {
+    "pos_noun": "Noun",
+    "pos_verb": "Verb",
+    "pos_adj": "Adjective",
+    "pos_adv": "Adverb",
+    "pos_pronoun": "Pronoun",
+    "pos_prep": "Preposition",
+    "pos_conj": "Conjunction",
+    "pos_interj": "Interjection",
+    "level_a1": "Beginner",
+    "level_a2": "Elementary",
+    "level_b1": "Intermediate",
+    "level_b2": "Upper Intermediate",
+    "level_c1": "Advanced",
+    "level_c2": "Mastery",
     "title_create": "Create a new flashcard",
     "desc_create": "Create a new vocabulary card to add to your collection",
     "title_edit": "Edit flashcard",
@@ -104,7 +121,7 @@
   "dashboard_page": {
     "welcome": "Welcome",
     "user_fallback": "User",
-    "greeting": "👋",
+    "greeting": "ðŸ‘‹",
     "subtitle": "Start your journey to learn new vocabulary today",
     "total_cards": "Total Cards",
     "your_vocab_cards": "Your vocabulary cards",
@@ -228,5 +245,21 @@
     "typeToCreateTags": "Type to create or select tags...",
     "createTag": "Create tag {{inputValue}}",
     "noTagsFound": "No tags found"
+  },
+  "tag": {
+    "btn": "Tags",
+    "manager_title": "Manage tags",
+    "search_placeholder": "Search tags...",
+    "loading": "Loading...",
+    "no_tags": "No tags found",
+    "card_count": "{{count}} cards",
+    "load_error": "Error loading tags",
+    "delete_confirm": "Are you sure? Linked cards won't be deleted.",
+    "delete_success": "Tag deleted successfully",
+    "delete_error": "Error deleting tag",
+    "update_success": "Tag updated successfully",
+    "update_error": "Error updating tag",
+    "confirm_delete_short": "Delete this tag?",
+    "delete_btn": "Delete"
   }
 }
