@@ -1,5 +1,43 @@
 import * as cardService from '../services/cardService.js';
+import aiService from '../services/aiService.js';
 import { pool } from '../config/db.js'; // Added for debug querying
+
+export const generateAiCardInfo = async (req, res) => {
+  try {
+    const { word } = req.body;
+    const userId = req.user?.id;
+
+    if (!word) {
+      return res
+        .status(400)
+        .json({ success: false, message: 'Từ vựng (word) không được để trống.' });
+    }
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Không thể xác thực người dùng.' });
+    }
+
+    // Call checkAndConsumeQuota
+    const remainingQuota = await aiService.checkAndConsumeQuota(userId);
+
+    // If quota is valid, call generateVocabularyInfo
+    const aiData = await aiService.generateVocabularyInfo(word);
+
+    res.status(200).json({
+      success: true,
+      message: 'Tạo thông tin từ vựng thành công.',
+      remaining_quota: remainingQuota,
+      data: aiData,
+    });
+  } catch (error) {
+    console.error('Generate AI info error:', error);
+    const statusCode = error.statusCode || 500;
+    res.status(statusCode).json({
+      success: false,
+      message: error.message || 'Lỗi server khi tạo thông tin bằng AI.',
+    });
+  }
+};
 
 export const createCard = async (req, res) => {
   try {

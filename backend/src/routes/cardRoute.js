@@ -1,7 +1,11 @@
 import express from 'express';
 import * as cardController from '../controllers/cardController.js';
+import { protectedRoute } from '../middlewares/authMiddleware.js';
+import { aiRateLimiter } from '../middlewares/aiRateLimiter.js';
 
 const router = express.Router();
+
+router.post('/generate-ai', protectedRoute, aiRateLimiter, cardController.generateAiCardInfo);
 
 router.get('/trash', cardController.getTrashCards);
 router.post('/trash/restore-all', cardController.restoreAllCards);
