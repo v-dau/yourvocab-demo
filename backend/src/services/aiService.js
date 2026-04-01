@@ -11,7 +11,7 @@ class AIService {
   }
 
   async generateVocabularyInfo(word) {
-    const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-pro' }); // You can use flash or pro
+    const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); // You can use flash or pro
 
     const prompt = `Bạn là một chuyên gia ngôn ngữ học và từ điển Anh - Việt. Nhiệm vụ của bạn là cung cấp thông tin chi tiết cho từ vựng tiếng Anh được cung cấp dưới đây.
 
@@ -27,9 +27,9 @@ Chỉ trả về duy nhất một chuỗi JSON hợp lệ, không bao gồm bấ
   "example": "một câu ví dụ thực tế bằng tiếng Anh",
   "level": "cấp độ CEFR của từ, nhận các giá trị ('A1', 'A2', 'B1', 'B2', 'C1', 'C2', null nếu không xác định được)",
   "popularity": "độ phổ biến của từ, nhận giá trị số từ 1 đến 5 hoặc null nếu không xác định được (1=Extremely rare, 2=Rare, 3=Uncommon, 4=Common, 5=Essentials)",
-  "synonyms": "danh sách 2-3 từ đồng nghĩa, ngăn cách bằng dấu phẩy, null nếu không có",
-  "antonyms": "danh sách 2-3 từ trái nghĩa, ngăn cách bằng dấu phẩy, null nếu không có",
-  "near_synonyms": "danh sách 2-3 từ gần nghĩa, ngăn cách bằng dấu phẩy, null nếu không có"
+  "synonyms": "danh sách 1-3 từ đồng nghĩa, ngăn cách bằng dấu phẩy, null nếu không có",
+  "antonyms": "danh sách 1-3 từ trái nghĩa, ngăn cách bằng dấu phẩy, null nếu không có",
+  "near_synonyms": "danh sách 1-3 từ gần nghĩa, ngăn cách bằng dấu phẩy, null nếu không có"
 }
 
 Từ vựng cần phân tích: "${word}"`;
