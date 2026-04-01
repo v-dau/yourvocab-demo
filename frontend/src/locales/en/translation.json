@@ -266,5 +266,20 @@
     "update_error": "Error updating tag",
     "confirm_delete_short": "Delete this tag?",
     "delete_btn": "Delete"
+  },
+  "footer": {
+    "description": "Learn vocabulary effectively with spaced repetition and smart flashcards.",
+    "contact": "contact",
+    "contactTitle": "Contact Us",
+    "support": "support",
+    "supportTitle": "Support",
+    "github": "github",
+    "githubTitle": "GitHub",
+    "terms": "terms",
+    "termsTitle": "Terms of Service",
+    "security": "security",
+    "securityTitle": "Security Policy",
+    "privacy": "privacy",
+    "privacyTitle": "Privacy Policy"
   }
 }

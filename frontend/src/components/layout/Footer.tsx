@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router';
-import { Button } from '../ui/button';
-import { BookOpen } from 'lucide-react';
-import { FaLinkedin, FaGithub, FaTwitter } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
+import { BookOpen, Mail, Heart, FileText, Shield, Lock } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa';
 
 interface FooterProps {
   onFeedbackClick?: () => void;
@@ -10,6 +10,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onFeedbackClick = () => {} }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleFeedbackClick = () => {
     onFeedbackClick();
@@ -17,112 +18,75 @@ export const Footer: React.FC<FooterProps> = ({ onFeedbackClick = () => {} }) =>
   };
 
   return (
-    <footer className="bg-card border-t border-border">
-      <div className="px-6 py-8">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          {/* Brand Section */}
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <BookOpen className="h-6 w-6 text-primary" />
-              <span className="font-bold text-foreground">Yourvocab</span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Learn vocabulary effectively with spaced repetition and smart flashcards.
-            </p>
+    <footer className="relative bg-background text-sm font-medium text-gray-600 w-full shadow-[0px_-10px_15px_-3px_rgba(0,0,0,0.1)] dark:shadow-none dark:border-t dark:border-border dark:text-gray-400">
+      <div className="flex flex-col lg:flex-row justify-between gap-4 px-6 py-6 md:px-6 transition-opacity">
+        {/* Left Section */}
+        <div className="flex flex-wrap gap-2 items-center">
+          <div className="flex items-center gap-1.5 font-bold">
+            <BookOpen className="h-5 w-5" />
+            <span>Yourvocab</span>
           </div>
-
-          {/* Product Links */}
-          <div className="flex flex-col gap-3">
-            <h3 className="font-semibold text-foreground text-sm">Product</h3>
-            <Link
-              to="/cards"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Cards
-            </Link>
-            <Link
-              to="/review"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Spaced Repetition
-            </Link>
-            <Link
-              to="/dashboard"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Dashboard
-            </Link>
-          </div>
-
-          {/* Support Links */}
-          <div className="flex flex-col gap-3">
-            <h3 className="font-semibold text-foreground text-sm">Support</h3>
-            <button
-              onClick={handleFeedbackClick}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left"
-            >
-              Feedbacks
-            </button>
-            <Link
-              to="/settings"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Settings
-            </Link>
-            <a
-              href="mailto:support@yourvocab.com"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Contact Us
-            </a>
-          </div>
-
-          {/* Social Links */}
-          <div className="flex flex-col gap-3">
-            <h3 className="font-semibold text-foreground text-sm">Follow Us</h3>
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                <a href="#" title="Twitter">
-                  <FaTwitter className="h-4 w-4" />
-                </a>
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                <a href="#" title="LinkedIn">
-                  <FaLinkedin className="h-4 w-4" />
-                </a>
-              </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
-                <a href="#" title="Github">
-                  <FaGithub className="h-4 w-4" />
-                </a>
-              </Button>
-            </div>
-          </div>
+          <span>-</span>
+          <span>
+            {t(
+              'footer.description',
+              'Learn vocabulary effectively with spaced repetition and smart flashcards.'
+            )}
+          </span>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-border mb-6"></div>
-
-        {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-          <p>&copy; 2026 Yourvocab. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            <Link to="#" className="hover:text-foreground transition-colors">
-              Privacy Policy
-            </Link>
-            <span>•</span>
-            <Link to="#" className="hover:text-foreground transition-colors">
-              Terms of Service
-            </Link>
-            <span>•</span>
-            <a
-              href="mailto:support@yourvocab.com"
-              className="hover:text-foreground transition-colors"
-            >
-              Contact
-            </a>
-          </div>
+        {/* Right Section */}
+        <div className="flex flex-wrap items-center gap-4">
+          <a
+            href="mailto:contact@yourvocab.com"
+            className="flex items-center gap-1.5 hover:text-foreground transition-colors"
+            title={t('footer.contactTitle', 'Contact Us')}
+          >
+            <Mail className="h-4 w-4" />
+            <span>{t('footer.contact', 'contact')}</span>
+          </a>
+          <button
+            onClick={handleFeedbackClick}
+            className="flex items-center gap-1.5 hover:text-foreground transition-colors"
+            title={t('footer.supportTitle', 'Support')}
+          >
+            <Heart className="h-4 w-4" />
+            <span>{t('footer.support', 'support')}</span>
+          </button>
+          <a
+            href="https://github.com/HienB2306616"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-1.5 hover:text-foreground transition-colors"
+            title={t('footer.githubTitle', 'GitHub')}
+          >
+            <FaGithub className="h-4 w-4" />
+            <span>{t('footer.github', 'github')}</span>
+          </a>
+          <Link
+            to="#"
+            className="flex items-center gap-1.5 hover:text-foreground transition-colors"
+            title={t('footer.termsTitle', 'Terms of Service')}
+          >
+            <FileText className="h-4 w-4" />
+            <span>{t('footer.terms', 'terms')}</span>
+          </Link>
+          <Link
+            to="#"
+            className="flex items-center gap-1.5 hover:text-foreground transition-colors"
+            title={t('footer.securityTitle', 'Security Policy')}
+          >
+            <Shield className="h-4 w-4" />
+            <span>{t('footer.security', 'security')}</span>
+          </Link>
+          <Link
+            to="#"
+            className="flex items-center gap-1.5 hover:text-foreground transition-colors"
+            title={t('footer.privacyTitle', 'Privacy Policy')}
+          >
+            <Lock className="h-4 w-4" />
+            <span>{t('footer.privacy', 'privacy')}</span>
+          </Link>
         </div>
       </div>
     </footer>

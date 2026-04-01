@@ -266,5 +266,20 @@
     "update_error": "Lỗi khi cập nhật nhãn dán",
     "confirm_delete_short": "Xóa nhãn này?",
     "delete_btn": "Xóa"
+  },
+  "footer": {
+    "description": "Học từ vựng hiệu quả với phương pháp ôn tập lặp lại ngắt quãng và thẻ từ vựng thông minh.",
+    "contact": "liên hệ",
+    "contactTitle": "Liên hệ với chúng tôi",
+    "support": "ủng hộ",
+    "supportTitle": "Ủng hộ",
+    "github": "github",
+    "githubTitle": "GitHub",
+    "terms": "điều khoản",
+    "termsTitle": "Điều khoản dịch vụ",
+    "security": "bảo mật",
+    "securityTitle": "Chính sách bảo mật",
+    "privacy": "riêng tư",
+    "privacyTitle": "Chính sách quyền riêng tư"
   }
 }
