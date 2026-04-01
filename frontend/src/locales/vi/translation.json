@@ -47,6 +47,7 @@
     }
   },
   "create_edit_page": {
+    "basic_info": "Thông tin cơ bản",
     "pos_noun": "Danh từ (Noun)",
     "pos_verb": "Động từ (Verb)",
     "pos_adj": "Tính từ (Adjective)",
@@ -72,7 +73,7 @@
     "meaning": "Nghĩa (Tiếng Việt)",
     "meaning_placeholder": "Nhập nghĩa tiếng Việt",
     "part_of_speech": "Phần từ (Part of Speech)",
-    "select_pos": "Chọn phần từ",
+    "select_pos": "N/A",
     "definition": "Định nghĩa (Tiếng Anh)",
     "definition_placeholder": "Nhập định nghĩa tiếng Anh",
     "example": "Ví dụ",
@@ -281,5 +282,18 @@
     "securityTitle": "Chính sách bảo mật",
     "privacy": "riêng tư",
     "privacyTitle": "Chính sách quyền riêng tư"
+  },
+  "ai_generate": {
+    "button_tooltip": "Tạo thẻ bằng AI",
+    "dialog_title": "Tạo thẻ thông minh bằng AI",
+    "dialog_desc": "Nhập từ vựng bạn muốn tạo, AI sẽ tự động tìm nghĩa, từ loại, phiên âm và ví dụ cho bạn.",
+    "input_placeholder": "Nhập từ vựng tiếng Anh...",
+    "btn_generate": "Tạo thẻ",
+    "btn_loading": "Đang lấy thông tin thẻ...",
+    "toast_success_title": "Thành công!",
+    "toast_success_desc": "Đã tự động điền thông tin thẻ. Bạn còn {{quota}} lượt hôm nay.",
+    "toast_error_title": "Lỗi",
+    "toast_error_quota": "Bạn đã hết lượt dùng AI hôm nay.",
+    "toast_error_general": "Không thể lấy thông tin thẻ lúc này. Vui lòng thử lại sau."
   }
 }

@@ -47,6 +47,7 @@
     }
   },
   "create_edit_page": {
+    "basic_info": "Basic Info",
     "pos_noun": "Noun",
     "pos_verb": "Verb",
     "pos_adj": "Adjective",
@@ -72,7 +73,7 @@
     "meaning": "Meaning",
     "meaning_placeholder": "Enter meaning",
     "part_of_speech": "Part of Speech",
-    "select_pos": "Select part of speech",
+    "select_pos": "N/A",
     "definition": "Definition (English)",
     "definition_placeholder": "Enter english definition",
     "example": "Example",
@@ -281,5 +282,18 @@
     "securityTitle": "Security Policy",
     "privacy": "privacy",
     "privacyTitle": "Privacy Policy"
+  },
+  "ai_generate": {
+    "button_tooltip": "Generate card with AI",
+    "dialog_title": "Smart Card Generation",
+    "dialog_desc": "Enter a vocabulary word. AI will automatically find the meaning, part of speech, IPA, and an example for you.",
+    "input_placeholder": "Enter an English word...",
+    "btn_generate": "Generate",
+    "btn_loading": "Fetching card info...",
+    "toast_success_title": "Success!",
+    "toast_success_desc": "Card info auto-filled. You have {{quota}} generation(s) left today.",
+    "toast_error_title": "Error",
+    "toast_error_quota": "You have reached your daily AI limit.",
+    "toast_error_general": "Failed to generate card info. Please try again later."
   }
 }

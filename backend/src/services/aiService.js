@@ -2,16 +2,13 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import aiUsageRepository from '../repositories/aiUsageRepository.js';
 
 class AIService {
-  constructor() {
-    this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  }
-
   async checkAndConsumeQuota(userId) {
     return await aiUsageRepository.checkAndConsumeQuota(userId);
   }
 
   async generateVocabularyInfo(word) {
-    const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' }); // You can use flash or pro
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' }); // lên ai.google.dev/gemini-api/docs/models để xem những model nào dùng được
 
     const prompt = `Bạn là một chuyên gia ngôn ngữ học và từ điển Anh - Việt. Nhiệm vụ của bạn là cung cấp thông tin chi tiết cho từ vựng tiếng Anh được cung cấp dưới đây.
 
@@ -20,16 +17,16 @@ Chỉ trả về duy nhất một chuỗi JSON hợp lệ, không bao gồm bấ
 
 {
   "word": "từ vựng gốc",
-  "part_of_speech": "loại từ",
+  "part_of_speech": "chỉ nhận MỘT trong các giá trị sau (lowercase): 'noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition', 'conjunction', 'interjection'. Nếu không có thì để rỗng ''",
   "meaning": "nghĩa tiếng Việt ngắn gọn",
   "definition": "định nghĩa giải thích bằng tiếng Anh",
-  "ipa": "phiên âm quốc tế IPA",
+  "ipa": "phiên âm quốc tế IPA (chỉ phần phiên âm, KHÔNG BAO GỒM 2 DẤU / / bao quanh, ví dụ: kəˈnɛkʃn)",
   "example": "một câu ví dụ thực tế bằng tiếng Anh",
-  "level": "cấp độ CEFR của từ, nhận các giá trị ('A1', 'A2', 'B1', 'B2', 'C1', 'C2', null nếu không xác định được)",
-  "popularity": "độ phổ biến của từ, nhận giá trị số từ 1 đến 5 hoặc null nếu không xác định được (1=Extremely rare, 2=Rare, 3=Uncommon, 4=Common, 5=Essentials)",
-  "synonyms": "danh sách 1-3 từ đồng nghĩa, ngăn cách bằng dấu phẩy, null nếu không có",
-  "antonyms": "danh sách 1-3 từ trái nghĩa, ngăn cách bằng dấu phẩy, null nếu không có",
-  "near_synonyms": "danh sách 1-3 từ gần nghĩa, ngăn cách bằng dấu phẩy, null nếu không có"
+  "level": "cấp độ CEFR của từ, nhận các giá trị ('A1', 'A2', 'B1', 'B2', 'C1', 'C2', để rỗng '' nếu không xác định được)",
+  "popularity": "độ phổ biến của từ, nhận giá trị số từ 1 đến 5 hoặc để rỗng '' nếu không xác định được (1=Extremely rare, 2=Rare, 3=Uncommon, 4=Common, 5=Essentials)",
+  "synonyms": "danh sách 1-3 từ đồng nghĩa, ngăn cách bằng dấu phẩy, để rỗng '' nếu không có",
+  "antonyms": "danh sách 1-3 từ trái nghĩa, ngăn cách bằng dấu phẩy, để rỗng '' nếu không có",
+  "near_synonyms": "danh sách 1-3 từ gần nghĩa, ngăn cách bằng dấu phẩy, để rỗng '' nếu không có"
 }
 
 Từ vựng cần phân tích: "${word}"`;
@@ -52,9 +49,19 @@ Từ vựng cần phân tích: "${word}"`;
 
       // Parse and return JSON
       const parsedJson = JSON.parse(cleanedText);
+
+      // Strip slashes from IPA if present
+      if (parsedJson.ipa) {
+        parsedJson.ipa = parsedJson.ipa.replace(/^\/|\/$/g, '').trim();
+      }
+
+      // Format Part of Speech securely
+      if (parsedJson.part_of_speech) {
+        parsedJson.part_of_speech = parsedJson.part_of_speech.toLowerCase().trim();
+      }
+
       return parsedJson;
     } catch (error) {
-      console.error('Error generating AI text:', error);
       throw new Error('Đã xảy ra lỗi khi tạo dữ liệu từ vựng bằng AI. Hãy thử lại.', {
         cause: error,
       });

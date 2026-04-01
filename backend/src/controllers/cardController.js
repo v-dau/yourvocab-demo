@@ -1,6 +1,5 @@
 import * as cardService from '../services/cardService.js';
 import aiService from '../services/aiService.js';
-import { pool } from '../config/db.js'; // Added for debug querying
 
 export const generateAiCardInfo = async (req, res) => {
   try {

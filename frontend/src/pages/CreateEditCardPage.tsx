@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { TagCreatableSelect } from '@/components/ui/TagCreatableSelect';
 import type { TagOption } from '@/components/ui/TagCreatableSelect';
+import { GenerateAIDialog } from '@/components/cards/GenerateAIDialog';
 import * as cardService from '@/services/cardService';
 import * as tagService from '@/services/tagService';
 import { toast } from 'sonner';
@@ -55,6 +56,8 @@ const CreateEditCardPage = () => {
     handleSubmit,
     control,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<CardFormValues>({
     resolver: zodResolver(cardSchema),
@@ -191,6 +194,30 @@ const CreateEditCardPage = () => {
         <Card className="p-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             {/* Basic Info */}
+            <div className="flex justify-between items-end mb-4">
+              <h2 className="text-lg font-semibold">
+                {t('create_edit_page.basic_info', 'Thông tin cơ bản')}
+              </h2>
+              <GenerateAIDialog
+                initialWord={watch('word')}
+                onSuccess={(data) => {
+                  Object.keys(data).forEach((key) => {
+                    let formKey = key;
+                    if (key === 'part_of_speech') formKey = 'partOfSpeech';
+                    if (key === 'near_synonyms') formKey = 'nearSynonyms';
+
+                    // Only set value if it exists in the form schema
+                    if (formKey in cardSchema.shape) {
+                      setValue(formKey as keyof CardFormValues, data[key], {
+                        shouldValidate: true,
+                      });
+                    }
+                  });
+                  // If AI suggests a word, make sure to update it too
+                  if (data.word) setValue('word', data.word, { shouldValidate: true });
+                }}
+              />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="word">{t('create_edit_page.word')}</Label>
@@ -233,15 +260,27 @@ const CreateEditCardPage = () => {
                   {...register('partOfSpeech')}
                   className="flex h-10 w-full rounded-md border border-input bg-background dark:bg-zinc-950 px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground"
                 >
-                  <option value="">{t('create_edit_page.select_pos')}</option>
-                  <option value="Noun">{t('create_edit_page.pos_noun', 'Danh từ (Noun)')}</option>
-                  <option value="Verb">{t('create_edit_page.pos_verb', 'Động từ (Verb)')}</option>
-                  <option value="Adjective">{t('create_edit_page.pos_adj', 'Tính từ (Adjective)')}</option>
-                  <option value="Adverb">{t('create_edit_page.pos_adv', 'Trạng từ (Adverb)')}</option>
-                  <option value="Pronoun">{t('create_edit_page.pos_pronoun', 'Đại từ (Pronoun)')}</option>
-                  <option value="Preposition">{t('create_edit_page.pos_prep', 'Giới từ (Preposition)')}</option>
-                  <option value="Conjunction">{t('create_edit_page.pos_conj', 'Liên từ (Conjunction)')}</option>
-                  <option value="Interjection">{t('create_edit_page.pos_interj', 'Thán từ (Interjection)')}</option>
+                  <option value="">{t('create_edit_page.select_pos', 'N/A')}</option>
+                  <option value="noun">{t('create_edit_page.pos_noun', 'Danh từ (Noun)')}</option>
+                  <option value="verb">{t('create_edit_page.pos_verb', 'Động từ (Verb)')}</option>
+                  <option value="adjective">
+                    {t('create_edit_page.pos_adj', 'Tính từ (Adjective)')}
+                  </option>
+                  <option value="adverb">
+                    {t('create_edit_page.pos_adv', 'Trạng từ (Adverb)')}
+                  </option>
+                  <option value="pronoun">
+                    {t('create_edit_page.pos_pronoun', 'Đại từ (Pronoun)')}
+                  </option>
+                  <option value="preposition">
+                    {t('create_edit_page.pos_prep', 'Giới từ (Preposition)')}
+                  </option>
+                  <option value="conjunction">
+                    {t('create_edit_page.pos_conj', 'Liên từ (Conjunction)')}
+                  </option>
+                  <option value="interjection">
+                    {t('create_edit_page.pos_interj', 'Thán từ (Interjection)')}
+                  </option>
                 </select>
               </div>
             </div>
@@ -297,12 +336,24 @@ const CreateEditCardPage = () => {
                   className="flex h-10 w-full rounded-md border border-input bg-background dark:bg-zinc-950 px-3 py-1 text-base shadow-sm file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm text-foreground"
                 >
                   <option value="">N/A</option>
-                  <option value="A1">A1 - {t('create_edit_page.level_a1', 'Beginner (Sơ cấp)')}</option>
-                  <option value="A2">A2 - {t('create_edit_page.level_a2', 'Elementary (Sơ trung cấp)')}</option>
-                  <option value="B1">B1 - {t('create_edit_page.level_b1', 'Intermediate (Trung cấp)')}</option>
-                  <option value="B2">B2 - {t('create_edit_page.level_b2', 'Upper Intermediate (Thượng trung cấp)')}</option>
-                  <option value="C1">C1 - {t('create_edit_page.level_c1', 'Advanced (Cao cấp)')}</option>
-                  <option value="C2">C2 - {t('create_edit_page.level_c2', 'Mastery (Thành thạo)')}</option>
+                  <option value="A1">
+                    A1 - {t('create_edit_page.level_a1', 'Beginner (Sơ cấp)')}
+                  </option>
+                  <option value="A2">
+                    A2 - {t('create_edit_page.level_a2', 'Elementary (Sơ trung cấp)')}
+                  </option>
+                  <option value="B1">
+                    B1 - {t('create_edit_page.level_b1', 'Intermediate (Trung cấp)')}
+                  </option>
+                  <option value="B2">
+                    B2 - {t('create_edit_page.level_b2', 'Upper Intermediate (Thượng trung cấp)')}
+                  </option>
+                  <option value="C1">
+                    C1 - {t('create_edit_page.level_c1', 'Advanced (Cao cấp)')}
+                  </option>
+                  <option value="C2">
+                    C2 - {t('create_edit_page.level_c2', 'Mastery (Thành thạo)')}
+                  </option>
                 </select>
               </div>
               <div className="space-y-2">
@@ -368,6 +419,3 @@ const CreateEditCardPage = () => {
 };
 
 export default CreateEditCardPage;
-
-
-
