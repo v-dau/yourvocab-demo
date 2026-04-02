@@ -258,7 +258,9 @@
   "common": {
     "typeToCreateTags": "Type to create or select tags...",
     "createTag": "Create tag {{inputValue}}",
-    "noTagsFound": "No tags found"
+    "noTagsFound": "No tags found",
+    "signin": "Sign In",
+    "signup": "Sign Up"
   },
   "tag": {
     "btn": "Tags",
@@ -329,5 +331,30 @@
       "success": "Review recorded successfully!",
       "error": "An error occurred, please try again."
     }
+  },
+  "auth": {
+    "signin_title": "Sign in to Yourvocab",
+    "signin_subtitle": "Welcome back! Please sign in to continue.",
+    "username_or_email": "Username or email",
+    "password": "Password",
+    "no_account": "Don't have an account?",
+    "signup_title": "Create a Yourvocab account",
+    "signup_subtitle": "Welcome! Please sign up to get started.",
+    "username": "Username",
+    "email": "Email",
+    "confirm_password": "Confirm password",
+    "create_account": "Create account",
+    "have_account": "Already have an account?",
+    "terms_agreement": "By continuing, you agree to our",
+    "terms_of_service": "Terms of Service",
+    "and": "and",
+    "privacy_policy": "Privacy Policy",
+    "val_identifier": "Please enter your username or email",
+    "val_password": "Please enter your password",
+    "val_username_min": "Username must be at least 3 characters",
+    "val_email_invalid": "Invalid email",
+    "val_password_min": "Password must be at least 8 characters",
+    "val_password_match": "Passwords do not match",
+    "of_us": ""
   }
 }

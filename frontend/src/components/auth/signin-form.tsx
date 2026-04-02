@@ -1,43 +1,44 @@
+import React, { useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '../ui/label';
-import { z } from 'zod'; //validate form
-import { useForm } from 'react-hook-form'; //handle form events and form satate
-import { zodResolver } from '@hookform/resolvers/zod'; //connect zod to react hook form
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/stores/authStore';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 
-const signInSchema = z.object({
-  //use identifier to represent both username and email
-  //only basic length validation is applied; distinguishing between username and email is handled by the BE
-  identifier: z.string().min(3, 'Vui lòng nhập tên đăng nhập hoặc email'),
-  password: z.string().min(1, 'Vui lòng nhập mật khẩu'),
-});
+const getSignInSchema = (t: TFunction) =>
+  z.object({
+    identifier: z
+      .string()
+      .min(3, t('auth.val_identifier', 'Vui lòng nhập tên đăng nhập hoặc email')),
+    password: z.string().min(1, t('auth.val_password', 'Vui lòng nhập mật khẩu')),
+  });
 
-//use type to extract the schema type and avoid re-defining the object elsewhere
-type SignInFormValues = z.infer<typeof signInSchema>;
+type SignInFormValues = z.infer<ReturnType<typeof getSignInSchema>>;
 
 const SignInForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const { signIn } = useAuthStore();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const signInSchema = useMemo(() => getSignInSchema(t), [t]);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<SignInFormValues>({
-    resolver: zodResolver(signInSchema), //connect useForm to signUpSchema
+    resolver: zodResolver(signInSchema),
   });
 
-  //handle form submission
   const onSubmit = async (data: SignInFormValues) => {
-    //get sign in data from the form
     const { identifier, password } = data;
-
-    //call signIn at the authStore
     await signIn(identifier, password);
-
     navigate('/dashboard');
   };
 
@@ -47,23 +48,21 @@ const SignInForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-4 md:p-6" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
-              {/*header-logo*/}
               <div className="flex flex-col items-center text-center gap-2">
                 <a href="/" className="mx-auto block w-fit text-center">
                   <img src="/logo.svg" alt="logo" />
                 </a>
-
-                <h1 className="!text-2xl font-bold">Đăng nhập Yourvocab</h1>
-
+                <h1 className="!text-2xl font-bold">
+                  {t('auth.signin_title', 'Đăng nhập Yourvocab')}
+                </h1>
                 <p className="text-muted-foreground text-balance">
-                  Chào mừng bạn! Hãy đăng nhập để bắt đầu
+                  {t('auth.signin_subtitle', 'Chào mừng bạn! Hãy đăng nhập để bắt đầu.')}
                 </p>
               </div>
 
-              {/*username*/}
               <div className="flex flex-col gap-3">
                 <Label htmlFor="username" className="block text-sm">
-                  Tên đăng nhập hoặc email
+                  {t('auth.username_or_email', 'Tên đăng nhập hoặc email')}
                 </Label>
                 <Input
                   type="text"
@@ -71,38 +70,34 @@ const SignInForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
                   placeholder="yourvocab"
                   {...register('identifier')}
                 />
-
                 {errors.identifier && (
-                  <p className="text-destructive text-sm">{errors.identifier.message}</p>
+                  <p className="text-destructive text-sm">{errors.identifier.message as string}</p>
                 )}
               </div>
 
-              {/*password*/}
               <div className="flex flex-col gap-3">
                 <Label htmlFor="password" className="block text-sm">
-                  Mật khẩu
+                  {t('auth.password', 'Mật khẩu')}
                 </Label>
                 <Input
                   type="password"
                   id="password"
-                  placeholder="Mật khẩu"
+                  placeholder={t('auth.password', 'Mật khẩu')}
                   {...register('password')}
                 />
-
                 {errors.password && (
-                  <p className="text-destructive text-sm">{errors.password.message}</p>
+                  <p className="text-destructive text-sm">{errors.password.message as string}</p>
                 )}
               </div>
 
-              {/*signin button*/}
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                Đăng nhập
+                {t('common.signin', 'Đăng nhập')}
               </Button>
 
               <div className="text-center text-sm">
-                Chưa có tài khoản?{' '}
+                {t('auth.no_account', 'Chưa có tài khoản?')}{' '}
                 <a href="/signup" className="underline underline-offset-4">
-                  Đăng ký
+                  {t('common.signup', 'Đăng ký')}
                 </a>
               </div>
             </div>
@@ -117,8 +112,10 @@ const SignInForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
         </CardContent>
       </Card>
       <div className="text-xs text-balance px-6 text-center *:[a]:hover:text-primary text-muted-foreground *:[a]:underline *:[a]:underline-offset-4">
-        Bằng cách tiếp tục, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a> và{' '}
-        <a href="#">Chính sách bảo mật</a> của chúng tôi.
+        {t('auth.terms_agreement', 'Bằng cách tiếp tục, bạn đồng ý với')}{' '}
+        <a href="#">{t('auth.terms_of_service', 'Điều khoản dịch vụ')}</a> {t('auth.and', 'và')}{' '}
+        <a href="#">{t('auth.privacy_policy', 'Chính sách bảo mật')}</a>{' '}
+        {t('auth.of_us', 'của chúng tôi.')}
       </div>
     </div>
   );

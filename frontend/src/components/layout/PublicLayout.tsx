@@ -33,7 +33,7 @@ export const PublicLayout: React.FC<PublicLayoutProps> = ({
   return (
     <div className="min-h-screen flex flex-col w-full relative bg-background">
       {/* Header */}
-      <header className="relative z-10 bg-transparent border-b border-border/40 backdrop-blur-sm">
+      <header className="relative z-10 bg-transparent backdrop-blur-sm">
         <div className="flex justify-between items-center py-4 px-6 md:px-10">
           <Link
             to="/signin"

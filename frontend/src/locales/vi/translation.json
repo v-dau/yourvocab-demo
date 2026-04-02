@@ -258,7 +258,9 @@
   "common": {
     "typeToCreateTags": "Nhập để tạo hoặc chọn nhãn dán...",
     "createTag": "Tạo tag mới {{inputValue}}",
-    "noTagsFound": "Không tìm thấy nhãn dán"
+    "noTagsFound": "Không tìm thấy nhãn dán",
+    "signin": "Đăng nhập",
+    "signup": "Đăng ký"
   },
   "tag": {
     "btn": "Nhãn",
@@ -329,5 +331,30 @@
       "success": "Đã ghi nhận ôn tập thẻ!",
       "error": "Có lỗi xảy ra, vui lòng thử lại."
     }
+  },
+  "auth": {
+    "signin_title": "Đăng nhập Yourvocab",
+    "signin_subtitle": "Chào mừng bạn! Hãy đăng nhập để bắt đầu.",
+    "username_or_email": "Tên đăng nhập hoặc email",
+    "password": "Mật khẩu",
+    "no_account": "Chưa có tài khoản?",
+    "signup_title": "Tạo tài khoản Yourvocab",
+    "signup_subtitle": "Chào mừng bạn! Hãy đăng ký để bắt đầu.",
+    "username": "Tên đăng nhập",
+    "email": "Email",
+    "confirm_password": "Xác nhận mật khẩu",
+    "create_account": "Tạo tài khoản",
+    "have_account": "Đã có tài khoản?",
+    "terms_agreement": "Bằng cách tiếp tục, bạn đồng ý với",
+    "terms_of_service": "Điều khoản dịch vụ",
+    "and": "và",
+    "privacy_policy": "Chính sách bảo mật",
+    "val_identifier": "Vui lòng nhập tên đăng nhập hoặc email",
+    "val_password": "Vui lòng nhập mật khẩu",
+    "val_username_min": "Tên đăng nhập phải có ít nhất 3 kí tự",
+    "val_email_invalid": "Email không hợp lệ",
+    "val_password_min": "Mật khẩu phải có ít nhất 8 kí tự",
+    "val_password_match": "Mật khẩu xác nhận không khớp",
+    "of_us": "của chúng tôi."
   }
 }
