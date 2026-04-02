@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
 import * as cardService from '@/services/cardService';
+import { useReviewStore } from '@/stores/reviewStore';
 
 interface DesktopSidebarProps {
   isLoggedIn?: boolean;
@@ -65,6 +66,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
 
   const [trashCount, setTrashCount] = useState(0);
   const location = useLocation();
+  const { totalDue } = useReviewStore();
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -80,7 +82,12 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   const navItems = [
     { icon: LayoutDashboard, label: t('sidebar.dashboard'), path: '/dashboard' },
     { icon: FileText, label: t('sidebar.cards'), path: '/cards' },
-    { icon: RotateCw, label: t('sidebar.review'), path: '/review' },
+    {
+      icon: RotateCw,
+      label: t('sidebar.review'),
+      path: '/review',
+      badge: totalDue > 0 ? totalDue : null,
+    },
     {
       icon: Trash2,
       label: t('sidebar.trash'),
@@ -157,15 +164,29 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
             >
               <div className="relative">
                 <Icon className="h-5 w-5 shrink-0" />
-                {item.badge !== undefined && item.badge !== null && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                {isCollapsed && item.badge !== undefined && item.badge !== null && (
+                  <span
+                    className={cn(
+                      'absolute -top-2 -right-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center',
+                      item.path === '/trash'
+                        ? 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-200'
+                        : 'bg-primary text-background'
+                    )}
+                  >
                     {item.badge}
                   </span>
                 )}
               </div>
               {!isCollapsed && <span className="text-sm font-medium">{item.label}</span>}
               {!isCollapsed && item.badge !== undefined && item.badge !== null && (
-                <span className="ml-auto text-xs font-semibold bg-red-100 text-red-600 px-2 py-0.5 rounded-full">
+                <span
+                  className={cn(
+                    'ml-auto text-xs font-semibold px-2 py-0.5 rounded-full',
+                    item.path === '/trash'
+                      ? 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-200'
+                      : 'bg-primary/10 text-primary'
+                  )}
+                >
                   {item.badge}
                 </span>
               )}

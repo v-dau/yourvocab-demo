@@ -92,11 +92,15 @@ const ReviewPage = () => {
           </div>
         ) : (
           <Tabs defaultValue="0" className="w-full">
-            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 h-auto p-1 mb-8 gap-2">
+            <TabsList className="flex w-full overflow-x-auto h-auto p-1.5 mb-8 gap-2 bg-background/80 backdrop-blur border shadow-sm rounded-xl justify-start lg:justify-center [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {tabsInfo.map((tab) => {
                 const count = cardsGrouped[tab.index]?.length || 0;
                 return (
-                  <TabsTrigger key={tab.index} value={tab.index.toString()} className="py-2.5">
+                  <TabsTrigger
+                    key={tab.index}
+                    value={tab.index.toString()}
+                    className="py-2 px-4 whitespace-nowrap min-w-fit data-[state=active]:bg-primary/10 data-[state=active]:text-primary transition-colors rounded-lg"
+                  >
                     {tab.label}
                     {count > 0 && (
                       <Badge

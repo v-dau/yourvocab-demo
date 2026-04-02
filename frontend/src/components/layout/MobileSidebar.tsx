@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Menu, BookOpen, LogOut, Settings } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import * as cardService from '@/services/cardService';
+import { useReviewStore } from '@/stores/reviewStore';
 
 interface MobileSidebarProps {
   isLoggedIn?: boolean;
@@ -24,6 +25,7 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({
   const location = useLocation();
   const [open, setOpen] = React.useState(false);
   const [trashCount, setTrashCount] = useState(0);
+  const { totalDue } = useReviewStore();
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -86,9 +88,14 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({
           </button>
           <button
             onClick={() => handleNavigate('/review')}
-            className="text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
+            className="flex items-center justify-between text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
           >
-            Spaced Repetition
+            <span>Spaced Repetition</span>
+            {totalDue > 0 && (
+              <span className="bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full">
+                {totalDue}
+              </span>
+            )}
           </button>
           <button
             onClick={() => handleNavigate('/trash')}
