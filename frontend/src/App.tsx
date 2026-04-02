@@ -14,16 +14,29 @@ import { Toaster } from 'sonner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import { DisplayModeProvider } from './stores/displayModeStore';
 import { MainLayout } from './components/layout';
+import { PublicLayout } from './components/layout/PublicLayout';
 import { useAuthStore } from './stores/authStore';
 import api from './lib/axios';
 
 function App() {
   const { user, signOut } = useAuthStore();
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [language, setLanguage] = useState<'vi' | 'en'>('vi');
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    return (localStorage.getItem('theme_preference') as 'light' | 'dark') || 'light';
+  });
+  const [language, setLanguage] = useState<'vi' | 'en'>(() => {
+    return (localStorage.getItem('language_preference') as 'vi' | 'en') || 'vi';
+  });
   const { i18n } = useTranslation();
 
   useEffect(() => {
+    // Apply local storage preferences immediately for unauthenticated users or before DB loads
+    i18n.changeLanguage(language);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
     if (user) {
       api
         .get('/users/me/settings')
@@ -43,6 +56,7 @@ function App() {
         })
         .catch((err) => console.error('Failed to load user settings', err));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, i18n]);
 
   const handleLogout = async () => {
@@ -52,7 +66,10 @@ function App() {
   const handleLanguageChange = async (newLang: 'en' | 'vi') => {
     setLanguage(newLang);
     i18n.changeLanguage(newLang);
-    if (user) {
+
+    if (!user) {
+      localStorage.setItem('language_preference', newLang);
+    } else {
       try {
         await api.patch('/users/me/settings', { language: newLang });
       } catch (err) {
@@ -71,7 +88,9 @@ function App() {
       document.documentElement.classList.remove('dark');
     }
 
-    if (user) {
+    if (!user) {
+      localStorage.setItem('theme_preference', newTheme);
+    } else {
       try {
         await api.patch('/users/me/settings', { theme_preference: newTheme });
       } catch (err) {
@@ -86,8 +105,32 @@ function App() {
         <BrowserRouter>
           <Routes>
             {/*public routes*/}
-            <Route path="/signin" element={<SignInPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
+            <Route
+              path="/signin"
+              element={
+                <PublicLayout
+                  onThemeToggle={handleThemeToggle}
+                  currentTheme={theme}
+                  currentLanguage={language}
+                  onLanguageChange={handleLanguageChange}
+                >
+                  <SignInPage />
+                </PublicLayout>
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                <PublicLayout
+                  onThemeToggle={handleThemeToggle}
+                  currentTheme={theme}
+                  currentLanguage={language}
+                  onLanguageChange={handleLanguageChange}
+                >
+                  <SignUpPage />
+                </PublicLayout>
+              }
+            />
 
             {/*protected routes*/}
             <Route element={<ProtectedRoute />}>
