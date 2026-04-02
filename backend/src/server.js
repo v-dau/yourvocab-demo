@@ -5,6 +5,7 @@ import authRoute from './routes/authRoute.js';
 import userRoute from './routes/userRoute.js';
 import cardRoute from './routes/cardRoute.js';
 import tagRoute from './routes/tagRoute.js';
+import reviewRoute from './routes/reviewRoute.js';
 import cookieParser from 'cookie-parser';
 import { protectedRoute } from './middlewares/authMiddleware.js';
 import cors from 'cors';
@@ -26,6 +27,7 @@ app.use(protectedRoute); //middleware for all the routes below it
 app.use('/api/users', userRoute);
 app.use('/api/cards', cardRoute);
 app.use('/api/tags', tagRoute);
+app.use('/api/reviews', reviewRoute);
 
 // connect to the DB before running the server
 connectDB().then(() => {

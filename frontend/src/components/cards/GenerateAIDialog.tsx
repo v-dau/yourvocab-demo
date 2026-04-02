@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Loader2, Sparkles } from 'lucide-react';
 import {
@@ -26,6 +26,21 @@ export function GenerateAIDialog({ initialWord, onSuccess }: GenerateAIDialogPro
   const [open, setOpen] = useState(false);
   const [word, setWord] = useState(initialWord || '');
   const [isLoading, setIsLoading] = useState(false);
+  const [quota, setQuota] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchQuota = async () => {
+      try {
+        const response = await api.get('/cards/ai-quota');
+        if (response.data?.remaining_quota !== undefined) {
+          setQuota(response.data.remaining_quota);
+        }
+      } catch (error) {
+        console.error('Failed to fetch AI quota', error);
+      }
+    };
+    fetchQuota();
+  }, []);
 
   // Update internal state when dialog opens and initialWord changes
   const handleOpenChange = (newOpen: boolean) => {
@@ -46,6 +61,7 @@ export function GenerateAIDialog({ initialWord, onSuccess }: GenerateAIDialogPro
       const response = await api.post('/cards/generate-ai', { word: word.trim() });
 
       const { remaining_quota, data } = response.data;
+      setQuota(remaining_quota);
 
       onSuccess(data);
       setOpen(false);
@@ -67,18 +83,43 @@ export function GenerateAIDialog({ initialWord, onSuccess }: GenerateAIDialogPro
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          type="button"
-          className="gap-2"
-          title={t('ai_generate.button_tooltip')}
-        >
-          <Sparkles className="w-4 h-4 text-primary" />
-          {t('ai_generate.button_tooltip')}
-        </Button>
-      </DialogTrigger>
+      <div className="flex items-center gap-2">
+        <DialogTrigger asChild>
+          <Button
+            variant="outline"
+            size="sm"
+            type="button"
+            className="gap-2 relative border-0 bg-transparent hover:bg-transparent z-0 overflow-visible"
+            title={t('ai_generate.button_tooltip')}
+          >
+            <div className="absolute inset-[-2px] -z-10 bg-gradient-to-r from-fuchsia-500 via-blue-500 to-cyan-500 rounded-md" />
+            <div className="absolute inset-0 -z-10 bg-background rounded-[calc(var(--radius)-1px)]" />
+
+            <svg width="0" height="0" className="absolute">
+              <linearGradient id="rainbow-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#d946ef" />
+                <stop offset="50%" stopColor="#3b82f6" />
+                <stop offset="100%" stopColor="#06b6d4" />
+              </linearGradient>
+            </svg>
+            <Sparkles
+              className="w-4 h-4"
+              style={{ stroke: 'url(#rainbow-grad)', fill: 'url(#rainbow-grad)', fillOpacity: 0.2 }}
+            />
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-500 via-blue-500 to-cyan-500 font-semibold">
+              {t('ai_generate.button_tooltip')}
+            </span>
+          </Button>
+        </DialogTrigger>
+        {quota !== null && (
+          <span
+            className="text-sm text-muted-foreground cursor-help hover:text-foreground transition-colors"
+            title={t('ai_generate.quota_refresh_tooltip')}
+          >
+            {quota}/10
+          </span>
+        )}
+      </div>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

@@ -179,3 +179,5 @@ export const CardDetailsModal: React.FC<CardDetailsModalProps> = ({ card, onClos
     </div>
   );
 };
+
+export default CardDetailsModal;

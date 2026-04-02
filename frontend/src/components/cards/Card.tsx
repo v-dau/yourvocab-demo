@@ -11,6 +11,7 @@ import {
   Maximize2,
   Minimize2,
   RotateCcw,
+  CheckCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card as CardUI } from '@/components/ui/card';
@@ -32,6 +33,9 @@ interface CardProps {
   isSelected?: boolean;
   showActions?: boolean;
   isTrashMode?: boolean;
+  isReviewMode?: boolean;
+  stepIndex?: number;
+  onFinishReview?: (cardId: string) => void;
 }
 
 /**
@@ -101,6 +105,9 @@ export const Card: React.FC<CardProps> = ({
   isTrashMode = false,
   onRestore,
   onHardDelete,
+  isReviewMode = false,
+  stepIndex = 0,
+  onFinishReview,
 }) => {
   const { globalDisplayMode } = useDisplayMode();
   const [localMode, setLocalMode] = useState<'basic' | 'full'>(globalDisplayMode);
@@ -336,52 +343,69 @@ export const Card: React.FC<CardProps> = ({
               <span className="text-xs hidden sm:inline">{t('card.actions.view')}</span>
             </Button>
           )}
-          {!isTrashMode && onEdit && (
+
+          {isReviewMode && onFinishReview ? (
             <Button
-              variant="outline"
+              variant="default"
               size="sm"
-              onClick={() => onEdit(card)}
-              title={t('card.actions.edit_title')}
+              onClick={() => onFinishReview(card.id)}
               className="flex-1 gap-2"
             >
-              <Edit2 className="h-4 w-4" />
-              <span className="text-xs hidden sm:inline">{t('card.actions.edit')}</span>
+              <CheckCircle className="h-4 w-4" />
+              <span className="text-xs hidden sm:inline">
+                {stepIndex === 5 ? t('review_page.btn_complete') : t('review_page.btn_finish')}
+              </span>
             </Button>
-          )}
-          {!isTrashMode && onDelete && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => onDelete(card.id)}
-              title={t('card.actions.move_to_trash')}
-              className="flex-1 gap-2"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          )}
-          {isTrashMode && onRestore && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => onRestore(card.id)}
-              title={t('card.actions.restore_title')}
-              className="flex-1 gap-2 text-blue-600 border-blue-200 hover:bg-blue-50"
-            >
-              <RotateCcw className="h-4 w-4" />
-              <span className="text-xs hidden sm:inline">{t('card.actions.restore')}</span>
-            </Button>
-          )}
-          {isTrashMode && onHardDelete && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={() => onHardDelete(card.id)}
-              title={t('card.actions.hard_delete_title')}
-              className="flex-1 gap-2"
-            >
-              <Trash2 className="h-4 w-4" />
-              <span className="text-xs hidden sm:inline">{t('card.actions.hard_delete')}</span>
-            </Button>
+          ) : (
+            <>
+              {!isTrashMode && onEdit && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onEdit(card)}
+                  title={t('card.actions.edit_title')}
+                  className="flex-1 gap-2"
+                >
+                  <Edit2 className="h-4 w-4" />
+                  <span className="text-xs hidden sm:inline">{t('card.actions.edit')}</span>
+                </Button>
+              )}
+              {!isTrashMode && onDelete && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => onDelete(card.id)}
+                  title={t('card.actions.move_to_trash')}
+                  className="flex-1 gap-2"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+              {isTrashMode && onRestore && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onRestore(card.id)}
+                  title={t('card.actions.restore_title')}
+                  className="flex-1 gap-2 text-blue-600 border-blue-200 hover:bg-blue-50"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  <span className="text-xs hidden sm:inline">{t('card.actions.restore')}</span>
+                </Button>
+              )}
+              {isTrashMode && onHardDelete && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => onHardDelete(card.id)}
+                  title={t('card.actions.hard_delete_title')}
+                  className="flex-1 gap-2"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="text-xs hidden sm:inline">{t('card.actions.hard_delete')}</span>
+                </Button>
+              )}
+            </>
           )}
         </div>
       )}

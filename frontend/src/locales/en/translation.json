@@ -150,13 +150,21 @@
   },
   "review_page": {
     "title": "Spaced Repetition Review",
-    "subtitle": "Use the Spaced Repetition method to review vocabulary effectively",
-    "words_to_review": "Words to review today",
-    "view_list": "View list",
-    "words_learned": "Words learned",
-    "no_stats": "No statistics yet",
-    "coming_soon": "The spaced repetition feature will be available soon. Please come back later!",
-    "back_to_cards": "Back to card list"
+    "subtitle": "Review your cards systematically for better retention.",
+    "tabs": {
+      "today": "Today",
+      "day_1": "Day 1",
+      "day_3": "Day 3",
+      "day_7": "Day 7",
+      "day_14": "Day 14",
+      "day_30": "Day 30"
+    },
+    "empty_title": "You have completed this milestone!",
+    "empty_desc": "There are no more cards to review in this section.",
+    "btn_finish": "Finished review",
+    "btn_complete": "Complete review",
+    "toast_success": "Card reviewed successfully",
+    "toast_error": "Error finishing review. Please try again."
   },
   "trash_page": {
     "fetch_error": "Error loading deleted cards.",
@@ -294,6 +302,31 @@
     "toast_success_desc": "Card info auto-filled. You have {{quota}} generation(s) left today.",
     "toast_error_title": "Error",
     "toast_error_quota": "You have reached your daily AI limit.",
-    "toast_error_general": "Failed to generate card info. Please try again later."
+    "toast_error_general": "Failed to generate card info. Please try again later.",
+    "quota_display": "{{quota}}/10",
+    "quota_refresh_tooltip": "Refreshes tomorrow"
+  },
+  "review": {
+    "title": "Review Cards",
+    "tabs": {
+      "step_0": "Today",
+      "step_1": "1 Day",
+      "step_2": "3 Days",
+      "step_3": "7 Days",
+      "step_4": "14 Days",
+      "step_5": "30 Days"
+    },
+    "actions": {
+      "finished": "Finished review",
+      "completed": "Complete review"
+    },
+    "empty_state": {
+      "title": "Awesome!",
+      "desc": "You have no cards due for review in this period."
+    },
+    "toast": {
+      "success": "Review recorded successfully!",
+      "error": "An error occurred, please try again."
+    }
   }
 }

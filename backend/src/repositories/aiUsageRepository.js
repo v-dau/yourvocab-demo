@@ -60,6 +60,24 @@ class AIUsageRepository {
       client.release();
     }
   }
+
+  async getQuota(userId) {
+    const { rows } = await pool.query(
+      'SELECT daily_quota, (last_used_date < CURRENT_DATE) as needs_reset FROM user_ai_usages WHERE user_id = $1',
+      [userId]
+    );
+
+    if (rows.length === 0) {
+      return 10;
+    }
+
+    const record = rows[0];
+    if (record.needs_reset) {
+      return 10;
+    }
+
+    return record.daily_quota;
+  }
 }
 
 export default new AIUsageRepository();

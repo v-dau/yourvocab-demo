@@ -1,49 +1,158 @@
-import { Button } from '@/components/ui/button';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
-import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
+import { Card as CardComponent } from '@/components/cards/Card';
+import { useReviewStore } from '@/stores/reviewStore';
+import { Smile } from 'lucide-react';
+import api from '@/lib/axios';
+import { toast } from 'sonner';
+import type { Card as CardType } from '@/types/card';
+import { CardDetailsModal } from '@/components/cards/CardDetailsModal';
 
 const ReviewPage = () => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
+  const { setTotalDue, decrementTotalDue } = useReviewStore();
+
+  const [cardsGrouped, setCardsGrouped] = useState<Record<number, CardType[]>>({
+    0: [],
+    1: [],
+    2: [],
+    3: [],
+    4: [],
+    5: [],
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
+
+  const fetchDueReviews = async () => {
+    try {
+      setIsLoading(true);
+      const res = await api.get('/reviews/due');
+      if (res.data.success) {
+        setCardsGrouped(res.data.data);
+        setTotalDue(res.data.total);
+      }
+    } catch (error) {
+      console.error('Failed to fetch due reviews:', error);
+      toast.error(t('review_page.toast_error'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDueReviews();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleFinishReview = async (cardId: string, currentStep: number) => {
+    try {
+      const res = await api.post(`/reviews/${cardId}/finish`);
+      if (res.data.success) {
+        toast.success(t('review_page.toast_success'));
+
+        setCardsGrouped((prev) => {
+          const newGroup = { ...prev };
+          if (newGroup[currentStep]) {
+            newGroup[currentStep] = newGroup[currentStep].filter((c) => c.id !== cardId);
+          }
+          return newGroup;
+        });
+
+        decrementTotalDue();
+      }
+    } catch (error) {
+      console.error('Failed to finish review:', error);
+      toast.error(t('review_page.toast_error'));
+    }
+  };
+
+  const tabsInfo = [
+    { index: 0, label: t('review_page.tabs.today') },
+    { index: 1, label: t('review_page.tabs.day_1') },
+    { index: 2, label: t('review_page.tabs.day_3') },
+    { index: 3, label: t('review_page.tabs.day_7') },
+    { index: 4, label: t('review_page.tabs.day_14') },
+    { index: 5, label: t('review_page.tabs.day_30') },
+  ];
 
   return (
     <div className="min-h-screen bg-background p-6 bg-gradient-blue">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-2">{t('review_page.title')}</h1>
-          <p className="text-muted-foreground">
-            {t('review_page.subtitle')}
-          </p>
+          <p className="text-muted-foreground">{t('review_page.subtitle')}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <div className="text-3xl font-bold text-primary mb-2">0</div>
-            <p className="text-muted-foreground mb-4">{t('review_page.words_to_review')}</p>
-            <Button onClick={() => navigate('/cards')} variant="outline" className="w-full">
-              {t('review_page.view_list')}
-            </Button>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <div className="text-3xl font-bold text-primary mb-2">0</div>
-            <p className="text-muted-foreground mb-4">{t('review_page.words_learned')}</p>
-            <Button disabled variant="outline" className="w-full">
-              {t('review_page.no_stats')}
-            </Button>
-          </Card>
-        </div>
-
-        <Card className="p-8">
-          <div className="text-center">
-            <p className="text-muted-foreground mb-6">
-              Tinh năng ôn tập khoảng cách sẽ sớm có. Vui lòng quay lại sau!
-            </p>
-            <Button onClick={() => navigate('/cards')}>{t('review_page.back_to_cards')}</Button>
+        {isLoading ? (
+          <div className="flex justify-center p-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
           </div>
-        </Card>
+        ) : (
+          <Tabs defaultValue="0" className="w-full">
+            <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 h-auto p-1 mb-8 gap-2">
+              {tabsInfo.map((tab) => {
+                const count = cardsGrouped[tab.index]?.length || 0;
+                return (
+                  <TabsTrigger key={tab.index} value={tab.index.toString()} className="py-2.5">
+                    {tab.label}
+                    {count > 0 && (
+                      <Badge
+                        variant="secondary"
+                        className="ml-2 bg-primary/10 text-primary hover:bg-primary/20"
+                      >
+                        {count}
+                      </Badge>
+                    )}
+                  </TabsTrigger>
+                );
+              })}
+            </TabsList>
+
+            {tabsInfo.map((tab) => {
+              const cards = cardsGrouped[tab.index] || [];
+
+              return (
+                <TabsContent key={tab.index} value={tab.index.toString()}>
+                  {cards.length === 0 ? (
+                    <Card className="p-12 border-dashed flex flex-col items-center justify-center text-center">
+                      <div className="bg-primary/10 p-4 rounded-full mb-4">
+                        <Smile className="h-10 w-10 text-primary" />
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2 text-foreground">
+                        {t('review_page.empty_title')}
+                      </h3>
+                      <p className="text-muted-foreground max-w-md">
+                        {t('review_page.empty_desc')}
+                      </p>
+                    </Card>
+                  ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                      {cards.map((card) => (
+                        <CardComponent
+                          key={card.id}
+                          card={card}
+                          showActions={true}
+                          isReviewMode={true}
+                          stepIndex={tab.index}
+                          onFinishReview={(id) => handleFinishReview(id, tab.index)}
+                          onView={(c) => setSelectedCard(c)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </TabsContent>
+              );
+            })}
+          </Tabs>
+        )}
       </div>
+
+      {selectedCard && (
+        <CardDetailsModal card={selectedCard} onClose={() => setSelectedCard(null)} />
+      )}
     </div>
   );
 };

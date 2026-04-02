@@ -6,6 +6,7 @@ import { aiRateLimiter } from '../middlewares/aiRateLimiter.js';
 const router = express.Router();
 
 router.post('/generate-ai', protectedRoute, aiRateLimiter, cardController.generateAiCardInfo);
+router.get('/ai-quota', protectedRoute, cardController.getAiQuota);
 
 router.get('/trash', cardController.getTrashCards);
 router.post('/trash/restore-all', cardController.restoreAllCards);

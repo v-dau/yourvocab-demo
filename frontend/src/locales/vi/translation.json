@@ -149,14 +149,22 @@
     "create_first_card": "Tạo thẻ đầu tiên"
   },
   "review_page": {
-    "title": "Ôn tập khoảng cách",
-    "subtitle": "Sử dụng phương pháp Spaced Repetition để ôn tập từ vựng một cách hiệu quả",
-    "words_to_review": "Từ cần ôn tập hôm nay",
-    "view_list": "Xem danh sách",
-    "words_learned": "Từ đã học",
-    "no_stats": "Chưa có thống kê",
-    "coming_soon": "Tính năng ôn tập khoảng cách sẽ sớm có. Vui lòng quay lại sau!",
-    "back_to_cards": "Quay lại danh sách thẻ"
+    "title": "Ôn tập ngắt quãng",
+    "subtitle": "Ôn tập thẻ theo lịch trình hệ thống để ghi nhớ tốt hơn.",
+    "tabs": {
+      "today": "Hôm nay",
+      "day_1": "Ngày 1",
+      "day_3": "Ngày 3",
+      "day_7": "Ngày 7",
+      "day_14": "Ngày 14",
+      "day_30": "Ngày 30"
+    },
+    "empty_title": "Bạn đã hoàn thành mốc ôn tập này!",
+    "empty_desc": "Không còn thẻ nào cần ôn ở mốc này.",
+    "btn_finish": "Đã ôn",
+    "btn_complete": "Hoàn thành",
+    "toast_success": "Đã ôn tập thẻ thành công",
+    "toast_error": "Lỗi khi ôn tập thẻ. Vui lòng thử lại."
   },
   "trash_page": {
     "fetch_error": "Lỗi khi tải danh sách thẻ trong thùng rác.",
@@ -294,6 +302,31 @@
     "toast_success_desc": "Đã tự động điền thông tin thẻ. Bạn còn {{quota}} lượt hôm nay.",
     "toast_error_title": "Lỗi",
     "toast_error_quota": "Bạn đã hết lượt dùng AI hôm nay.",
-    "toast_error_general": "Không thể lấy thông tin thẻ lúc này. Vui lòng thử lại sau."
+    "toast_error_general": "Không thể lấy thông tin thẻ lúc này. Vui lòng thử lại sau.",
+    "quota_display": "{{quota}}/10",
+    "quota_refresh_tooltip": "Làm mới vào ngày mai"
+  },
+  "review": {
+    "title": "Ôn tập thẻ",
+    "tabs": {
+      "step_0": "Hôm nay",
+      "step_1": "1 Ngày",
+      "step_2": "3 Ngày",
+      "step_3": "7 Ngày",
+      "step_4": "14 Ngày",
+      "step_5": "30 Ngày"
+    },
+    "actions": {
+      "finished": "Đã ôn",
+      "completed": "Hoàn thành"
+    },
+    "empty_state": {
+      "title": "Tuyệt vời!",
+      "desc": "Bạn không có thẻ nào cần ôn ở mốc thời gian này."
+    },
+    "toast": {
+      "success": "Đã ghi nhận ôn tập thẻ!",
+      "error": "Có lỗi xảy ra, vui lòng thử lại."
+    }
   }
 }

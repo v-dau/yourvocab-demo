@@ -1,6 +1,23 @@
 import * as cardService from '../services/cardService.js';
 import aiService from '../services/aiService.js';
 
+export const getAiQuota = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+    const quota = await aiService.getQuota(userId);
+    res.status(200).json({
+      success: true,
+      remaining_quota: quota,
+    });
+  } catch (error) {
+    console.error('Get AI quota error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
 export const generateAiCardInfo = async (req, res) => {
   try {
     const { word } = req.body;

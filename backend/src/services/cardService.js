@@ -45,6 +45,12 @@ export const createCard = async (cardData) => {
       await cardTagRepository.linkCardTags(newCard.id, finalTagIds, client);
     }
 
+    // Insert tracker for new card
+    await client.query(
+      `INSERT INTO card_review_trackers (card_id, step_index, next_review_date, is_completed) VALUES ($1, 0, NOW(), false)`,
+      [newCard.id]
+    );
+
     await client.query('COMMIT');
     return newCard;
   } catch (error) {
