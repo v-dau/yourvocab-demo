@@ -304,7 +304,8 @@
     "toast_error_quota": "You have reached your daily AI limit.",
     "toast_error_general": "Failed to generate card info. Please try again later.",
     "quota_display": "{{quota}}/10",
-    "quota_refresh_tooltip": "Refreshes tomorrow"
+    "quota_refresh_tooltip": "Refreshes tomorrow",
+    "quota_empty": "You have used up your AI feature quota for today. Please come back tomorrow!"
   },
   "review": {
     "title": "Review Cards",

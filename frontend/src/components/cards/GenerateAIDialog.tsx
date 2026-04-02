@@ -42,8 +42,19 @@ export function GenerateAIDialog({ initialWord, onSuccess }: GenerateAIDialogPro
     fetchQuota();
   }, []);
 
+  const isOutOfQuota = quota === 0;
+
   // Update internal state when dialog opens and initialWord changes
   const handleOpenChange = (newOpen: boolean) => {
+    if (newOpen && isOutOfQuota) {
+      toast.error(
+        t(
+          'ai_generate.quota_empty',
+          'Bạn đã hết lượt tính năng AI hôm nay. Vui lòng quay lại vào ngày mai!'
+        )
+      );
+      return;
+    }
     setOpen(newOpen);
     if (newOpen) {
       setWord(initialWord || '');
@@ -89,10 +100,12 @@ export function GenerateAIDialog({ initialWord, onSuccess }: GenerateAIDialogPro
             variant="outline"
             size="sm"
             type="button"
-            className="gap-2 relative border-0 bg-transparent hover:bg-transparent z-0 overflow-visible"
+            className={`gap-2 relative border-0 bg-transparent hover:bg-transparent z-0 overflow-visible ${isOutOfQuota ? 'opacity-80 cursor-not-allowed' : ''}`}
             title={t('ai_generate.button_tooltip')}
           >
-            <div className="absolute inset-[-2px] -z-10 bg-gradient-to-r from-fuchsia-500 via-blue-500 to-cyan-500 rounded-md" />
+            <div
+              className={`absolute inset-[-2px] -z-10 rounded-md ${isOutOfQuota ? 'bg-muted-foreground/30' : 'bg-gradient-to-r from-fuchsia-500 via-blue-500 to-cyan-500'}`}
+            />
             <div className="absolute inset-0 -z-10 bg-background rounded-[calc(var(--radius)-1px)]" />
 
             <svg width="0" height="0" className="absolute">
@@ -103,10 +116,20 @@ export function GenerateAIDialog({ initialWord, onSuccess }: GenerateAIDialogPro
               </linearGradient>
             </svg>
             <Sparkles
-              className="w-4 h-4"
-              style={{ stroke: 'url(#rainbow-grad)', fill: 'url(#rainbow-grad)', fillOpacity: 0.2 }}
+              className={`w-4 h-4 ${isOutOfQuota ? 'text-muted-foreground' : ''}`}
+              style={
+                isOutOfQuota
+                  ? {}
+                  : { stroke: 'url(#rainbow-grad)', fill: 'url(#rainbow-grad)', fillOpacity: 0.2 }
+              }
             />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-500 via-blue-500 to-cyan-500 font-semibold">
+            <span
+              className={
+                isOutOfQuota
+                  ? 'text-muted-foreground font-semibold'
+                  : 'bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-500 via-blue-500 to-cyan-500 font-semibold'
+              }
+            >
               {t('ai_generate.button_tooltip')}
             </span>
           </Button>
@@ -120,7 +143,7 @@ export function GenerateAIDialog({ initialWord, onSuccess }: GenerateAIDialogPro
           </span>
         )}
       </div>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px]" aria-describedby={undefined}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />

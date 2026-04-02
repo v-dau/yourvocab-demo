@@ -304,7 +304,8 @@
     "toast_error_quota": "Bạn đã hết lượt dùng AI hôm nay.",
     "toast_error_general": "Không thể lấy thông tin thẻ lúc này. Vui lòng thử lại sau.",
     "quota_display": "{{quota}}/10",
-    "quota_refresh_tooltip": "Làm mới vào ngày mai"
+    "quota_refresh_tooltip": "Làm mới vào ngày mai",
+    "quota_empty": "Bạn đã hết lượt tính năng AI hôm nay. Vui lòng quay lại vào ngày mai!"
   },
   "review": {
     "title": "Ôn tập thẻ",
