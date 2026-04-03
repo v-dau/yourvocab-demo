@@ -20,6 +20,19 @@ interface TagCreatableSelectProps {
   error?: boolean;
 }
 
+const slugify = (str: string) => {
+  return str
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .normalize('NFD') // Remove accents
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+    .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
+    .replace(/^-+|-+$/g, ''); // Remove leading/trailing hyphens
+};
+
 export const TagCreatableSelect: React.FC<TagCreatableSelectProps> = ({
   value,
   onChange,
@@ -41,9 +54,7 @@ export const TagCreatableSelect: React.FC<TagCreatableSelectProps> = ({
       onChange={(newValue, actionMeta) => {
         if (actionMeta.action === 'create-option') {
           const mappedValue = (newValue as TagOption[]).map((val) =>
-            val.__isNew__
-              ? { ...val, value: val.value.toLowerCase(), label: val.label.toLowerCase() }
-              : val
+            val.__isNew__ ? { ...val, value: slugify(val.value), label: slugify(val.label) } : val
           );
           onChange(mappedValue as MultiValue<TagOption>, actionMeta);
         } else {
@@ -51,16 +62,20 @@ export const TagCreatableSelect: React.FC<TagCreatableSelectProps> = ({
         }
       }}
       onBlur={onBlur}
-      placeholder={placeholder || t('common.typeToCreateTags', 'Type to create or select tags...')}
-      formatCreateLabel={(inputValue) =>
-        t('common.createTag', `Create "{{inputValue}}"`, {
-          inputValue: `#${inputValue.toLowerCase()}`,
-        })
-      }
+      placeholder={placeholder || t('common.typeToCreateTags', 'Nhập để tạo hoặc chọn nhãn...')}
+      formatCreateLabel={(inputValue) => {
+        const slug = slugify(inputValue) || inputValue;
+        return t('common.createTag', `Tạo nhãn mới #{{inputValue}}`, {
+          inputValue: slug,
+        });
+      }}
       formatOptionLabel={(option) => {
+        if (option.__isNew__) {
+          return option.label;
+        }
         return option.label.startsWith('#') ? option.label : `#${option.label}`;
       }}
-      noOptionsMessage={() => t('common.noTagsFound', 'No tags found')}
+      noOptionsMessage={() => t('common.noTagsFound', 'Không có nhãn nào')}
       className={className}
       classNames={{
         control: () =>

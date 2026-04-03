@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -16,31 +17,32 @@ import * as tagService from '@/services/tagService';
 import { toast } from 'sonner';
 import type { CreateCardInput } from '@/types/card';
 
-// Zod schema for card validation
-const cardSchema = z.object({
-  word: z.string().min(1, 'Word is required'),
-  meaning: z.string().min(1, 'Meaning is required'),
-  partOfSpeech: z.string().optional(),
-  definition: z.string().optional(),
-  ipa: z.string().optional(),
-  example: z.string().optional(),
-  level: z.string().optional(),
-  popularity: z.coerce.number().min(0).max(5).optional(),
-  synonyms: z.string().optional(),
-  antonyms: z.string().optional(),
-  nearSynonyms: z.string().optional(),
-  tags: z
-    .array(
-      z.object({
-        value: z.string(),
-        label: z.string(),
-        __isNew__: z.boolean().optional(),
-      })
-    )
-    .optional(),
-});
+// Function to get localized schema
+const getCardSchema = (t: TFunction) =>
+  z.object({
+    word: z.string().min(1, t('create_edit_page.word_required', 'Word is required')),
+    meaning: z.string().min(1, t('create_edit_page.meaning_required', 'Meaning is required')),
+    partOfSpeech: z.string().optional(),
+    definition: z.string().optional(),
+    ipa: z.string().optional(),
+    example: z.string().optional(),
+    level: z.string().optional(),
+    popularity: z.coerce.number().min(0).max(5).optional(),
+    synonyms: z.string().optional(),
+    antonyms: z.string().optional(),
+    nearSynonyms: z.string().optional(),
+    tags: z
+      .array(
+        z.object({
+          value: z.string(),
+          label: z.string(),
+          __isNew__: z.boolean().optional(),
+        })
+      )
+      .optional(),
+  });
 
-type CardFormValues = z.infer<typeof cardSchema>;
+type CardFormValues = z.infer<ReturnType<typeof getCardSchema>>;
 
 const CreateEditCardPage = () => {
   const { id } = useParams();
@@ -50,6 +52,8 @@ const CreateEditCardPage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [tagOptions, setTagOptions] = useState<TagOption[]>([]);
+
+  const cardSchema = getCardSchema(t);
 
   const {
     register,
@@ -375,7 +379,7 @@ const CreateEditCardPage = () => {
 
             {/* Tags Multiple Select */}
             <div className="space-y-2">
-              <Label>Tags</Label>
+              <Label>{t('create_edit_page.tags', 'Tags')}</Label>
               <Controller
                 name="tags"
                 control={control}
