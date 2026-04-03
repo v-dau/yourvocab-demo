@@ -57,7 +57,7 @@ const SignUpForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center gap-2">
                 <a href="/" className="mx-auto block w-fit text-center">
-                  <img src="/logo.svg" alt="logo" />
+                  <img src="/logo.svg" alt="logo" className="w-8" />
                 </a>
                 <h1 className="!text-2xl font-bold">
                   {t('auth.signup_title', 'Tạo tài khoản Yourvocab')}
