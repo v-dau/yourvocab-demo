@@ -330,7 +330,7 @@ export const Card: React.FC<CardProps> = ({
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="flex gap-2 pt-4 border-t border-t-muted transition-all duration-300">
+        <div className="flex gap-2 pt-4 border-t border-t-muted transition-all duration-300 mt-auto">
           {onView && (
             <Button
               variant="ghost"

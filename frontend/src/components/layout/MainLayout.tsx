@@ -33,7 +33,7 @@ export function MainLayout({
   const [sidebarCollapsed, setSidebarCollapsed] = React.useState(true);
 
   return (
-    <div className="bg-background min-h-screen flex flex-col">
+    <div className="bg-background min-h-screen flex flex-col bg-gradient-blue">
       {/* Header */}
       <Header
         isLoggedIn={isLoggedIn}
@@ -72,4 +72,3 @@ export function MainLayout({
 }
 
 export default MainLayout;
-

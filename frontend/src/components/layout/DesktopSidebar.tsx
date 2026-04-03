@@ -16,7 +16,6 @@ import {
   Globe,
   Trash2,
 } from 'lucide-react';
-import { Separator } from '@/components/ui/separator';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -196,7 +195,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
       </nav>
 
       {/* Theme & Language Section */}
-      <div className="p-3 flex flex-col gap-2 border-t border-border">
+      <div className="p-3 flex flex-col gap-2 border-t border-b border-gray-400 dark:border-border">
         {/* Theme Toggle */}
         <Button
           variant="ghost"
@@ -235,9 +234,6 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      {/* Divider */}
-      <Separator className="mx-2" />
 
       {/* User Section */}
       <div className="p-4 flex flex-col gap-3">
