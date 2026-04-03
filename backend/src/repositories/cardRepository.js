@@ -286,13 +286,30 @@ export const restoreCard = async (id, user_id) => {
 };
 
 export const hardDeleteCard = async (id, user_id) => {
-  const query = `
-    DELETE FROM public.cards
-    WHERE id = $1 AND user_id = $2 AND deleted_at IS NOT NULL
-    RETURNING id;
-  `;
-  const result = await pool.query(query, [id, user_id]);
-  return result.rowCount > 0;
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Xóa dữ liệu liên kết trước để tránh lỗi Foreign Key Constraint
+    await client.query('DELETE FROM public.card_review_trackers WHERE card_id = $1', [id]);
+    await client.query('DELETE FROM public.cards_tags WHERE card_id = $1', [id]);
+    await client.query('DELETE FROM public.practice_sentences WHERE card_id = $1', [id]);
+
+    const query = `
+      DELETE FROM public.cards
+      WHERE id = $1 AND user_id = $2 AND deleted_at IS NOT NULL
+      RETURNING id;
+    `;
+    const result = await client.query(query, [id, user_id]);
+
+    await client.query('COMMIT');
+    return result.rowCount > 0;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 export const restoreAllCards = async (user_id) => {
@@ -307,11 +324,46 @@ export const restoreAllCards = async (user_id) => {
 };
 
 export const emptyTrash = async (user_id) => {
-  const query = `
-    DELETE FROM public.cards
-    WHERE user_id = $1 AND deleted_at IS NOT NULL
-    RETURNING id;
-  `;
-  const result = await pool.query(query, [user_id]);
-  return result.rowCount;
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // Lấy id các card của user nằm trong thùng rác
+    const getCardsQuery = `
+      SELECT id FROM public.cards 
+      WHERE user_id = $1 AND deleted_at IS NOT NULL
+    `;
+    const { rows } = await client.query(getCardsQuery, [user_id]);
+
+    if (rows.length > 0) {
+      const cardIds = rows.map((r) => r.id);
+      const params = cardIds.map((_, i) => `$${i + 1}`).join(',');
+
+      // Xóa liên kết
+      await client.query(
+        `DELETE FROM public.card_review_trackers WHERE card_id IN (${params})`,
+        cardIds
+      );
+      await client.query(`DELETE FROM public.cards_tags WHERE card_id IN (${params})`, cardIds);
+      await client.query(
+        `DELETE FROM public.practice_sentences WHERE card_id IN (${params})`,
+        cardIds
+      );
+    }
+
+    const query = `
+      DELETE FROM public.cards
+      WHERE user_id = $1 AND deleted_at IS NOT NULL
+      RETURNING id;
+    `;
+    const result = await client.query(query, [user_id]);
+
+    await client.query('COMMIT');
+    return result.rowCount;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };

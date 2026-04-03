@@ -109,6 +109,7 @@
     "loading": "Loading...",
     "search_for": " (search: \"{{query}}\")",
     "confirm_trash": "Are you sure you want to move this card to trash?",
+    "confirm_trash_word": "Are you sure you want to move the card '{{word}}' to trash?",
     "success_trash": "Card moved to trash",
     "error_trash": "Failed to move to trash. Please try again.",
     "search_placeholder": "Search by vocabulary, meaning...",
@@ -172,9 +173,11 @@
   "trash_page": {
     "fetch_error": "Error loading deleted cards.",
     "restore_confirm": "Are you sure you want to restore this card?",
+    "restore_word_confirm": "Are you sure you want to restore the card '{{word}}'?",
     "restore_success": "Card restored successfully",
     "restore_fail": "Restore failed",
     "hard_delete_confirm": "This action will permanently delete this card and it cannot be recovered. Are you sure?",
+    "hard_delete_word_confirm": "This action will permanently delete the card '{{word}}' and it cannot be recovered. Are you sure?",
     "hard_delete_success": "Permanently deleted successfully",
     "hard_delete_fail": "Permanent delete failed",
     "restore_all_confirm": "Are you sure you want to restore all cards in the trash?",
@@ -192,7 +195,11 @@
     "of": "of",
     "deleted_cards": "deleted cards",
     "search": "search",
-    "loading_trash": "Loading trash..."
+    "loading_trash": "Loading trash...",
+    "restore_all_title": "Restore All?",
+    "empty_trash_title": "Empty Trash?",
+    "restore_title": "Restore Card?",
+    "hard_delete_title": "Permanently Delete Card?"
   },
   "profile_settings": {
     "title": "Settings",
@@ -263,7 +270,9 @@
     "createTag": "Create tag {{inputValue}}",
     "noTagsFound": "No tags found",
     "signin": "Sign In",
-    "signup": "Sign Up"
+    "signup": "Sign Up",
+    "cancel": "Cancel",
+    "ok": "OK"
   },
   "tag": {
     "btn": "Tags",

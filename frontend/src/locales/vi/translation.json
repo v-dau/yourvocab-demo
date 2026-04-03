@@ -109,6 +109,7 @@
     "loading": "Đang tải...",
     "search_for": " (tìm kiếm: \"{{query}}\")",
     "confirm_trash": "Bạn có chắc muốn chuyển thẻ này vào thùng rác?",
+    "confirm_trash_word": "Bạn có chắc muốn chuyển thẻ '{{word}}' vào thùng rác?",
     "success_trash": "Thẻ đã được chuyển vào thùng rác",
     "error_trash": "Lỗi khi chuyển vào thùng rác. Vui lòng thử lại.",
     "search_placeholder": "Tìm kiếm theo từ vựng, nghĩa...",
@@ -172,9 +173,11 @@
   "trash_page": {
     "fetch_error": "Lỗi khi tải danh sách thẻ trong thùng rác.",
     "restore_confirm": "Bạn có chắc muốn khôi phục thẻ này?",
+    "restore_word_confirm": "Bạn có chắc muốn khôi phục thẻ '{{word}}'?",
     "restore_success": "Khôi phục thẻ thành công",
     "restore_fail": "Khôi phục thất bại",
     "hard_delete_confirm": "Hành động này sẽ xóa thẻ vĩnh viễn và không thể khôi phục. Bạn có chắc chắn?",
+    "hard_delete_word_confirm": "Hành động này sẽ xóa thẻ '{{word}}' vĩnh viễn và không thể khôi phục. Bạn có chắc chắn?",
     "hard_delete_success": "Xóa vĩnh viễn thành công",
     "hard_delete_fail": "Xóa vĩnh viễn thất bại",
     "restore_all_confirm": "Bạn có chắc muốn khôi phục tất cả các thẻ trong thùng rác?",
@@ -192,7 +195,11 @@
     "of": "trên",
     "deleted_cards": "thẻ đã xóa",
     "search": "tìm kiếm",
-    "loading_trash": "Đang tải thùng rác..."
+    "loading_trash": "Đang tải thùng rác...",
+    "restore_all_title": "Khôi phục tất cả?",
+    "empty_trash_title": "Làm sạch thùng rác?",
+    "restore_title": "Khôi phục thẻ?",
+    "hard_delete_title": "Xóa vĩnh viễn thẻ?"
   },
   "profile_settings": {
     "title": "Cài đặt",
@@ -263,7 +270,9 @@
     "createTag": "Tạo nhãn mới {{inputValue}}",
     "noTagsFound": "Không tìm thấy nhãn dán",
     "signin": "Đăng nhập",
-    "signup": "Đăng ký"
+    "signup": "Đăng ký",
+    "cancel": "Hủy",
+    "ok": "Đồng ý"
   },
   "tag": {
     "btn": "Nhãn",

@@ -67,15 +67,25 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   const location = useLocation();
   const { totalDue } = useReviewStore();
 
-  useEffect(() => {
+  const fetchTrashCount = () => {
     if (isLoggedIn) {
       cardService
         .getTrashCards()
-        .then((cards) => {
-          setTrashCount(cards.length);
-        })
+        .then((cards) => setTrashCount(cards.length))
         .catch((err) => console.error(err));
     }
+  };
+
+  useEffect(() => {
+    fetchTrashCount();
+
+    // Listen for custom event to update trash count immediately
+    const handleTrashUpdate = () => fetchTrashCount();
+    window.addEventListener('trash-updated', handleTrashUpdate);
+
+    return () => {
+      window.removeEventListener('trash-updated', handleTrashUpdate);
+    };
   }, [isLoggedIn, location.pathname]); // Re-fetch when route changes as well
 
   const navItems = [

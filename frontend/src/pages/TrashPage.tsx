@@ -7,6 +7,16 @@ import {
   CardDetailsModal,
   DisplayModeToolbar,
 } from '@/components/cards';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import type { Card } from '@/types/card';
 import type { CardFiltersState } from '@/components/cards/CardFilters';
 import { useCardFilter, useCardOperations } from '@/hooks';
@@ -18,6 +28,10 @@ import { Trash2, RotateCcw } from 'lucide-react';
 export default function TrashPage() {
   // Modal state
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const [cardToRestore, setCardToRestore] = useState<string | null>(null);
+  const [cardToHardDelete, setCardToHardDelete] = useState<string | null>(null);
+  const [showRestoreAllDialog, setShowRestoreAllDialog] = useState(false);
+  const [showEmptyTrashDialog, setShowEmptyTrashDialog] = useState(false);
 
   // Cards state
   const { cards, setCards, deleteCard } = useCardOperations([]);
@@ -66,57 +80,69 @@ export default function TrashPage() {
     setSelectedCard(card);
   };
 
-  const handleRestore = async (cardId: string) => {
-    if (!window.confirm(t('trash_page.restore_confirm'))) return;
+  const handleRestore = (cardId: string) => setCardToRestore(cardId);
+  const confirmRestore = async () => {
+    if (!cardToRestore) return;
     try {
-      await cardService.restoreCard(cardId);
-      deleteCard(cardId);
+      await cardService.restoreCard(cardToRestore);
+      deleteCard(cardToRestore);
       toast.success(t('trash_page.restore_success'));
+      window.dispatchEvent(new Event('trash-updated'));
     } catch (error) {
       console.error('Restore failed:', error);
       toast.error(t('trash_page.restore_fail'));
+    } finally {
+      setCardToRestore(null);
     }
   };
 
-  const handleHardDelete = async (cardId: string) => {
-    if (!window.confirm(t('trash_page.hard_delete_confirm'))) return;
+  const handleHardDelete = (cardId: string) => setCardToHardDelete(cardId);
+  const confirmHardDelete = async () => {
+    if (!cardToHardDelete) return;
     try {
-      await cardService.hardDeleteCard(cardId);
-      deleteCard(cardId);
+      await cardService.hardDeleteCard(cardToHardDelete);
+      deleteCard(cardToHardDelete);
       toast.success(t('trash_page.hard_delete_success'));
+      window.dispatchEvent(new Event('trash-updated'));
     } catch (error) {
       console.error('Hard delete failed:', error);
       toast.error(t('trash_page.hard_delete_fail'));
+    } finally {
+      setCardToHardDelete(null);
     }
   };
 
-  const handleRestoreAll = async () => {
-    if (!window.confirm(t('trash_page.restore_all_confirm'))) return;
+  const handleRestoreAll = () => setShowRestoreAllDialog(true);
+  const confirmRestoreAll = async () => {
     try {
       setIsLoading(true);
       await cardService.restoreAllCards();
       setCards([]); // Empty the trash view
       toast.success(t('trash_page.restore_all_success'));
+      window.dispatchEvent(new Event('trash-updated'));
     } catch (error) {
       console.error('Restore all failed:', error);
       toast.error(t('trash_page.restore_all_fail'));
     } finally {
       setIsLoading(false);
+      setShowRestoreAllDialog(false);
     }
   };
 
-  const handleEmptyTrash = async () => {
-    if (!window.confirm(t('trash_page.empty_trash_confirm'))) return;
+  const handleEmptyTrash = () => setShowEmptyTrashDialog(true);
+  const confirmEmptyTrash = async () => {
     try {
       setIsLoading(true);
       await cardService.emptyTrash();
       setCards([]); // Empty the trash view
       toast.success(t('trash_page.empty_trash_success'));
+      window.dispatchEvent(new Event('trash-updated'));
     } catch (error) {
       console.error('Empty trash failed:', error);
       toast.error(t('trash_page.empty_trash_fail'));
     } finally {
       setIsLoading(false);
+      setShowEmptyTrashDialog(false);
     }
   };
 
@@ -198,6 +224,95 @@ export default function TrashPage() {
 
         {/* Card Details Modal */}
         <CardDetailsModal card={selectedCard} onClose={() => setSelectedCard(null)} />
+
+        {/* Dialogs */}
+        <AlertDialog
+          open={!!cardToRestore}
+          onOpenChange={(open) => !open && setCardToRestore(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('trash_page.restore_title', 'Khôi phục thẻ?')}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {t(
+                  'trash_page.restore_word_confirm',
+                  `Bạn có chắc muốn khôi phục thẻ '{{word}}'?`,
+                  {
+                    word: cards.find((c) => c.id === cardToRestore)?.word,
+                  }
+                )}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('common.cancel', 'Hủy')}</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmRestore}>
+                {t('common.ok', 'Đồng ý')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog
+          open={!!cardToHardDelete}
+          onOpenChange={(open) => !open && setCardToHardDelete(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {t('trash_page.hard_delete_title', 'Xóa vĩnh viễn thẻ?')}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {t(
+                  'trash_page.hard_delete_word_confirm',
+                  `Hành động này sẽ xóa thẻ '{{word}}' vĩnh viễn. Bạn có chắc chắn?`,
+                  {
+                    word: cards.find((c) => c.id === cardToHardDelete)?.word,
+                  }
+                )}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('common.cancel', 'Hủy')}</AlertDialogCancel>
+              <AlertDialogAction variant="destructive" onClick={confirmHardDelete}>
+                {t('common.ok', 'Đồng ý')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog open={showRestoreAllDialog} onOpenChange={setShowRestoreAllDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {t('trash_page.restore_all_title', 'Khôi phục tất cả?')}
+              </AlertDialogTitle>
+              <AlertDialogDescription>{t('trash_page.restore_all_confirm')}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('common.cancel', 'Hủy')}</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmRestoreAll}>
+                {t('common.ok', 'Đồng ý')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog open={showEmptyTrashDialog} onOpenChange={setShowEmptyTrashDialog}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {t('trash_page.empty_trash_title', 'Làm sạch thùng rác?')}
+              </AlertDialogTitle>
+              <AlertDialogDescription>{t('trash_page.empty_trash_confirm')}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('common.cancel', 'Hủy')}</AlertDialogCancel>
+              <AlertDialogAction variant="destructive" onClick={confirmEmptyTrash}>
+                {t('common.ok', 'Đồng ý')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

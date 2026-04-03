@@ -11,6 +11,16 @@ import {
   CardsPagination,
   TagManagerDialog,
 } from '@/components/cards';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import type { Card } from '@/types/card';
 import type { CardFiltersState } from '@/components/cards/CardFilters';
 import { useCardOperations } from '@/hooks';
@@ -38,6 +48,7 @@ const CardsPage = () => {
   });
   const [pagination, setPagination] = useState({ totalPages: 1, totalItems: 0, limit: 12 });
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+  const [cardToDelete, setCardToDelete] = useState<string | null>(null);
 
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
@@ -96,16 +107,22 @@ const CardsPage = () => {
     navigate(`/cards/edit/${card.id}`);
   };
 
-  const handleDelete = async (cardId: string) => {
-    if (!window.confirm(t('cards_page.confirm_trash'))) return;
+  const handleDelete = (cardId: string) => {
+    setCardToDelete(cardId);
+  };
 
+  const confirmDelete = async () => {
+    if (!cardToDelete) return;
     try {
-      await cardService.deleteCard(cardId);
-      deleteCard(cardId);
+      await cardService.deleteCard(cardToDelete);
+      deleteCard(cardToDelete);
       toast.success(t('cards_page.success_trash'));
+      window.dispatchEvent(new Event('trash-updated'));
     } catch (error) {
       console.error('Failed to delete card:', error);
       toast.error(t('cards_page.error_trash'));
+    } finally {
+      setCardToDelete(null);
     }
   };
 
@@ -196,6 +213,32 @@ const CardsPage = () => {
 
         {/* Card Details Modal */}
         <CardDetailsModal card={selectedCard} onClose={() => setSelectedCard(null)} />
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={!!cardToDelete} onOpenChange={(open) => !open && setCardToDelete(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {t('cards_page.confirm_trash_title', 'Chuyển vào thùng rác?')}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {t(
+                  'cards_page.confirm_trash_word',
+                  `Bạn có chắc muốn chuyển thẻ '{{word}}' vào thùng rác?`,
+                  {
+                    word: cards.find((c) => c.id === cardToDelete)?.word,
+                  }
+                )}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('common.cancel', 'Hủy')}</AlertDialogCancel>
+              <AlertDialogAction variant="destructive" onClick={confirmDelete}>
+                {t('common.ok', 'Đồng ý')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
