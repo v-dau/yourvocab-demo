@@ -313,6 +313,7 @@
   },
   "ai_generate": {
     "button_tooltip": "Generate card with AI",
+    "rate_limit_error": "System is processing, please wait 3 seconds before next generation.",
     "dialog_title": "Smart Card Generation",
     "dialog_desc": "Enter a vocabulary word. AI will automatically find the meaning, part of speech, IPA, and an example for you.",
     "input_placeholder": "Enter an English word...",

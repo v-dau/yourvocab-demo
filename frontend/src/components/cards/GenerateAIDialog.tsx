@@ -79,13 +79,16 @@ export function GenerateAIDialog({ initialWord, onSuccess }: GenerateAIDialogPro
       toast.success(t('ai_generate.toast_success_desc', { quota: remaining_quota }));
     } catch (error) {
       console.error('AI Generate Error:', error);
-      const axiosError = error as AxiosError<{ message?: string }>;
-      const errorMsg =
-        axiosError.response?.status === 402 ||
-        axiosError.response?.status === 403 ||
-        axiosError.response?.status === 429
-          ? axiosError.response?.data?.message || t('ai_generate.toast_error_general')
-          : t('ai_generate.toast_error_general');
+      const axiosError = error as any;
+
+      let errorMsg = t('ai_generate.toast_error_general');
+
+      if (axiosError.response?.status === 429) {
+        errorMsg = t('ai_generate.rate_limit_error', 'Bạn thao tác quá nhanh. Thử lại sau 3 giây.');
+      } else if (axiosError.response?.status === 402 || axiosError.response?.status === 403) {
+        errorMsg = axiosError.response?.data?.message || errorMsg;
+      }
+
       toast.error(errorMsg);
     } finally {
       setIsLoading(false);

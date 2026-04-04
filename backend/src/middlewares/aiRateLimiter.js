@@ -1,11 +1,11 @@
 import rateLimit from 'express-rate-limit';
 
 export const aiRateLimiter = rateLimit({
-  windowMs: 60 * 1000, // 1 phút
-  max: 3, // giới hạn 3 requests mỗi phút trên một IP
+  windowMs: 3000, // 3 giây
+  max: 1, // giới hạn 1 request mỗi 3s trên một IP
   message: {
     success: false,
-    message: 'Bạn đang yêu cầu quá nhanh. Vui lòng thử lại sau 1 phút.',
+    message: 'rate_limit_error',
   },
   standardHeaders: true,
   legacyHeaders: false,

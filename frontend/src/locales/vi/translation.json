@@ -313,6 +313,7 @@
   },
   "ai_generate": {
     "button_tooltip": "Tạo thẻ bằng AI",
+    "rate_limit_error": "Hệ thống đang xử lý, vui lòng đợi 3 giây trước lần tạo tiếp theo.",
     "dialog_title": "Tạo thẻ thông minh bằng AI",
     "dialog_desc": "Nhập từ vựng bạn muốn tạo, AI sẽ tự động tìm nghĩa, từ loại, phiên âm và ví dụ cho bạn.",
     "input_placeholder": "Nhập từ vựng tiếng Anh...",
