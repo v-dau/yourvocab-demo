@@ -33,11 +33,17 @@ export const generateAiCardInfo = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Không thể xác thực người dùng.' });
     }
 
-    // Call checkAndConsumeQuota
-    const remainingQuota = await aiService.checkAndConsumeQuota(userId);
+    // Nếu quota bằng 0 thì văng lỗi luôn, khỏi tốn thời gian gọi Gemini
+    const currentQuota = await aiService.getQuota(userId);
+    if (currentQuota <= 0) {
+      return res.status(402).json({ success: false, message: 'Bạn đã hết lượt dùng AI hôm nay.' });
+    }
 
-    // If quota is valid, call generateVocabularyInfo
+    // Gọi generateVocabularyInfo trước khi trừ quota
     const aiData = await aiService.generateVocabularyInfo(word);
+
+    // Call checkAndConsumeQuota chỉ sau khi AI đã sinh data thành công
+    const remainingQuota = await aiService.checkAndConsumeQuota(userId);
 
     res.status(200).json({
       success: true,
@@ -47,6 +53,9 @@ export const generateAiCardInfo = async (req, res) => {
     });
   } catch (error) {
     console.error('Generate AI info error:', error);
+    if (error.cause) {
+      console.error('AI cause details:', error.cause);
+    }
     const statusCode = error.statusCode || 500;
     res.status(statusCode).json({
       success: false,

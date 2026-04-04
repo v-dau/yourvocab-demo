@@ -12,7 +12,7 @@ class AIService {
 
   async generateVocabularyInfo(word) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' }); // lên ai.google.dev/gemini-api/docs/models để xem những model nào dùng được
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
     const prompt = `Bạn là một chuyên gia ngôn ngữ học và từ điển Anh - Việt. Nhiệm vụ của bạn là cung cấp thông tin chi tiết cho từ vựng tiếng Anh được cung cấp dưới đây.
 
@@ -52,15 +52,21 @@ Từ vựng cần phân tích: "${word}"`;
       }
 
       // Parse and return JSON
-      const parsedJson = JSON.parse(cleanedText);
+      let parsedJson;
+      try {
+        parsedJson = JSON.parse(cleanedText);
+      } catch (parseError) {
+        console.error('Failed to parse JSON string from AI:', cleanedText);
+        throw parseError;
+      }
 
       // Strip slashes from IPA if present
-      if (parsedJson.ipa) {
+      if (parsedJson.ipa && typeof parsedJson.ipa === 'string') {
         parsedJson.ipa = parsedJson.ipa.replace(/^\/|\/$/g, '').trim();
       }
 
       // Format Part of Speech securely
-      if (parsedJson.part_of_speech) {
+      if (parsedJson.part_of_speech && typeof parsedJson.part_of_speech === 'string') {
         parsedJson.part_of_speech = parsedJson.part_of_speech.toLowerCase().trim();
       }
 
