@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import api from '@/lib/axios';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 
 interface GenerateAIDialogProps {
   initialWord: string;
@@ -79,7 +79,7 @@ export function GenerateAIDialog({ initialWord, onSuccess }: GenerateAIDialogPro
       toast.success(t('ai_generate.toast_success_desc', { quota: remaining_quota }));
     } catch (error) {
       console.error('AI Generate Error:', error);
-      const axiosError = error as any;
+      const axiosError = error as AxiosError<{ message?: string }>;
 
       let errorMsg = t('ai_generate.toast_error_general');
 
