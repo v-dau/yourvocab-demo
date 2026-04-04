@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import {
   CardSearchBar,
   CardFilters,
+  CardSort,
   CardListView,
   CardDetailsModal,
   DisplayModeToolbar,
@@ -28,6 +29,23 @@ import { Plus } from 'lucide-react';
 import * as cardService from '@/services/cardService';
 import { toast } from 'sonner';
 
+const DEFAULT_SORT_CONFIG: { sortBy: 'created_at' | 'word'; sortOrder: 'asc' | 'desc' } = {
+  sortBy: 'created_at',
+  sortOrder: 'desc',
+};
+
+const DEFAULT_FILTERS: CardFiltersState = {
+  levels: [],
+  popularity: [],
+  partOfSpeech: [],
+  hasExample: null,
+  hasIpa: null,
+  hasSynonyms: null,
+  hasAntonyms: null,
+  hasNearSynonyms: null,
+  hasDefinition: null,
+};
+
 const CardsPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -35,17 +53,35 @@ const CardsPage = () => {
   const { cards, setCards, deleteCard } = useCardOperations([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filters, setFilters] = useState<CardFiltersState>({
-    levels: [],
-    popularity: [],
-    partOfSpeech: [],
-    hasExample: null,
-    hasIpa: null,
-    hasSynonyms: null,
-    hasAntonyms: null,
-    hasNearSynonyms: null,
-    hasDefinition: null,
+
+  const [sortConfig, setSortConfig] = useState<{
+    sortBy: 'created_at' | 'word';
+    sortOrder: 'asc' | 'desc';
+  }>(() => {
+    try {
+      const saved = localStorage.getItem('cardsSortConfig');
+      return saved ? JSON.parse(saved) : DEFAULT_SORT_CONFIG;
+    } catch {
+      return DEFAULT_SORT_CONFIG;
+    }
   });
+
+  const [filters, setFilters] = useState<CardFiltersState>(() => {
+    try {
+      const saved = localStorage.getItem('cardsFilters');
+      return saved ? JSON.parse(saved) : DEFAULT_FILTERS;
+    } catch {
+      return DEFAULT_FILTERS;
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem('cardsSortConfig', JSON.stringify(sortConfig));
+  }, [sortConfig]);
+
+  useEffect(() => {
+    localStorage.setItem('cardsFilters', JSON.stringify(filters));
+  }, [filters]);
   const [pagination, setPagination] = useState({ totalPages: 1, totalItems: 0, limit: 12 });
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [cardToDelete, setCardToDelete] = useState<string | null>(null);
@@ -66,6 +102,8 @@ const CardsPage = () => {
         const params: Record<string, string | number | boolean> = {
           page: currentPage,
           limit: 12,
+          sortBy: sortConfig.sortBy,
+          sortOrder: sortConfig.sortOrder,
         };
 
         if (searchQuery) params.search = searchQuery;
@@ -96,7 +134,7 @@ const CardsPage = () => {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [setCards, currentPage, searchQuery, filters]);
+  }, [setCards, currentPage, searchQuery, filters, sortConfig]);
 
   // CRUD Operations
   const handleCreate = () => {
@@ -131,9 +169,16 @@ const CardsPage = () => {
   };
 
   const handleResetAllCards = () => {
-    // This callback could be used to force refresh all cards
-    // For now, it's handled by the global display mode sync
-    window.location.reload();
+    // Reset filters, sorts and clear search query
+    setSortConfig(DEFAULT_SORT_CONFIG);
+    setFilters(DEFAULT_FILTERS);
+    setSearchQuery('');
+
+    // Reset pagination to first page
+    setSearchParams((prev: URLSearchParams) => {
+      prev.set('page', '1');
+      return prev;
+    });
   };
 
   return (
@@ -160,8 +205,9 @@ const CardsPage = () => {
           <div className="flex-1">
             <CardSearchBar searchQuery={searchQuery} onSearch={setSearchQuery} />
           </div>
-          <div className="flex items-center gap-2">
-            <CardFilters onFilterChange={setFilters} />
+          <div className="flex items-center justify-end gap-2 flex-wrap">
+            <CardSort currentSort={sortConfig} onSortChange={setSortConfig} />
+            <CardFilters currentFilters={filters} onFilterChange={setFilters} />
             <DisplayModeToolbar onResetAllCards={handleResetAllCards} />
             <TagManagerDialog />
           </div>

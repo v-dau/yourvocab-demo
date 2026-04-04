@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { CardLevel, CardPopularity } from '@/types/card';
 
 interface CardFiltersProps {
+  currentFilters: CardFiltersState;
   onFilterChange: (filters: CardFiltersState) => void;
 }
 
@@ -34,23 +35,14 @@ const PARTS_OF_SPEECH = [
   'Interjection',
 ];
 
-export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
+export const CardFilters: React.FC<CardFiltersProps> = ({
+  currentFilters: filters,
+  onFilterChange,
+}) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
-  const [filters, setFilters] = useState<CardFiltersState>({
-    levels: [],
-    popularity: [],
-    partOfSpeech: [],
-    hasExample: null,
-    hasIpa: null,
-    hasSynonyms: null,
-    hasAntonyms: null,
-    hasNearSynonyms: null,
-    hasDefinition: null,
-  });
 
   const handleFilterChange = (newFilters: CardFiltersState) => {
-    setFilters(newFilters);
     onFilterChange(newFilters);
   };
 
@@ -92,7 +84,6 @@ export const CardFilters: React.FC<CardFiltersProps> = ({ onFilterChange }) => {
       hasNearSynonyms: null,
       hasDefinition: null,
     };
-    setFilters(emptyFilters);
     onFilterChange(emptyFilters);
   };
 

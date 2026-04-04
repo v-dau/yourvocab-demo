@@ -163,10 +163,21 @@ export const getCardsByUserId = async (filters, limit, offset) => {
     countQueryStr += ` AND c.definition IS NOT NULL AND c.definition != ''`;
   }
 
+  let orderByClause = ' ORDER BY c.created_at DESC';
+  if (filters.sortBy === 'word') {
+    const order = filters.sortOrder === 'desc' ? 'DESC' : 'ASC';
+    orderByClause = ` ORDER BY c.word ${order}`;
+  } else if (filters.sortBy === 'created_at') {
+    const order = filters.sortOrder === 'asc' ? 'ASC' : 'DESC';
+    orderByClause = ` ORDER BY c.created_at ${order}`;
+  }
+
   let queryStr =
     selectClause +
     whereClause +
-    ` GROUP BY c.id ORDER BY c.created_at DESC LIMIT $${paramIdx} OFFSET $${paramIdx + 1};`;
+    ` GROUP BY c.id` +
+    orderByClause +
+    ` LIMIT $${paramIdx} OFFSET $${paramIdx + 1};`;
 
   const queryParams = [...params, limit, offset];
 

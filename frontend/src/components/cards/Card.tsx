@@ -115,7 +115,7 @@ export const Card: React.FC<CardProps> = ({
   const popularityStyle = getPopularityStyle(card.popularity, t);
   const currentLocale = i18n.language === 'vi' ? vi : enUS;
 
-  // Sync localMode vá»›i globalDisplayMode khi globalDisplayMode thay Ä‘á»•i
+  // Sync localMode và globalDisplayMode khi globalDisplayMode thay đổi
   useEffect(() => {
     setLocalMode(globalDisplayMode);
   }, [globalDisplayMode]);
@@ -152,7 +152,7 @@ export const Card: React.FC<CardProps> = ({
         </button>
       </div>
 
-      {/* Row 2: IPA - PhÃ¡t Ã¢m */}
+      {/* Row 2: IPA */}
       <div className="flex items-center gap-1 text-sm text-muted-foreground">
         <Volume2 className="h-5 w-5" />
         {card.ipa && <span className="font-mono text-card-foreground">/{card.ipa}/</span>}
@@ -206,7 +206,7 @@ export const Card: React.FC<CardProps> = ({
         </p>
       </div>
 
-      {/* Row 5: Meaning - NghÄ©a tiáº¿ng Viá»‡t */}
+      {/* Row 5: Meaning */}
       <div className="bg-muted p-3 rounded-md flex justify-between items-center mb-4">
         <p className="text-card-foreground font-medium flex-1">{card.meaning}</p>
         {onAddMeaning && (
@@ -233,7 +233,7 @@ export const Card: React.FC<CardProps> = ({
         }`}
       >
         <div className="space-y-4">
-          {/* Definition - Äá»‹nh nghÄ©a */}
+          {/* Definition */}
           {card.definition && (
             <div className="mb-4">
               <h4 className="text-sm font-semibold text-card-foreground mb-1">

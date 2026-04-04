@@ -147,7 +147,18 @@ export default function TrashPage() {
   };
 
   const handleResetAllCards = () => {
-    window.location.reload();
+    setFilters({
+      levels: [],
+      popularity: [],
+      partOfSpeech: [],
+      hasExample: null,
+      hasIpa: null,
+      hasSynonyms: null,
+      hasAntonyms: null,
+      hasNearSynonyms: null,
+      hasDefinition: null,
+    });
+    setSearchQuery('');
   };
 
   return (
@@ -189,7 +200,7 @@ export default function TrashPage() {
             <CardSearchBar searchQuery={searchQuery} onSearch={setSearchQuery} />
           </div>
           <div className="flex items-center gap-2">
-            <CardFilters onFilterChange={setFilters} />
+            <CardFilters currentFilters={filters} onFilterChange={setFilters} />
             <DisplayModeToolbar onResetAllCards={handleResetAllCards} />
           </div>
         </div>

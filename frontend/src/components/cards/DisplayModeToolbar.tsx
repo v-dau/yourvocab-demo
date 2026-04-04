@@ -38,13 +38,7 @@ export const DisplayModeToolbar: React.FC<DisplayModeToolbarProps> = ({
 
       {/* Reset/Sync Button */}
       {onResetAllCards && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onResetAllCards}
-          className="gap-2 ml-2"
-          title="Sync all cards to global mode"
-        >
+        <Button variant="ghost" size="sm" onClick={onResetAllCards} className="gap-2 ml-2">
           <RotateCcw className="h-4 w-4" />
           <span className="hidden sm:inline text-xs">Reset</span>
         </Button>
