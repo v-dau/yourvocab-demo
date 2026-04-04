@@ -25,18 +25,34 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({
   const location = useLocation();
   const [open, setOpen] = React.useState(false);
   const [trashCount, setTrashCount] = useState(0);
-  const { totalDue } = useReviewStore();
+  const { totalDue, fetchTotalDue } = useReviewStore();
 
-  useEffect(() => {
+  const fetchTrashCount = React.useCallback(() => {
     if (isLoggedIn) {
       cardService
         .getTrashCards()
-        .then((cards) => {
-          setTrashCount(cards.length);
-        })
+        .then((cards) => setTrashCount(cards.length))
         .catch((err) => console.error(err));
     }
-  }, [isLoggedIn, location.pathname]);
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    fetchTrashCount();
+    if (isLoggedIn) {
+      fetchTotalDue();
+    }
+
+    const handleTrashUpdate = () => fetchTrashCount();
+    window.addEventListener('trash-updated', handleTrashUpdate);
+
+    const handleReviewUpdate = () => fetchTotalDue();
+    window.addEventListener('review-updated', handleReviewUpdate);
+
+    return () => {
+      window.removeEventListener('trash-updated', handleTrashUpdate);
+      window.removeEventListener('review-updated', handleReviewUpdate);
+    };
+  }, [isLoggedIn, location.pathname, fetchTotalDue, fetchTrashCount]);
 
   const handleNavigate = (path: string) => {
     navigate(path);

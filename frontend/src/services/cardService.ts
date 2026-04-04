@@ -67,17 +67,20 @@ export const getCardById = async (id: string): Promise<Card> => {
 export const createCard = async (data: CreateCardInput): Promise<Card> => {
   const backendData = mapToBackendCardInput(data);
   const response = await api.post('/cards', backendData);
+  window.dispatchEvent(new Event('review-updated'));
   return mapToFrontendCard(response.data.data);
 };
 
 export const updateCard = async (id: string, data: Partial<CreateCardInput>): Promise<Card> => {
   const backendData = mapToBackendCardInput(data);
   const response = await api.put(`/cards/${id}`, backendData);
+  window.dispatchEvent(new Event('review-updated'));
   return mapToFrontendCard(response.data.data);
 };
 
 export const deleteCard = async (id: string): Promise<void> => {
   await api.delete(`/cards/${id}`);
+  window.dispatchEvent(new Event('review-updated'));
 };
 
 export const getTrashCards = async (): Promise<Card[]> => {
@@ -87,6 +90,7 @@ export const getTrashCards = async (): Promise<Card[]> => {
 
 export const restoreCard = async (id: string): Promise<void> => {
   await api.post(`/cards/${id}/restore`);
+  window.dispatchEvent(new Event('review-updated'));
 };
 
 export const hardDeleteCard = async (id: string): Promise<void> => {
@@ -95,6 +99,7 @@ export const hardDeleteCard = async (id: string): Promise<void> => {
 
 export const restoreAllCards = async (): Promise<void> => {
   await api.post('/cards/trash/restore-all');
+  window.dispatchEvent(new Event('review-updated'));
 };
 
 export const emptyTrash = async (): Promise<void> => {

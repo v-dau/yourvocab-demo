@@ -24,7 +24,10 @@ export const useCardFilter = ({ cards, searchQuery, filters }: UseCardFilterOpti
       // Level filter
       if (filters.levels.length > 0) {
         const hasNA = filters.levels.includes('N/A');
-        const levelMatches = filters.levels.includes(card.level as any) || (hasNA && !card.level);
+        const levelMatches =
+          (card.level &&
+            filters.levels.includes(card.level as 'N/A' | import('@/types/card').CardLevel)) ||
+          (hasNA && !card.level);
         if (!levelMatches) return false;
       }
 

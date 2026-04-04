@@ -25,6 +25,7 @@ import {
 import { cn } from '@/lib/utils';
 import * as cardService from '@/services/cardService';
 import { useReviewStore } from '@/stores/reviewStore';
+import React from 'react';
 
 interface DesktopSidebarProps {
   isLoggedIn?: boolean;
@@ -65,28 +66,36 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
 
   const [trashCount, setTrashCount] = useState(0);
   const location = useLocation();
-  const { totalDue } = useReviewStore();
+  const { totalDue, fetchTotalDue } = useReviewStore();
 
-  const fetchTrashCount = () => {
+  const fetchTrashCount = React.useCallback(() => {
     if (isLoggedIn) {
       cardService
         .getTrashCards()
         .then((cards) => setTrashCount(cards.length))
         .catch((err) => console.error(err));
     }
-  };
+  }, [isLoggedIn]);
 
   useEffect(() => {
     fetchTrashCount();
+    if (isLoggedIn) {
+      fetchTotalDue();
+    }
 
     // Listen for custom event to update trash count immediately
     const handleTrashUpdate = () => fetchTrashCount();
     window.addEventListener('trash-updated', handleTrashUpdate);
 
+    // Listen for review updates (e.g. creating/restoring cards)
+    const handleReviewUpdate = () => fetchTotalDue();
+    window.addEventListener('review-updated', handleReviewUpdate);
+
     return () => {
       window.removeEventListener('trash-updated', handleTrashUpdate);
+      window.removeEventListener('review-updated', handleReviewUpdate);
     };
-  }, [isLoggedIn, location.pathname]); // Re-fetch when route changes as well
+  }, [isLoggedIn, location.pathname, fetchTotalDue, fetchTrashCount]); // Re-fetch when route changes as well
 
   const navItems = [
     { icon: LayoutDashboard, label: t('sidebar.dashboard'), path: '/dashboard' },
