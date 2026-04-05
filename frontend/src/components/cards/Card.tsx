@@ -188,6 +188,8 @@ export const Card: React.FC<CardProps> = ({
     if (e.key === 'Enter') handleCreateSentence();
   };
 
+  const readOnlyPractice = isReviewMode || isTrashMode;
+
   const renderPracticeMode = () => (
     <div className="flex flex-col h-full min-h-[300px] mt-2">
       {/* Top Header */}
@@ -253,30 +255,32 @@ export const Card: React.FC<CardProps> = ({
                       <span className="font-medium mr-2 text-muted-foreground">{index + 1}.</span>
                       {s.content}
                     </p>
-                    <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button
-                        onClick={() => {
-                          setEditingId(s.id);
-                          setEditValue(s.content);
-                          setDeletingId(null);
-                        }}
-                        className="p-1 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
-                      >
-                        <Edit2 className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        onClick={() => {
-                          setDeletingId(s.id);
-                          setEditingId(null);
-                        }}
-                        className="p-1 text-muted-foreground hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
+                    {!readOnlyPractice && (
+                      <div className="flex gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => {
+                            setEditingId(s.id);
+                            setEditValue(s.content);
+                            setDeletingId(null);
+                          }}
+                          className="p-1 text-muted-foreground hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
+                        >
+                          <Edit2 className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setDeletingId(s.id);
+                            setEditingId(null);
+                          }}
+                          className="p-1 text-muted-foreground hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    )}
                   </div>
 
-                  {deletingId === s.id && (
+                  {deletingId === s.id && !readOnlyPractice && (
                     <div className="mt-2 text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 p-2 rounded flex items-center justify-between border border-red-200 dark:border-red-900/50">
                       <span className="font-medium">{t('practice.confirm_delete')}</span>
                       <div className="flex gap-2">
@@ -303,18 +307,20 @@ export const Card: React.FC<CardProps> = ({
       </div>
 
       {/* Bottom Footer Input */}
-      <div className="flex gap-2 mt-auto pt-2 border-t border-t-muted">
-        <Input
-          value={newSentence}
-          onChange={(e) => setNewSentence(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={t('practice.placeholder')}
-          className="flex-1"
-        />
-        <Button onClick={handleCreateSentence} size="icon" disabled={!newSentence.trim()}>
-          <Send className="h-4 w-4" />
-        </Button>
-      </div>
+      {!readOnlyPractice && (
+        <div className="flex gap-2 mt-auto pt-2 border-t border-t-muted">
+          <Input
+            value={newSentence}
+            onChange={(e) => setNewSentence(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={t('practice.placeholder')}
+            className="flex-1"
+          />
+          <Button onClick={handleCreateSentence} size="icon" disabled={!newSentence.trim()}>
+            <Send className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 

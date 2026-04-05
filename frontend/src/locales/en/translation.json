@@ -380,7 +380,7 @@
     "tooltip": "Write practice sentences for this word",
     "title": "Practice sentences for: ",
     "back_btn": "Go back",
-    "empty": "No practice sentences yet. Be the first to write one!",
+    "empty": "No practice sentences yet. Write one now!",
     "placeholder": "Type your practice sentence...",
     "confirm_delete": "Are you sure you want to delete?",
     "btn_delete": "Delete",
