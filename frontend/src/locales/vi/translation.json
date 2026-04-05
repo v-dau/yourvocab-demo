@@ -375,5 +375,15 @@
     "val_password_min": "Mật khẩu phải có ít nhất 8 kí tự",
     "val_password_match": "Mật khẩu xác nhận không khớp",
     "of_us": "của chúng tôi."
+  },
+  "practice": {
+    "tooltip": "Viết câu luyện tập cho từ vựng",
+    "title": "Viết câu luyện tập cho từ: ",
+    "back_btn": "Quay lại",
+    "empty": "Chưa có câu luyện tập nào. Hãy viết câu đầu tiên của bạn!",
+    "placeholder": "Nhập câu luyện tập của bạn...",
+    "confirm_delete": "Bạn chắc chắn muốn xóa?",
+    "btn_delete": "Xóa",
+    "btn_cancel": "Hủy"
   }
 }

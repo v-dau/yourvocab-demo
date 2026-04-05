@@ -375,5 +375,15 @@
     "val_password_min": "Password must be at least 8 characters",
     "val_password_match": "Passwords do not match",
     "of_us": ""
+  },
+  "practice": {
+    "tooltip": "Write practice sentences for this word",
+    "title": "Practice sentences for: ",
+    "back_btn": "Go back",
+    "empty": "No practice sentences yet. Be the first to write one!",
+    "placeholder": "Type your practice sentence...",
+    "confirm_delete": "Are you sure you want to delete?",
+    "btn_delete": "Delete",
+    "btn_cancel": "Cancel"
   }
 }
