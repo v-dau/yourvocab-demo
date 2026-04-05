@@ -45,7 +45,12 @@ const SignUpForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
 
   const onSubmit = async (data: SignUpFormValues) => {
     const { username, email, password } = data;
-    await signUp(username, email, password);
+
+    // Lấy default settings từ localstorage hiện tại của người dùng
+    const language = localStorage.getItem('i18nextLng') || 'en';
+    const theme = localStorage.getItem('vite-ui-theme') || 'system';
+
+    await signUp(username, email, password, language, theme);
     navigate('/signin');
   };
 

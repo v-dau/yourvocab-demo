@@ -3,7 +3,7 @@ import * as userRepository from '../repositories/userRepository.js';
 import { generateAccessToken, generateRefreshToken } from '../config/jwt.js';
 import jwt from 'jsonwebtoken';
 
-export const signUp = async ({ username, email, password }) => {
+export const signUp = async ({ username, email, password, language, theme }) => {
   // 1.check if username exists
   const duplicatedUsername = await userRepository.findByUsername(username);
   if (duplicatedUsername) {
@@ -25,7 +25,7 @@ export const signUp = async ({ username, email, password }) => {
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
   // 4.save to database
-  const newUser = await userRepository.create(username, email, hashedPassword);
+  const newUser = await userRepository.create(username, email, hashedPassword, language, theme);
   return newUser;
 };
 
@@ -41,15 +41,15 @@ export const signIn = async ({ identifier, password }) => {
   }
 
   if (!user) {
-    const error = new Error('Username, email or password is incorrect');
-    error.statusCode = 401; //Unauthorized
+    const error = new Error('Tài khoản hoặc email chưa được đăng ký');
+    error.statusCode = 404; // Not Found
     throw error;
   }
 
   //compare the input password with the stored hashed password
   const isMatch = await bcrypt.compare(password, user.password_hash);
   if (!isMatch) {
-    const error = new Error('Username, email or password is incorrect');
+    const error = new Error('Sai tài khoản hoặc mật khẩu!');
     error.statusCode = 401;
     throw error;
   }

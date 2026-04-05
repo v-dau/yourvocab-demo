@@ -38,8 +38,10 @@ const SignInForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
 
   const onSubmit = async (data: SignInFormValues) => {
     const { identifier, password } = data;
-    await signIn(identifier, password);
-    navigate('/dashboard');
+    const success = await signIn(identifier, password);
+    if (success) {
+      navigate('/dashboard');
+    }
   };
 
   return (

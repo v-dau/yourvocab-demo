@@ -2,10 +2,10 @@ import api from '@/lib/axios.ts';
 
 //prettier ignore
 export const authService = {
-  signUp: async (username: string, email: string, password: string) => {
+  signUp: async (username: string, email: string, password: string, language?: string, theme?: string) => {
     const res = await api.post(
       '/auth/signup',
-      { username, email, password },
+      { username, email, password, language, theme },
       { withCredentials: true }
     );
 

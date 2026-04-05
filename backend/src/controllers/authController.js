@@ -2,7 +2,7 @@ import * as authService from '../services/authService.js';
 
 export const signUp = async (req, res) => {
   try {
-    const { username, password, email } = req.body;
+    const { username, password, email, language, theme } = req.body;
 
     //basic validation
     if (!username || !password || !email) {
@@ -12,7 +12,7 @@ export const signUp = async (req, res) => {
     }
 
     //call the service layer to handle the business logic
-    const newUser = await authService.signUp({ username, email, password });
+    const newUser = await authService.signUp({ username, email, password, language, theme });
 
     //return successful result (201 created)
     return res.status(201).json({
@@ -38,7 +38,7 @@ export const signIn = async (req, res) => {
     const { identifier, password } = req.body;
 
     if (!identifier || !password) {
-      return res.status(400).json({ message: 'Missing username or password' });
+      return res.status(400).json({ message: 'Vui lòng nhập đầy đủ tài khoản và mật khẩu' });
     }
 
     //delegate password verifiction and JWT generation to the service layer

@@ -1,4 +1,4 @@
-import { query } from '../config/db.js';
+import { query, pool } from '../config/db.js';
 
 // find user by username
 export const findByUsername = async (username) => {
@@ -15,14 +15,37 @@ export const findByEmail = async (email) => {
 };
 
 // create new user
-export const create = async (username, email, passwordHash) => {
-  const text = `
-    INSERT INTO users (username, email, password_hash)
-    VALUES ($1, $2, $3)
-    RETURNING id, username, email, created_at;
-  `;
-  const result = await query(text, [username, email, passwordHash]);
-  return result.rows[0]; // returns newly created user (password_hash removed)
+export const create = async (username, email, passwordHash, language = 'en', theme = 'system') => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const text = `
+      INSERT INTO users (username, email, password_hash)
+      VALUES ($1, $2, $3)
+      RETURNING id, username, email, created_at;
+    `;
+    const result = await client.query(text, [username, email, passwordHash]);
+    const newUser = result.rows[0];
+
+    await client.query(
+      `INSERT INTO user_settings (user_id, language, theme_preference) VALUES ($1, $2, $3)`,
+      [newUser.id, language, theme]
+    );
+
+    await client.query(
+      `INSERT INTO user_ai_usages (user_id, daily_quota, total_generations) VALUES ($1, 10, 0)`,
+      [newUser.id]
+    );
+
+    await client.query('COMMIT');
+    return newUser; // returns newly created user (password_hash removed)
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 // find user by id

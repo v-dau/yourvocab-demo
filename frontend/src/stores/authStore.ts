@@ -17,12 +17,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
   },
 
-  signUp: async (username, email, password) => {
+  signUp: async (username, email, password, language, theme) => {
     try {
       set({ loading: true });
 
       //call api at service layer
-      await authService.signUp(username, email, password);
+      await authService.signUp(username, email, password, language, theme);
 
       toast.success('Đăng ký thành công! Đang chuyển sang trang đăng nhập');
     } catch (error) {
@@ -44,9 +44,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await get().fetchMe();
 
       toast.success('Đăng nhập thành công, chúc bạn một ngày học tập chăm chỉ!');
-    } catch (error) {
+      return true;
+    } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       console.error(error);
-      toast.error('Đăng nhập không thành công!');
+
+      // Custom text based on backend error message
+      const backendMessage = error?.response?.data?.message || '';
+
+      toast.error(backendMessage || 'Đăng nhập không thành công!');
+
+      return false;
     } finally {
       set({ loading: false });
     }
