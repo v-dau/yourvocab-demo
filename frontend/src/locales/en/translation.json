@@ -87,7 +87,7 @@
     "near_synonyms": "Near Synonyms",
     "near_synonyms_placeholder": "(comma separated)",
     "level": "Level",
-    "popularity": "Popularity (1-5)",
+    "popularity": "Popularity",
     "pop_1": "1 - Extremely rare",
     "pop_2": "2 - Rare",
     "pop_3": "3 - Uncommon",

@@ -310,34 +310,6 @@ const CreateEditCardPage = () => {
               />
             </div>
 
-            {/* Synonyms, Antonyms & Near Synonyms */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="synonyms">{t('create_edit_page.synonyms')}</Label>
-                <Input
-                  id="synonyms"
-                  placeholder={t('create_edit_page.synonyms_placeholder')}
-                  {...register('synonyms')}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="antonyms">{t('create_edit_page.antonyms')}</Label>
-                <Input
-                  id="antonyms"
-                  placeholder={t('create_edit_page.antonyms_placeholder')}
-                  {...register('antonyms')}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="nearSynonyms">{t('create_edit_page.near_synonyms')}</Label>
-                <Input
-                  id="nearSynonyms"
-                  placeholder={t('create_edit_page.near_synonyms_placeholder')}
-                  {...register('nearSynonyms')}
-                />
-              </div>
-            </div>
-
             {/* Level & Popularity */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -382,6 +354,34 @@ const CreateEditCardPage = () => {
                   <option value="4">{t('create_edit_page.pop_4')}</option>
                   <option value="5">{t('create_edit_page.pop_5')}</option>
                 </select>
+              </div>
+            </div>
+
+            {/* Synonyms, Antonyms & Near Synonyms */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="synonyms">{t('create_edit_page.synonyms')}</Label>
+                <Input
+                  id="synonyms"
+                  placeholder={t('create_edit_page.synonyms_placeholder')}
+                  {...register('synonyms')}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="antonyms">{t('create_edit_page.antonyms')}</Label>
+                <Input
+                  id="antonyms"
+                  placeholder={t('create_edit_page.antonyms_placeholder')}
+                  {...register('antonyms')}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="nearSynonyms">{t('create_edit_page.near_synonyms')}</Label>
+                <Input
+                  id="nearSynonyms"
+                  placeholder={t('create_edit_page.near_synonyms_placeholder')}
+                  {...register('nearSynonyms')}
+                />
               </div>
             </div>
 
