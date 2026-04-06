@@ -201,9 +201,7 @@ export const Card: React.FC<CardProps> = ({
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
-        <h3 className="font-semibold text-lg text-primary line-clamp-1">
-          {t('practice.title')} {card.word}
-        </h3>
+        <h3 className="font-semibold text-lg text-primary line-clamp-1">{t('practice.title')}</h3>
       </div>
 
       {/* Middle Scrollable list */}

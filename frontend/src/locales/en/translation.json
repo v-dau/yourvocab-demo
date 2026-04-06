@@ -382,7 +382,7 @@
   },
   "practice": {
     "tooltip": "Write practice sentences for this word",
-    "title": "Practice sentences for: ",
+    "title": "Practice sentences",
     "back_btn": "Go back",
     "empty": "No practice sentences yet. Write one now!",
     "placeholder": "Type your practice sentence...",
