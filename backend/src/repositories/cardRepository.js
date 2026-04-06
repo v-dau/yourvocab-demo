@@ -53,10 +53,12 @@ export const getCardsByUserId = async (filters, limit, offset) => {
           json_build_object('id', t.id, 'tag_name', t.tag_name)
         ) FILTER (WHERE t.id IS NOT NULL), 
         '[]'
-      ) as tags
+      ) as tags,
+      MAX(crt.is_completed::int)::boolean as is_completed
     FROM public.cards c
     LEFT JOIN public.cards_tags ct ON c.id = ct.card_id
     LEFT JOIN public.tags t ON ct.tag_id = t.id
+    LEFT JOIN public.card_review_trackers crt ON c.id = crt.card_id
   `;
   let countQueryStr = `SELECT COUNT(DISTINCT c.id) FROM public.cards c WHERE c.user_id = $1 AND c.deleted_at IS NULL`;
 
@@ -161,6 +163,20 @@ export const getCardsByUserId = async (filters, limit, offset) => {
   if (filters.hasDefinition === 'true') {
     whereClause += ` AND c.definition IS NOT NULL AND c.definition != ''`;
     countQueryStr += ` AND c.definition IS NOT NULL AND c.definition != ''`;
+  }
+
+  if (filters.hasCompletedReview === 'true') {
+    whereClause += ` AND crt.is_completed = true`;
+    countQueryStr += ` AND EXISTS (SELECT 1 FROM public.card_review_trackers tr WHERE tr.card_id = c.id AND tr.is_completed = true)`;
+  }
+
+  if (filters.tags) {
+    const tagsArray = filters.tags.split(',');
+    const tagsParams = tagsArray.map((_, i) => `$${paramIdx + i}`).join(',');
+    whereClause += ` AND EXISTS (SELECT 1 FROM public.cards_tags f_ct WHERE f_ct.card_id = c.id AND f_ct.tag_id IN (${tagsParams}))`;
+    countQueryStr += ` AND EXISTS (SELECT 1 FROM public.cards_tags f_ct WHERE f_ct.card_id = c.id AND f_ct.tag_id IN (${tagsParams}))`;
+    params.push(...tagsArray);
+    paramIdx += tagsArray.length;
   }
 
   let orderByClause = ' ORDER BY c.created_at DESC';

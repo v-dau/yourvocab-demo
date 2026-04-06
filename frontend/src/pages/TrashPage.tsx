@@ -44,12 +44,14 @@ export default function TrashPage() {
     levels: [],
     popularity: [],
     partOfSpeech: [],
+    tags: [],
     hasExample: null,
     hasIpa: null,
     hasSynonyms: null,
     hasAntonyms: null,
     hasNearSynonyms: null,
     hasDefinition: null,
+    hasCompletedReview: null,
   });
 
   useEffect(() => {
@@ -151,12 +153,14 @@ export default function TrashPage() {
       levels: [],
       popularity: [],
       partOfSpeech: [],
+      tags: [],
       hasExample: null,
       hasIpa: null,
       hasSynonyms: null,
       hasAntonyms: null,
       hasNearSynonyms: null,
       hasDefinition: null,
+      hasCompletedReview: null,
     });
     setSearchQuery('');
   };

@@ -31,6 +31,7 @@ export interface Card {
   modifiedAt: string | Date; // ISO 8601 timestamp
   deletedAt?: string | Date | null; // For soft delete
   tags?: { id: string; tagName?: string }[];
+  isCompleted?: boolean;
 }
 
 /**

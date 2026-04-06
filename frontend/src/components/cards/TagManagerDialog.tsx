@@ -13,7 +13,7 @@ import * as tagService from '@/services/tagService';
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 
-export const TagManagerDialog = () => {
+export const TagManagerDialog = ({ onTagsChange }: { onTagsChange?: () => void }) => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [tags, setTags] = useState<tagService.Tag[]>([]);
@@ -48,6 +48,7 @@ export const TagManagerDialog = () => {
       setTags(tags.filter((t) => t.id !== id));
       setDeletingId(null);
       toast.success(t('tag.delete_success', 'Xóa nhãn dán thành công'));
+      if (onTagsChange) onTagsChange();
     } catch (error) {
       console.error(error);
       toast.error(t('tag.delete_error', 'Lỗi khi xóa nhãn dán'));
@@ -61,6 +62,7 @@ export const TagManagerDialog = () => {
       setTags(tags.map((t) => (t.id === id ? { ...t, tagName: updated.tagName } : t)));
       setEditingId(null);
       toast.success(t('tag.update_success', 'Cập nhật nhãn dán thành công'));
+      if (onTagsChange) onTagsChange();
     } catch (error) {
       console.error(error);
       toast.error(t('tag.update_error', 'Lỗi khi cập nhật nhãn dán'));

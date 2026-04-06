@@ -339,8 +339,20 @@ export const Card: React.FC<CardProps> = ({
     >
       {/* Row 1: Header - Word + Level Badge + Toggle Button */}
       <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3 flex-1">
-          <h2 className="text-3xl font-bold text-primary break-words">{card.word}</h2>
+        <div className="flex items-center gap-3 flex-1 flex-wrap min-w-0">
+          <div className="flex items-center gap-2 min-w-0 max-w-full">
+            <h2 className="text-3xl font-bold text-primary break-all line-clamp-2 md:line-clamp-none">
+              {card.word}
+            </h2>
+            {card.isCompleted && (
+              <span
+                title={t('cards_page.filters.has_completed_review', 'Đã hoàn thành ôn tập')}
+                className="flex-shrink-0 mt-1"
+              >
+                <CheckCircle className="w-7 h-7 text-green-500" />
+              </span>
+            )}
+          </div>
           {card.level && (
             <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-full text-sm font-semibold whitespace-nowrap">
               {card.level}

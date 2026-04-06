@@ -133,7 +133,9 @@
       "has_definition": "Has definition",
       "has_synonyms": "Has synonyms",
       "has_antonyms": "Has antonyms",
-      "has_near_synonyms": "Has near-synonyms"
+      "has_near_synonyms": "Has near-synonyms",
+      "has_completed_review": "Has completed review",
+      "tags": "Tags"
     }
   },
   "dashboard_page": {

@@ -44,6 +44,8 @@ const DEFAULT_FILTERS: CardFiltersState = {
   hasAntonyms: null,
   hasNearSynonyms: null,
   hasDefinition: null,
+  hasCompletedReview: null,
+  tags: [],
 };
 
 const CardsPage = () => {
@@ -69,7 +71,11 @@ const CardsPage = () => {
   const [filters, setFilters] = useState<CardFiltersState>(() => {
     try {
       const saved = localStorage.getItem('cardsFilters');
-      return saved ? JSON.parse(saved) : DEFAULT_FILTERS;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return { ...DEFAULT_FILTERS, ...parsed, tags: parsed.tags || [] };
+      }
+      return DEFAULT_FILTERS;
     } catch {
       return DEFAULT_FILTERS;
     }
@@ -82,9 +88,10 @@ const CardsPage = () => {
   useEffect(() => {
     localStorage.setItem('cardsFilters', JSON.stringify(filters));
   }, [filters]);
-  const [pagination, setPagination] = useState({ totalPages: 1, totalItems: 0, limit: 12 });
+  const [pagination, setPagination] = useState({ totalPages: 1, totalItems: 0, limit: 9 });
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [cardToDelete, setCardToDelete] = useState<string | null>(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
 
@@ -101,7 +108,7 @@ const CardsPage = () => {
         setIsLoading(true);
         const params: Record<string, string | number | boolean> = {
           page: currentPage,
-          limit: 12,
+          limit: 9,
           sortBy: sortConfig.sortBy,
           sortOrder: sortConfig.sortOrder,
         };
@@ -117,6 +124,8 @@ const CardsPage = () => {
         if (filters.hasAntonyms) params.hasAntonyms = true;
         if (filters.hasNearSynonyms) params.hasNearSynonyms = true;
         if (filters.hasDefinition) params.hasDefinition = true;
+        if (filters.hasCompletedReview) params.hasCompletedReview = true;
+        if (filters.tags && filters.tags.length > 0) params.tags = filters.tags.join(',');
 
         const result = await cardService.getCards(params);
         setCards(result.data);
@@ -134,7 +143,7 @@ const CardsPage = () => {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [setCards, currentPage, searchQuery, filters, sortConfig]);
+  }, [setCards, currentPage, searchQuery, filters, sortConfig, refreshTrigger]);
 
   // CRUD Operations
   const handleCreate = () => {
@@ -209,7 +218,7 @@ const CardsPage = () => {
             <CardSort currentSort={sortConfig} onSortChange={setSortConfig} />
             <CardFilters currentFilters={filters} onFilterChange={setFilters} />
             <DisplayModeToolbar onResetAllCards={handleResetAllCards} />
-            <TagManagerDialog />
+            <TagManagerDialog onTagsChange={() => setRefreshTrigger((prev) => prev + 1)} />
           </div>
         </div>
 

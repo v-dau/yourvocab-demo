@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { CardLevel, CardPopularity } from '@/types/card';
+import * as tagService from '@/services/tagService';
 
 interface CardFiltersProps {
   currentFilters: CardFiltersState;
@@ -14,12 +15,14 @@ export interface CardFiltersState {
   levels: (CardLevel | 'N/A')[];
   popularity: CardPopularity[];
   partOfSpeech: string[];
+  tags: string[]; // UUIDs
   hasExample: boolean | null;
   hasIpa: boolean | null;
   hasSynonyms: boolean | null;
   hasAntonyms: boolean | null;
   hasNearSynonyms: boolean | null;
   hasDefinition: boolean | null;
+  hasCompletedReview: boolean | null;
 }
 
 const LEVELS: (CardLevel | 'N/A')[] = ['N/A', 'A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
@@ -41,6 +44,13 @@ export const CardFilters: React.FC<CardFiltersProps> = ({
 }) => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [tagsList, setTagsList] = useState<{ id: string; tagName: string }[]>([]);
+
+  useEffect(() => {
+    if (isOpen && tagsList.length === 0) {
+      tagService.getUserTags().then((data) => setTagsList(data || []));
+    }
+  }, [isOpen, tagsList.length]);
 
   const handleFilterChange = (newFilters: CardFiltersState) => {
     onFilterChange(newFilters);
@@ -69,7 +79,15 @@ export const CardFilters: React.FC<CardFiltersProps> = ({
 
   const toggleBooleanFilter = (key: keyof CardFiltersState) => {
     const newValue = filters[key] === true ? null : true;
-    handleFilterChange({ ...filters, [key]: newValue });
+    handleFilterChange({ ...filters, [key]: newValue as unknown });
+  };
+
+  const toggleTag = (tagId: string) => {
+    const currentTags = filters.tags || [];
+    const updatedTags = currentTags.includes(tagId)
+      ? currentTags.filter((t) => t !== tagId)
+      : [...currentTags, tagId];
+    handleFilterChange({ ...filters, tags: updatedTags });
   };
 
   const clearFilters = () => {
@@ -77,26 +95,30 @@ export const CardFilters: React.FC<CardFiltersProps> = ({
       levels: [],
       popularity: [],
       partOfSpeech: [],
+      tags: [],
       hasExample: null,
       hasIpa: null,
       hasSynonyms: null,
       hasAntonyms: null,
       hasNearSynonyms: null,
       hasDefinition: null,
+      hasCompletedReview: null,
     };
     onFilterChange(emptyFilters);
   };
 
   const activeFilterCount =
-    filters.levels.length +
-    filters.popularity.length +
-    filters.partOfSpeech.length +
+    (filters.levels?.length || 0) +
+    (filters.popularity?.length || 0) +
+    (filters.partOfSpeech?.length || 0) +
+    (filters.tags?.length || 0) +
     (filters.hasExample !== null ? 1 : 0) +
     (filters.hasIpa !== null ? 1 : 0) +
     (filters.hasSynonyms !== null ? 1 : 0) +
     (filters.hasAntonyms !== null ? 1 : 0) +
     (filters.hasNearSynonyms !== null ? 1 : 0) +
-    (filters.hasDefinition !== null ? 1 : 0);
+    (filters.hasDefinition !== null ? 1 : 0) +
+    (filters.hasCompletedReview !== null ? 1 : 0);
 
   return (
     <div className="relative">
@@ -253,7 +275,41 @@ export const CardFilters: React.FC<CardFiltersProps> = ({
                   {t('cards_page.filters.has_near_synonyms', 'Has near-synonyms')}
                 </span>
               </label>
+
+              <label className="col-span-2 flex items-center gap-2 cursor-pointer bg-green-50 dark:bg-green-900/20 p-2 rounded-md border border-green-100 dark:border-green-800">
+                <input
+                  type="checkbox"
+                  checked={filters.hasCompletedReview === true}
+                  onChange={() => toggleBooleanFilter('hasCompletedReview')}
+                  className="rounded text-green-600 focus:ring-green-500"
+                />
+                <span className="text-sm font-medium text-green-700 dark:text-green-400">
+                  {t('cards_page.filters.has_completed_review', 'Đã hoàn thành ôn tập')}
+                </span>
+              </label>
             </div>
+
+            {/* Tag Filters */}
+            {tagsList.length > 0 && (
+              <div className="mb-4">
+                <h4 className="font-semibold mb-2">{t('cards_page.filters.tags', 'Nhãn dán')}</h4>
+                <div className="flex flex-wrap gap-2">
+                  {tagsList.map((tag) => (
+                    <button
+                      key={tag.id}
+                      onClick={() => toggleTag(tag.id)}
+                      className={`px-3 py-1 rounded-full text-sm border transition-colors ${
+                        (filters.tags || []).includes(tag.id)
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-background hover:bg-secondary border-input'
+                      }`}
+                    >
+                      {tag.tagName}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Clear Button */}
             {activeFilterCount > 0 && (

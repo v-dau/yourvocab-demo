@@ -21,6 +21,7 @@ const mapToFrontendCard = (data: any): Card => ({
   modifiedAt: data.modified_at,
   deletedAt: data.deleted_at,
   tags: data.tags,
+  isCompleted: data.is_completed,
 });
 
 // Helper function to map camelCase to snake_case
