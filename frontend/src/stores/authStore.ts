@@ -45,12 +45,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       toast.success('Đăng nhập thành công, chúc bạn một ngày học tập chăm chỉ!');
       return true;
-    } catch (error: any) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: unknown) {
       console.error(error);
 
       // Custom text based on backend error message
-      const backendMessage = error?.response?.data?.message || '';
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const axiosError = error as any;
+      const backendMessage = axiosError?.response?.data?.message || '';
 
       toast.error(backendMessage || 'Đăng nhập không thành công!');
 

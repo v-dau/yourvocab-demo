@@ -310,8 +310,8 @@ const CreateEditCardPage = () => {
               />
             </div>
 
-            {/* Synonyms & Antonyms */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Synonyms, Antonyms & Near Synonyms */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="synonyms">{t('create_edit_page.synonyms')}</Label>
                 <Input
@@ -326,6 +326,14 @@ const CreateEditCardPage = () => {
                   id="antonyms"
                   placeholder={t('create_edit_page.antonyms_placeholder')}
                   {...register('antonyms')}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="nearSynonyms">{t('create_edit_page.near_synonyms')}</Label>
+                <Input
+                  id="nearSynonyms"
+                  placeholder={t('create_edit_page.near_synonyms_placeholder')}
+                  {...register('nearSynonyms')}
                 />
               </div>
             </div>
