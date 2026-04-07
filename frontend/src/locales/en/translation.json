@@ -430,5 +430,53 @@
     "engagement_tags": "Tags",
     "engagement_ai": "AI Usage",
     "fetch_error": "An error occurred while loading system stats"
+  },
+  "admin_users": {
+    "title": "User Management",
+    "subtitle": "Manage members.",
+    "search_placeholder": "Search username...",
+    "filter_banned": "Show banned users only",
+    "sort_newest": "Newest (Default)",
+    "sort_oldest": "Oldest",
+    "sort_az": "A-Z",
+    "sort_za": "Z-A",
+    "sort_most_cards": "Most cards",
+    "sort_least_cards": "Least cards",
+    "table": {
+      "user": "User",
+      "stats": "Stats",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "banned": "Banned"
+    },
+    "actions": {
+      "ban": "Ban User",
+      "unban": "Unban"
+    },
+    "empty_list": "No users found.",
+    "loading": "Loading data...",
+    "stats_labels": {
+      "cards": "cards",
+      "completed": "reviewed",
+      "sentences": "sentences",
+      "tags": "tags",
+      "ai_usages": "AI uses"
+    },
+    "stats_tooltips": {
+      "total_cards": "Total cards",
+      "completed_cards": "Reviewed cards",
+      "total_sentences": "Practice sentences",
+      "total_tags": "Total tags",
+      "ai_usages": "AI usage count"
+    },
+    "pagination": {
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "page": "Page"
+    }
   }
 }

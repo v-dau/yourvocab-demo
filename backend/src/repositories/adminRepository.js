@@ -97,7 +97,9 @@ export const getUsersWithStats = async (
        WHERE c.user_id = u.id AND cr.is_completed = true)::int AS completed_cards,
       (SELECT COUNT(*) FROM practice_sentences ps 
        JOIN cards c ON ps.card_id = c.id 
-       WHERE c.user_id = u.id)::int AS total_sentences
+       WHERE c.user_id = u.id)::int AS total_sentences,
+      (SELECT COUNT(*) FROM tags t WHERE t.user_id = u.id)::int AS total_tags,
+      COALESCE((SELECT total_generations FROM user_ai_usages uau WHERE uau.user_id = u.id), 0)::int AS total_ai_usages
     FROM users u
     ${whereClause}
     ORDER BY ${orderBy}

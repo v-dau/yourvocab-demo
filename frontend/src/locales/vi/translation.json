@@ -428,5 +428,53 @@
     "engagement_tags": "Nhãn (Tags)",
     "engagement_ai": "Lượt dùng AI",
     "fetch_error": "Có lỗi xảy ra khi tải số liệu hệ thống"
+  },
+  "admin_users": {
+    "title": "Quản lý người dùng",
+    "subtitle": "Quản lý thành viên.",
+    "search_placeholder": "Tìm kiếm username...",
+    "filter_banned": "Chỉ hiện người dùng bị khóa",
+    "sort_newest": "Mới nhất (Mặc định)",
+    "sort_oldest": "Cũ nhất",
+    "sort_az": "A-Z",
+    "sort_za": "Z-A",
+    "sort_most_cards": "Nhiều thẻ nhất",
+    "sort_least_cards": "Ít thẻ nhất",
+    "table": {
+      "user": "Người dùng",
+      "stats": "Thống kê",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "status": {
+      "active": "Hoạt động",
+      "banned": "Đã khóa"
+    },
+    "actions": {
+      "ban": "Khóa người dùng",
+      "unban": "Mở khóa"
+    },
+    "empty_list": "Không tìm thấy người dùng.",
+    "loading": "Đang tải dữ liệu...",
+    "stats_labels": {
+      "cards": "thẻ",
+      "completed": "đã ôn",
+      "sentences": "câu",
+      "tags": "tag",
+      "ai_usages": "lượt AI"
+    },
+    "stats_tooltips": {
+      "total_cards": "Tổng số thẻ",
+      "completed_cards": "Thẻ đã hoàn thành ôn tập",
+      "total_sentences": "Số câu thực hành",
+      "total_tags": "Tổng số tags",
+      "ai_usages": "Số lần sử dụng AI"
+    },
+    "pagination": {
+      "showing": "Từ",
+      "to": "đến",
+      "of": "/",
+      "page": "Trang"
+    }
   }
 }

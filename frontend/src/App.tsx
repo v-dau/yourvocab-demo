@@ -11,6 +11,7 @@ import ProfileSettingsPage from './pages/ProfileSettingsPage';
 import FeedbackPage from './pages/FeedbackPage';
 import TrashPage from './pages/TrashPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
+import AdminUsersPage from './pages/AdminUsersPage';
 import { Toaster } from 'sonner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PublicRoute from './components/auth/PublicRoute';
@@ -291,6 +292,23 @@ function App() {
                     onLanguageChange={handleLanguageChange}
                   >
                     <AdminDashboardPage />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
+                  <MainLayout
+                    isLoggedIn={!!user}
+                    username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
+                    onLogout={handleLogout}
+                    onThemeToggle={handleThemeToggle}
+                    currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
+                  >
+                    <AdminUsersPage />
                   </MainLayout>
                 }
               />
