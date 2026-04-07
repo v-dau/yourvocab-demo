@@ -40,3 +40,29 @@ export const unbanUser = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
+
+export const getFeedbacks = async (req, res) => {
+  try {
+    const result = await adminService.getFeedbacks(req.query);
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error fetching admin feedbacks: ', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const markFeedbackRead = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const success = await adminService.markFeedbackAsRead(id);
+
+    if (!success) {
+      return res.status(404).json({ success: false, message: 'Feedback not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Feedback marked as read' });
+  } catch (error) {
+    console.error('Error marking feedback read: ', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};

@@ -41,3 +41,28 @@ export const getUsers = async (query) => {
     },
   };
 };
+
+export const getFeedbacks = async (query) => {
+  const page = parseInt(query.page) || 1;
+  const limit = parseInt(query.limit) || 10;
+  const search = query.search || '';
+  const sortBy = query.sortBy || 'newest';
+  const filterRead = query.filterRead || 'all';
+
+  const result = await adminRepository.getFeedbacks(page, limit, search, sortBy, filterRead);
+
+  return {
+    success: true,
+    data: result.feedbacks,
+    pagination: {
+      total: result.totalCount,
+      page,
+      limit,
+    },
+  };
+};
+
+export const markFeedbackAsRead = async (feedbackId) => {
+  const success = await adminRepository.markFeedbackAsRead(feedbackId);
+  return success;
+};

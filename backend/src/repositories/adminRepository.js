@@ -124,3 +124,82 @@ export const getUsersWithStats = async (
     totalCount: parseInt(countRes.rows[0].count, 10),
   };
 };
+
+export const getFeedbacks = async (
+  page = 1,
+  limit = 10,
+  search = '',
+  sortBy = 'newest',
+  filterRead = 'all'
+) => {
+  const offset = (page - 1) * limit;
+  let filters = [];
+  const values = [];
+  let paramIndex = 1;
+
+  if (search) {
+    // Search username or title
+    filters.push(`(u.username ILIKE $${paramIndex} OR f.title ILIKE $${paramIndex})`);
+    values.push(`%${search}%`);
+    paramIndex++;
+  }
+
+  if (filterRead === 'read') {
+    filters.push(`f.is_read = true`);
+  } else if (filterRead === 'unread') {
+    filters.push(`f.is_read = false`);
+  }
+
+  const whereClause = filters.length > 0 ? `WHERE ${filters.join(' AND ')}` : '';
+
+  let orderBy = 'f.created_at DESC';
+  if (sortBy === 'oldest') {
+    orderBy = 'f.created_at ASC';
+  }
+
+  const query = `
+    SELECT 
+      f.id, 
+      f.title, 
+      f.content, 
+      f.is_read, 
+      f.created_at,
+      u.username,
+      u.avatar_url
+    FROM feedbacks f
+    LEFT JOIN users u ON f.user_id = u.id
+    ${whereClause}
+    ORDER BY ${orderBy}
+    LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
+  `;
+
+  const countQuery = `
+    SELECT COUNT(*) 
+    FROM feedbacks f
+    LEFT JOIN users u ON f.user_id = u.id
+    ${whereClause}
+  `;
+
+  values.push(limit, offset);
+
+  const [dataRes, countRes] = await Promise.all([
+    pool.query(query, values),
+    pool.query(countQuery, values.slice(0, paramIndex - 1)),
+  ]);
+
+  return {
+    feedbacks: dataRes.rows,
+    totalCount: parseInt(countRes.rows[0].count, 10),
+  };
+};
+
+export const markFeedbackAsRead = async (feedbackId) => {
+  const query = `
+    UPDATE feedbacks
+    SET is_read = true, modified_at = NOW()
+    WHERE id = $1
+    RETURNING id;
+  `;
+  const res = await pool.query(query, [feedbackId]);
+  return res.rowCount > 0;
+};
