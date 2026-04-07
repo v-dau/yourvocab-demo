@@ -404,5 +404,29 @@
   "cards": {
     "no_cards_found": "Không tìm thấy thẻ nào",
     "loading": "Đang tải..."
+  },
+  "admin_dashboard": {
+    "title": "Tổng quan Hệ thống",
+    "subtitle": "Số liệu thống kê toàn bộ hoạt động của ứng dụng",
+    "cards": {
+      "total_users": "Tổng người dùng",
+      "new_users_desc": "+{{count}} người dùng mới (3 ngày qua)",
+      "total_cards": "Tổng số thẻ từ vựng",
+      "completed_cards": "Số thẻ đã ôn xong",
+      "practice_sentences": "Tổng câu luyện tập",
+      "total_tags": "Tổng số Nhãn (Tags)",
+      "ai_usage": "Tổng lượt dùng AI"
+    },
+    "loading": "Đang tải dữ liệu hệ thống...",
+    "error": "Không thể tải dữ liệu thống kê.",
+    "description": "Số liệu thống kê toàn bộ hoạt động của ứng dụng",
+    "users_total": "Người dùng",
+    "users_new": "+{{count}} người dùng mới trong 3 ngày qua",
+    "cards_total": "Tổng số thẻ",
+    "cards_completed": "Thẻ đã hoàn thành",
+    "engagement_sentences": "Câu luyện tập",
+    "engagement_tags": "Nhãn (Tags)",
+    "engagement_ai": "Lượt dùng AI",
+    "fetch_error": "Có lỗi xảy ra khi tải số liệu hệ thống"
   }
 }

@@ -10,9 +10,9 @@ export const getGlobalStats = async () => {
     totalTagsRes,
     totalAiUsageRes,
   ] = await Promise.all([
-    pool.query('SELECT COUNT(*) AS total_users FROM users'),
+    pool.query("SELECT COUNT(*) AS total_users FROM users WHERE role = 'user'"),
     pool.query(
-      "SELECT COUNT(*) AS new_users FROM users WHERE created_at >= NOW() - INTERVAL '3 days'"
+      "SELECT COUNT(*) AS new_users FROM users WHERE role = 'user' AND created_at >= NOW() - INTERVAL '3 days'"
     ),
     pool.query('SELECT COUNT(*) AS total_cards FROM cards'),
     pool.query(

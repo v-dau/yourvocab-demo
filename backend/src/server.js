@@ -8,6 +8,7 @@ import tagRoute from './routes/tagRoute.js';
 import reviewRoute from './routes/reviewRoute.js';
 import practiceSentenceRoute from './routes/practiceSentenceRoute.js';
 import dashboardRoute from './routes/dashboardRoute.js';
+import adminRoute from './routes/adminRoute.js';
 import cookieParser from 'cookie-parser';
 import { protectedRoute } from './middlewares/authMiddleware.js';
 import cors from 'cors';
@@ -32,6 +33,7 @@ app.use('/api/tags', tagRoute);
 app.use('/api/reviews', reviewRoute);
 app.use('/api', practiceSentenceRoute);
 app.use('/api/dashboard', dashboardRoute);
+app.use('/api/admin', adminRoute);
 
 // connect to the DB before running the server
 connectDB().then(() => {

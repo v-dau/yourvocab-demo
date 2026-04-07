@@ -406,5 +406,29 @@
   "cards": {
     "no_cards_found": "No cards found",
     "loading": "Loading..."
+  },
+  "admin_dashboard": {
+    "title": "System Overview",
+    "subtitle": "Global statistics of application activities",
+    "cards": {
+      "total_users": "Total Users",
+      "new_users_desc": "+{{count}} new users (last 3 days)",
+      "total_cards": "Total Flashcards",
+      "completed_cards": "Completed Cards",
+      "practice_sentences": "Total Sentences",
+      "total_tags": "Total Tags",
+      "ai_usage": "Total AI Generations"
+    },
+    "loading": "Loading system data...",
+    "error": "Failed to load statistics.",
+    "description": "Statistics of all application activities",
+    "users_total": "Users",
+    "users_new": "+{{count}} new users in the last 3 days",
+    "cards_total": "Total Cards",
+    "cards_completed": "Completed Cards",
+    "engagement_sentences": "Practice Sentences",
+    "engagement_tags": "Tags",
+    "engagement_ai": "AI Usage",
+    "fetch_error": "An error occurred while loading system stats"
   }
 }

@@ -10,6 +10,7 @@ import ReviewPage from './pages/ReviewPage';
 import ProfileSettingsPage from './pages/ProfileSettingsPage';
 import FeedbackPage from './pages/FeedbackPage';
 import TrashPage from './pages/TrashPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 import { Toaster } from 'sonner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PublicRoute from './components/auth/PublicRoute';
@@ -274,7 +275,28 @@ function App() {
                   </MainLayout>
                 }
               />
+
+              {/* Admin Routes */}
+              <Route
+                path="/admin/dashboard"
+                element={
+                  <MainLayout
+                    isLoggedIn={!!user}
+                    username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
+                    onLogout={handleLogout}
+                    onThemeToggle={handleThemeToggle}
+                    currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
+                  >
+                    <AdminDashboardPage />
+                  </MainLayout>
+                }
+              />
             </Route>
+
+            {/* NotFound or Catch-All can be added here */}
           </Routes>
         </BrowserRouter>
       </DisplayModeProvider>
