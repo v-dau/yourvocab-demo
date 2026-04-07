@@ -478,5 +478,45 @@
       "of": "of",
       "page": "Page"
     }
+  },
+  "feedbacks": {
+    "title": "My Feedbacks",
+    "subtitle": "Send us your suggestions or report a bug.",
+    "form_title": "New Feedback",
+    "form_title_placeholder": "Title...",
+    "form_content_placeholder": "Describe your issue or suggestion in detail...",
+    "submit_btn": "Submit Feedback",
+    "history_title": "Feedback History",
+    "status_read": "Read",
+    "status_unread": "Unread",
+    "success_msg": "Feedback submitted successfully!",
+    "error_msg": "Failed to submit feedback.",
+    "empty": "No feedbacks found.",
+    "invalid_input": "Please provide both title and content."
+  },
+  "admin_feedbacks": {
+    "title": "Manage Feedbacks",
+    "subtitle": "View and manage user feedbacks.",
+    "search_placeholder": "Search sender or title...",
+    "sort_newest": "Newest",
+    "sort_oldest": "Oldest",
+    "filter_all": "All",
+    "filter_read": "Read",
+    "filter_unread": "Unread",
+    "table": {
+      "user": "Sender",
+      "title": "Title",
+      "date": "Date",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "dialog": {
+      "title": "Feedback Details",
+      "sender": "From:",
+      "btn_mark_read": "Mark as Read",
+      "btn_close": "Close"
+    },
+    "mark_read_success": "Marked as read successfully!",
+    "empty": "No feedbacks found."
   }
 }

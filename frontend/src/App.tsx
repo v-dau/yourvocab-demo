@@ -12,6 +12,7 @@ import FeedbackPage from './pages/FeedbackPage';
 import TrashPage from './pages/TrashPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import AdminUsersPage from './pages/AdminUsersPage';
+import AdminFeedbacksPage from './pages/AdminFeedbacksPage';
 import { Toaster } from 'sonner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PublicRoute from './components/auth/PublicRoute';
@@ -276,7 +277,6 @@ function App() {
                   </MainLayout>
                 }
               />
-
               {/* Admin Routes */}
               <Route
                 path="/admin/dashboard"
@@ -309,6 +309,23 @@ function App() {
                     onLanguageChange={handleLanguageChange}
                   >
                     <AdminUsersPage />
+                  </MainLayout>
+                }
+              />
+              <Route
+                path="/admin/feedbacks"
+                element={
+                  <MainLayout
+                    isLoggedIn={!!user}
+                    username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
+                    onLogout={handleLogout}
+                    onThemeToggle={handleThemeToggle}
+                    currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
+                  >
+                    <AdminFeedbacksPage />
                   </MainLayout>
                 }
               />

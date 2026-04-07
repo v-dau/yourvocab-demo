@@ -476,5 +476,45 @@
       "of": "/",
       "page": "Trang"
     }
+  },
+  "feedbacks": {
+    "title": "Phản hồi của tôi",
+    "subtitle": "Gửi cho chúng tôi ý kiến hoặc báo lỗi.",
+    "form_title": "Gửi phản hồi mới",
+    "form_title_placeholder": "Tiêu đề...",
+    "form_content_placeholder": "Mô tả chi tiết vấn đề hoặc góp ý của bạn...",
+    "submit_btn": "Gửi phản hồi",
+    "history_title": "Lịch sử phản hồi",
+    "status_read": "Đã đọc",
+    "status_unread": "Chưa đọc",
+    "success_msg": "Đã gửi phản hồi thành công!",
+    "error_msg": "Lỗi khi gửi phản hồi.",
+    "empty": "Bạn chưa gửi phản hồi nào.",
+    "invalid_input": "Vui lòng nhập đầy đủ tiêu đề và nội dung."
+  },
+  "admin_feedbacks": {
+    "title": "Quản lý Phản hồi",
+    "subtitle": "Xem và quản lý các phản hồi từ người dùng.",
+    "search_placeholder": "Tìm kiếm người gửi hoặc tiêu đề...",
+    "sort_newest": "Mới nhất",
+    "sort_oldest": "Cũ nhất",
+    "filter_all": "Tất cả",
+    "filter_read": "Đã đọc",
+    "filter_unread": "Chưa đọc",
+    "table": {
+      "user": "Người gửi",
+      "title": "Tiêu đề",
+      "date": "Ngày gửi",
+      "status": "Trạng thái",
+      "actions": "Hành động"
+    },
+    "dialog": {
+      "title": "Chi tiết Phản hồi",
+      "sender": "Người gửi:",
+      "btn_mark_read": "Đánh dấu đã đọc",
+      "btn_close": "Đóng"
+    },
+    "mark_read_success": "Đánh dấu đã đọc thành công!",
+    "empty": "Không tìm thấy phản hồi nào."
   }
 }
