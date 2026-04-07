@@ -21,3 +21,23 @@ export const getAdminStats = async () => {
     },
   };
 };
+
+export const getUsers = async (query) => {
+  const page = parseInt(query.page) || 1;
+  const limit = parseInt(query.limit) || 10;
+  const search = query.search || '';
+  const sortBy = query.sortBy || 'newest';
+  const filterBanned = query.filterBanned === 'true';
+
+  const result = await adminRepository.getUsersWithStats(page, limit, search, sortBy, filterBanned);
+
+  return {
+    success: true,
+    data: result.users,
+    pagination: {
+      total: result.totalCount,
+      page,
+      limit,
+    },
+  };
+};
