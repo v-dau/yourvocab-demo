@@ -516,5 +516,9 @@
     },
     "mark_read_success": "Đánh dấu đã đọc thành công!",
     "empty": "Không tìm thấy phản hồi nào."
+  },
+  "admin": {
+    "users_management": "Quản lý người dùng",
+    "manage_feedbacks": "Danh sách phản hồi"
   }
 }

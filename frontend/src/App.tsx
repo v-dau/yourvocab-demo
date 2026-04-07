@@ -139,8 +139,8 @@ function App() {
               />
             </Route>
 
-            {/*protected routes*/}
-            <Route element={<ProtectedRoute />}>
+            {/*protected routes (User) */}
+            <Route element={<ProtectedRoute requiredRole="user" />}>
               <Route
                 path="/dashboard"
                 element={
@@ -243,23 +243,7 @@ function App() {
                   </MainLayout>
                 }
               />
-              <Route
-                path="/profile-settings"
-                element={
-                  <MainLayout
-                    isLoggedIn={!!user}
-                    username={user?.username || 'User'}
-                    userAvatar={user?.avatar_url || ''}
-                    onLogout={handleLogout}
-                    onThemeToggle={handleThemeToggle}
-                    currentTheme={theme}
-                    currentLanguage={language}
-                    onLanguageChange={handleLanguageChange}
-                  >
-                    <ProfileSettingsPage />
-                  </MainLayout>
-                }
-              />
+              
               <Route
                 path="/feedbacks"
                 element={
@@ -277,7 +261,31 @@ function App() {
                   </MainLayout>
                 }
               />
-              {/* Admin Routes */}
+            </Route>
+
+            {/* Common Protected Routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route
+                path="/profile-settings"
+                element={
+                  <MainLayout
+                    isLoggedIn={!!user}
+                    username={user?.username || 'User'}
+                    userAvatar={user?.avatar_url || ''}
+                    onLogout={handleLogout}
+                    onThemeToggle={handleThemeToggle}
+                    currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
+                  >
+                    <ProfileSettingsPage />
+                  </MainLayout>
+                }
+              />
+            </Route>
+
+            {/* Admin Routes */}
+            <Route element={<ProtectedRoute requiredRole="admin" />}>
               <Route
                 path="/admin/dashboard"
                 element={

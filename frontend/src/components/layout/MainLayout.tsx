@@ -60,11 +60,11 @@ export function MainLayout({
 
       {/* Main Content Area */}
       <div
-        className={`flex-1 transition-all duration-300 ease-in-out ${
+        className={`flex-1 flex flex-col transition-all duration-300 ease-in-out ${
           sidebarCollapsed ? 'md:ml-20' : 'md:ml-64'
         }`}
       >
-        <main className="container mx-auto py-0">{children}</main>
+        <main className="container mx-auto py-0 flex-1">{children}</main>
         <Footer />
       </div>
     </div>

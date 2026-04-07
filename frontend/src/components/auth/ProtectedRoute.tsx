@@ -2,8 +2,12 @@ import { useAuthStore } from '@/stores/authStore';
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router';
 
-const ProtectedRoute = () => {
-  const { accessToken, loading, refresh, fetchMe } = useAuthStore();
+interface ProtectedRouteProps {
+  requiredRole?: 'admin' | 'user';
+}
+
+const ProtectedRoute = ({ requiredRole }: ProtectedRouteProps) => {
+  const { accessToken, loading, refresh, fetchMe, user } = useAuthStore();
   const [starting, setStarting] = useState(true); //indicates the app is initializing
 
   useEffect(() => {
@@ -45,6 +49,15 @@ const ProtectedRoute = () => {
         replace //replace current route in browser history so users can't go back to the protected page
       />
     );
+  }
+
+  // RBAC routing
+  if (requiredRole && user?.role && user.role !== requiredRole) {
+    if (user.role === 'admin') {
+      return <Navigate to="/admin/dashboard" replace />;
+    } else {
+      return <Navigate to="/dashboard" replace />;
+    }
   }
 
   return (

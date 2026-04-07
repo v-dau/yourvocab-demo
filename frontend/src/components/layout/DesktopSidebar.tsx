@@ -15,6 +15,8 @@ import {
   Moon,
   Globe,
   Trash2,
+  Users,
+  MessageSquare,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -25,6 +27,7 @@ import {
 import { cn } from '@/lib/utils';
 import * as cardService from '@/services/cardService';
 import { useReviewStore } from '@/stores/reviewStore';
+import { useAuthStore } from '@/stores/authStore';
 import React from 'react';
 
 interface DesktopSidebarProps {
@@ -67,6 +70,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
   const [trashCount, setTrashCount] = useState(0);
   const location = useLocation();
   const { totalDue, fetchTotalDue } = useReviewStore();
+  const { user } = useAuthStore();
 
   const fetchTrashCount = React.useCallback(() => {
     if (isLoggedIn) {
@@ -97,22 +101,41 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     };
   }, [isLoggedIn, location.pathname, fetchTotalDue, fetchTrashCount]); // Re-fetch when route changes as well
 
-  const navItems = [
-    { icon: LayoutDashboard, label: t('sidebar.dashboard'), path: '/dashboard' },
-    { icon: FileText, label: t('sidebar.cards'), path: '/cards' },
-    {
-      icon: RotateCw,
-      label: t('sidebar.review'),
-      path: '/review',
-      badge: totalDue > 0 ? totalDue : null,
-    },
-    {
-      icon: Trash2,
-      label: t('sidebar.trash'),
-      path: '/trash',
-      badge: trashCount > 0 ? trashCount : null,
-    },
-  ];
+  const navItems =
+    user?.role === 'admin'
+      ? [
+          {
+            icon: LayoutDashboard,
+            label: t('sidebar.dashboard', { defaultValue: 'Tổng quan' }),
+            path: '/admin/dashboard',
+          },
+          {
+            icon: Users,
+            label: t('admin.users_management', { defaultValue: 'Quản lý người dùng' }),
+            path: '/admin/users',
+          },
+          {
+            icon: MessageSquare,
+            label: t('admin.manage_feedbacks', { defaultValue: 'Danh sách phản hồi' }),
+            path: '/admin/feedbacks',
+          },
+        ]
+      : [
+          { icon: LayoutDashboard, label: t('sidebar.dashboard'), path: '/dashboard' },
+          { icon: FileText, label: t('sidebar.cards'), path: '/cards' },
+          {
+            icon: RotateCw,
+            label: t('sidebar.review'),
+            path: '/review',
+            badge: totalDue > 0 ? totalDue : null,
+          },
+          {
+            icon: Trash2,
+            label: t('sidebar.trash'),
+            path: '/trash',
+            badge: trashCount > 0 ? trashCount : null,
+          },
+        ];
 
   return (
     <aside
@@ -152,7 +175,7 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
             </Button>
 
             <Link
-              to="/dashboard"
+              to={user?.role === 'admin' ? '/admin/dashboard' : '/dashboard'}
               className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             >
               <BookOpen className="h-6 w-6 text-primary shrink-0" />

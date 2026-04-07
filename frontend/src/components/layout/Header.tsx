@@ -12,6 +12,7 @@ import {
 import { User, LogOut, Settings, BookOpen } from 'lucide-react';
 import { MobileSidebar } from './MobileSidebar';
 import { cn } from '@/lib/utils';
+import { useAuthStore } from '@/stores/authStore';
 
 interface HeaderProps {
   isLoggedIn?: boolean;
@@ -31,6 +32,7 @@ export const Header: React.FC<HeaderProps> = ({
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user } = useAuthStore();
 
   const handleLogout = () => {
     onLogout();
@@ -57,7 +59,7 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Logo - visible on desktop */}
           <Link
-            to="/dashboard"
+            to={user?.role === 'admin' ? '/admin/dashboard' : '/dashboard'}
             className="hidden md:flex items-center gap-2 hover:opacity-80 transition-opacity ml-16"
           >
             <BookOpen className="h-6 w-6 text-primary" />
@@ -67,39 +69,79 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Navigation Links (Desktop Only) */}
         <nav className="hidden md:flex items-center gap-8">
-          <Link
-            to="/dashboard"
-            className={cn(
-              'transition-colors text-sm font-medium',
-              isActive('/dashboard')
-                ? 'text-primary border-b-2 border-primary pb-1'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            {t('sidebar.dashboard')}
-          </Link>
-          <Link
-            to="/cards"
-            className={cn(
-              'transition-colors text-sm font-medium',
-              isActive('/cards')
-                ? 'text-primary border-b-2 border-primary pb-1'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            {t('sidebar.cards')}
-          </Link>
-          <Link
-            to="/review"
-            className={cn(
-              'transition-colors text-sm font-medium',
-              isActive('/review')
-                ? 'text-primary border-b-2 border-primary pb-1'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            {t('sidebar.review')}
-          </Link>
+          {user?.role === 'admin' ? (
+            <>
+              <Link
+                to="/admin/dashboard"
+                className={cn(
+                  'transition-colors text-sm font-medium',
+                  isActive('/admin/dashboard')
+                    ? 'text-primary border-b-2 border-primary pb-1'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {t('sidebar.dashboard', { defaultValue: 'Tổng quan' })}
+              </Link>
+              <Link
+                to="/admin/users"
+                className={cn(
+                  'transition-colors text-sm font-medium',
+                  isActive('/admin/users')
+                    ? 'text-primary border-b-2 border-primary pb-1'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {t('admin.users_management', { defaultValue: 'Quản lý người dùng' })}
+              </Link>
+              <Link
+                to="/admin/feedbacks"
+                className={cn(
+                  'transition-colors text-sm font-medium',
+                  isActive('/admin/feedbacks')
+                    ? 'text-primary border-b-2 border-primary pb-1'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {t('admin.manage_feedbacks', { defaultValue: 'Danh sách phản hồi' })}
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/dashboard"
+                className={cn(
+                  'transition-colors text-sm font-medium',
+                  isActive('/dashboard')
+                    ? 'text-primary border-b-2 border-primary pb-1'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {t('sidebar.dashboard')}
+              </Link>
+              <Link
+                to="/cards"
+                className={cn(
+                  'transition-colors text-sm font-medium',
+                  isActive('/cards')
+                    ? 'text-primary border-b-2 border-primary pb-1'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {t('sidebar.cards')}
+              </Link>
+              <Link
+                to="/review"
+                className={cn(
+                  'transition-colors text-sm font-medium',
+                  isActive('/review')
+                    ? 'text-primary border-b-2 border-primary pb-1'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {t('sidebar.review')}
+              </Link>
+            </>
+          )}
         </nav>
 
         {/* Right Section - User */}

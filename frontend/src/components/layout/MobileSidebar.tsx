@@ -7,6 +7,8 @@ import { Menu, BookOpen, LogOut, Settings } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import * as cardService from '@/services/cardService';
 import { useReviewStore } from '@/stores/reviewStore';
+import { useAuthStore } from '@/stores/authStore';
+import { useTranslation } from 'react-i18next';
 
 interface MobileSidebarProps {
   isLoggedIn?: boolean;
@@ -23,6 +25,8 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
+  const { user } = useAuthStore();
   const [open, setOpen] = React.useState(false);
   const [trashCount, setTrashCount] = useState(0);
   const { totalDue, fetchTotalDue } = useReviewStore();
@@ -90,42 +94,67 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({
 
         {/* Main Navigation */}
         <nav className="flex flex-col gap-4 px-6">
-          <button
-            onClick={() => handleNavigate('/dashboard')}
-            className="text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
-          >
-            Dashboard
-          </button>
-          <button
-            onClick={() => handleNavigate('/cards')}
-            className="text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
-          >
-            Cards
-          </button>
-          <button
-            onClick={() => handleNavigate('/review')}
-            className="flex items-center justify-between text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
-          >
-            <span>Spaced Repetition</span>
-            {totalDue > 0 && (
-              <span className="bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full">
-                {totalDue}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => handleNavigate('/trash')}
-            className="flex items-center justify-between text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
-          >
-            <div className="flex items-center gap-2">
-              <span>Thùng rác</span>
-            </div>
-            {trashCount > 0 && (
-              <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">
-                {trashCount}
-              </span>
-            )}
-          </button>
+          {user?.role === 'admin' ? (
+            <>
+              <button
+                onClick={() => handleNavigate('/admin/dashboard')}
+                className="text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
+              >
+                {t('sidebar.dashboard', { defaultValue: 'Tổng quan' })}
+              </button>
+              <button
+                onClick={() => handleNavigate('/admin/users')}
+                className="text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
+              >
+                {t('admin.users_management', { defaultValue: 'Quản lý người dùng' })}
+              </button>
+              <button
+                onClick={() => handleNavigate('/admin/feedbacks')}
+                className="text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
+              >
+                {t('admin.manage_feedbacks', { defaultValue: 'Danh sách phản hồi' })}
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => handleNavigate('/dashboard')}
+                className="text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
+              >
+                {t('sidebar.dashboard')}
+              </button>
+              <button
+                onClick={() => handleNavigate('/cards')}
+                className="text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
+              >
+                {t('sidebar.cards')}
+              </button>
+              <button
+                onClick={() => handleNavigate('/review')}
+                className="flex items-center justify-between text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
+              >
+                <span>{t('sidebar.review', { defaultValue: 'Spaced Repetition' })}</span>
+                {totalDue > 0 && (
+                  <span className="bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full">
+                    {totalDue}
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => handleNavigate('/trash')}
+                className="flex items-center justify-between text-left text-lg font-medium text-foreground hover:text-primary transition-colors py-2"
+              >
+                <div className="flex items-center gap-2">
+                  <span>{t('sidebar.trash', { defaultValue: 'Thùng rác' })}</span>
+                </div>
+                {trashCount > 0 && (
+                  <span className="bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">
+                    {trashCount}
+                  </span>
+                )}
+              </button>
+            </>
+          )}
         </nav>
 
         {/* Divider */}

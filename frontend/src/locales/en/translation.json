@@ -518,5 +518,9 @@
     },
     "mark_read_success": "Marked as read successfully!",
     "empty": "No feedbacks found."
+  },
+  "admin": {
+    "users_management": "Users Management",
+    "manage_feedbacks": "Manage Feedbacks"
   }
 }
