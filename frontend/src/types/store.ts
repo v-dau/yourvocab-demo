@@ -15,8 +15,8 @@ export interface AuthState {
   ) => Promise<void>;
   signIn: (identifier: string, password: string) => Promise<boolean>;
   signOut: () => Promise<void>;
-  fetchMe: () => Promise<void>;
-  refresh: () => Promise<void>;
+  fetchMe: (silent?: boolean) => Promise<void>;
+  refresh: (silent?: boolean) => Promise<void>;
   setAccessToken: (accessToken: string) => void;
   setUser: (user: User | null) => void;
 }

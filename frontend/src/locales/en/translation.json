@@ -147,20 +147,17 @@
     "your_vocab_cards": "Your vocabulary cards",
     "needs_review": "Needs Review",
     "due_for_review": "Words due for review soon",
-    "streaks": "Streaks",
-    "days_streak": "Consecutive days of learning",
     "quick_actions": "Quick Actions",
     "create_new_card": "Create New Card",
-    "add_new_vocab": "Add new vocabulary to your collection",
+    "add_new_vocab": "Add new vocabulary to collection",
     "view_list": "View List",
-    "manage_all_cards": "Manage all vocabulary cards",
+    "manage_all_cards": "Manage all your cards",
     "review_action": "Review",
     "review_with_sr": "Review vocabulary using Spaced Repetition",
     "settings_action": "Settings",
-    "manage_account": "Manage account and preferences",
-    "recent_activity": "Recent Activity",
-    "no_recent_activity": "No recent activity",
-    "create_first_card": "Create your first card"
+    "manage_account": "Manage your account",
+    "create_first_card": "Create your first card",
+    "review_desc": "Review vocabulary using Spaced Repetition"
   },
   "review_page": {
     "title": "Spaced Repetition Review",
@@ -389,5 +386,25 @@
     "confirm_delete": "Are you sure you want to delete?",
     "btn_delete": "Delete",
     "btn_cancel": "Cancel"
+  },
+  "dashboard": {
+    "subtitle": "Start your journey to learn new vocabulary today",
+    "fetch_error": "Unable to fetch dashboard statistics",
+    "welcome": "Hello, {{username}}! 👋",
+    "total_cards": "Total Cards",
+    "learning_cards": "Learning",
+    "mastered_cards": "Mastered",
+    "practice_sentences": "Practice Sentences",
+    "upon_total_cards": "out of {{count}} cards",
+    "ai_generations": "AI Generated",
+    "ai_turns": "turns",
+    "total_tags": "Tags",
+    "chart_part_of_speech": "Cards by Part of Speech",
+    "chart_levels": "Cards by CEFR Levels",
+    "no_data_yet": "No data yet, let's start creating vocabulary cards"
+  },
+  "cards": {
+    "no_cards_found": "No cards found",
+    "loading": "Loading..."
   }
 }

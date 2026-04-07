@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import SignInPage from './pages/SignInPage';
@@ -12,6 +12,7 @@ import FeedbackPage from './pages/FeedbackPage';
 import TrashPage from './pages/TrashPage';
 import { Toaster } from 'sonner';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import PublicRoute from './components/auth/PublicRoute';
 import { DisplayModeProvider } from './stores/displayModeStore';
 import { MainLayout } from './components/layout';
 import { PublicLayout } from './components/layout/PublicLayout';
@@ -104,33 +105,36 @@ function App() {
       <DisplayModeProvider>
         <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Navigate to={user ? '/dashboard' : '/signin'} replace />} />
             {/*public routes*/}
-            <Route
-              path="/signin"
-              element={
-                <PublicLayout
-                  onThemeToggle={handleThemeToggle}
-                  currentTheme={theme}
-                  currentLanguage={language}
-                  onLanguageChange={handleLanguageChange}
-                >
-                  <SignInPage />
-                </PublicLayout>
-              }
-            />
-            <Route
-              path="/signup"
-              element={
-                <PublicLayout
-                  onThemeToggle={handleThemeToggle}
-                  currentTheme={theme}
-                  currentLanguage={language}
-                  onLanguageChange={handleLanguageChange}
-                >
-                  <SignUpPage />
-                </PublicLayout>
-              }
-            />
+            <Route element={<PublicRoute />}>
+              <Route
+                path="/signin"
+                element={
+                  <PublicLayout
+                    onThemeToggle={handleThemeToggle}
+                    currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
+                  >
+                    <SignInPage />
+                  </PublicLayout>
+                }
+              />
+              <Route
+                path="/signup"
+                element={
+                  <PublicLayout
+                    onThemeToggle={handleThemeToggle}
+                    currentTheme={theme}
+                    currentLanguage={language}
+                    onLanguageChange={handleLanguageChange}
+                  >
+                    <SignUpPage />
+                  </PublicLayout>
+                }
+              />
+            </Route>
 
             {/*protected routes*/}
             <Route element={<ProtectedRoute />}>

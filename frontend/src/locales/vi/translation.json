@@ -145,20 +145,17 @@
     "your_vocab_cards": "Thẻ từ vựng của bạn",
     "needs_review": "Cần ôn tập",
     "due_for_review": "Từ sắp đến hạn ôn tập",
-    "streaks": "Streaks",
-    "days_streak": "Ngày liên tiếp học tập",
     "quick_actions": "Hành động nhanh",
     "create_new_card": "Tạo thẻ mới",
-    "add_new_vocab": "Thêm từ vựng mới vào kho của bạn",
+    "add_new_vocab": "Thêm từ vựng mới vào bộ sưu tập",
     "view_list": "Xem danh sách",
-    "manage_all_cards": "Quản lý tất cả thẻ từ vựng",
+    "manage_all_cards": "Quản lý tất cả thẻ của bạn",
     "review_action": "Ôn tập",
     "review_with_sr": "Ôn tập từ vựng bằng Spaced Repetition",
     "settings_action": "Cài đặt",
-    "manage_account": "Quản lý tài khoản và tùy chọn",
-    "recent_activity": "Hoạt động gần đây",
-    "no_recent_activity": "Chưa có hoạt động nào gần đây",
-    "create_first_card": "Tạo thẻ đầu tiên"
+    "manage_account": "Quản lý tài khoản",
+    "create_first_card": "Tạo thẻ đầu tiên",
+    "review_desc": "Ôn từ vựng bằng Spaced Repetition"
   },
   "review_page": {
     "title": "Ôn tập ngắt quãng",
@@ -387,5 +384,25 @@
     "confirm_delete": "Bạn chắc chắn muốn xóa?",
     "btn_delete": "Xóa",
     "btn_cancel": "Hủy"
+  },
+  "dashboard": {
+    "subtitle": "Bắt đầu hành trình học các từ vựng mới hôm nay",
+    "fetch_error": "Không thể tải dữ liệu thống kê",
+    "welcome": "Xin chào, {{username}}! 👋",
+    "total_cards": "Tổng số thẻ",
+    "learning_cards": "Đang ôn tập",
+    "mastered_cards": "Đã hoàn thành ôn tập",
+    "practice_sentences": "Câu luyện tập",
+    "upon_total_cards": "trên tổng số {{count}} thẻ",
+    "ai_generations": "Tạo thẻ với AI",
+    "ai_turns": "lượt",
+    "total_tags": "Nhãn đã tạo",
+    "chart_part_of_speech": "Thống kê Từ loại",
+    "chart_levels": "Thống kê Cấp độ CEFR",
+    "no_data_yet": "Chưa có dữ liệu, hãy bắt đầu tạo thẻ từ vựng nào"
+  },
+  "cards": {
+    "no_cards_found": "Không tìm thấy thẻ nào",
+    "loading": "Đang tải..."
   }
 }

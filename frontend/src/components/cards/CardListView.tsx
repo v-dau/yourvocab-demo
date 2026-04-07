@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from './Card';
 import type { Card as CardType } from '@/types/card';
 
@@ -23,11 +24,13 @@ export const CardListView: React.FC<CardListViewProps> = ({
   isLoading = false,
   isTrashMode = false,
 }) => {
+  const { t } = useTranslation();
+
   if (isLoading) {
     return (
       <div className="text-center py-12">
         <div className="animate-spin inline-block w-8 h-8 border-4 border-primary border-t-transparent rounded-full"></div>
-        <p className="mt-2 text-muted-foreground">Đang tải...</p>
+        <p className="mt-2 text-muted-foreground">{t('cards.loading', 'Đang tải...')}</p>
       </div>
     );
   }
@@ -35,7 +38,9 @@ export const CardListView: React.FC<CardListViewProps> = ({
   if (cards.length === 0) {
     return (
       <div className="text-center py-12 border border-dashed rounded-lg">
-        <p className="text-muted-foreground">Không tìm thấy thẻ nào</p>
+        <p className="text-muted-foreground">
+          {t('cards.no_cards_found', 'Không tìm thấy thẻ nào')}
+        </p>
       </div>
     );
   }

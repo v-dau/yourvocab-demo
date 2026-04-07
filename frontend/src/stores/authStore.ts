@@ -63,16 +63,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   signOut: async () => {
     try {
-      get().clearState();
+      set({ loading: true });
       await authService.signOut();
+      get().clearState();
       toast.success('Đăng xuất thành công!');
     } catch (error) {
       console.error(error);
       toast.error('Lỗi xảy ra khi đăng xuất. Hãy thử lại!');
+      set({ loading: false });
     }
   },
 
-  fetchMe: async () => {
+  fetchMe: async (silent = false) => {
     try {
       set({ loading: true });
       const user = await authService.fetchMe();
@@ -81,13 +83,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch (error) {
       console.error(error);
       set({ user: null, accessToken: null });
-      toast.error('Lỗi xảy ra khi lấy dữ liệu người dùng. Hãy thử lại');
+      if (!silent) {
+        toast.error('Lỗi xảy ra khi lấy dữ liệu người dùng. Hãy thử lại');
+      }
     } finally {
       set({ loading: false });
     }
   },
 
-  refresh: async () => {
+  refresh: async (silent = false) => {
     try {
       set({ loading: true });
       const { user, fetchMe, setAccessToken } = get(); //get store members
@@ -96,11 +100,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       setAccessToken(accessToken);
 
       if (!user) {
-        await fetchMe();
+        await fetchMe(silent);
       }
     } catch (error) {
       console.error(error);
-      toast.error('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!');
+      if (!silent) {
+        toast.error('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!');
+      }
       get().clearState(); //delete all current login information
     } finally {
       set({ loading: false });
