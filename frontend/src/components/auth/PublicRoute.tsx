@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router';
 
 const PublicRoute = () => {
-  const { accessToken, loading, refresh, fetchMe } = useAuthStore();
+  const { accessToken, refresh, fetchMe } = useAuthStore();
   const [starting, setStarting] = useState(true);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const PublicRoute = () => {
     initAuth();
   }, [refresh, fetchMe]);
 
-  if (starting || loading) {
+  if (starting) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>;
   }
 

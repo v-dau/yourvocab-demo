@@ -7,7 +7,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ requiredRole }: ProtectedRouteProps) => {
-  const { accessToken, loading, refresh, fetchMe, user } = useAuthStore();
+  const { accessToken, refresh, fetchMe, user } = useAuthStore();
   const [starting, setStarting] = useState(true); //indicates the app is initializing
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const ProtectedRoute = ({ requiredRole }: ProtectedRouteProps) => {
     initAuth();
   }, [refresh, fetchMe]);
 
-  if (starting || loading) {
+  if (starting) {
     // if starting = true, show loading screen while app initializes
     return <div className="flex h-screen items-center justify-center">Loading...</div>;
   }

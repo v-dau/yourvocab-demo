@@ -29,10 +29,17 @@ api.interceptors.response.use(
 
     //the apis don't need to check
     if (
-      originalRequest.url.includes('/auth/signin') ||
       originalRequest.url.includes('/auth/signup') ||
       originalRequest.url.includes('/auth/refresh')
     ) {
+      return Promise.reject(error);
+    }
+
+    if (originalRequest.url.includes('/auth/signin')) {
+      if (error.response?.status === 403 && error.response?.data?.code === 'USER_BANNED') {
+        useAuthStore.getState().clearState();
+        return Promise.reject(error);
+      }
       return Promise.reject(error);
     }
 
