@@ -103,7 +103,7 @@ const FeedbackPage: React.FC = () => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder={t('feedbacks.form_content_placeholder')}
-              className="min-h-[120px]"
+              className="min-h-[120px] mb-5"
               disabled={isSubmitting}
             />
           </CardContent>
