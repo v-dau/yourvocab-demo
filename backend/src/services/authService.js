@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import * as userRepository from '../repositories/userRepository.js';
 import { generateAccessToken, generateRefreshToken } from '../config/jwt.js';
 import jwt from 'jsonwebtoken';
+import { checkAndUpdatedUserBanStatus } from './banService.js';
 
 export const signUp = async ({ username, email, password, language, theme }) => {
   // 1.check if username exists
@@ -52,6 +53,18 @@ export const signIn = async ({ identifier, password }) => {
     const error = new Error('Sai tài khoản hoặc mật khẩu!');
     error.statusCode = 401;
     throw error;
+  }
+
+  // check ban status
+  if (user.is_banned) {
+    const banStatus = await checkAndUpdatedUserBanStatus(user.id);
+    if (banStatus.isBanned) {
+      const error = new Error('Tài khoản của bạn đã bị khóa');
+      error.statusCode = 403;
+      error.code = 'USER_BANNED';
+      error.details = { reason: banStatus.reason, expiry: banStatus.expiry };
+      throw error;
+    }
   }
 
   //if matched, create an access token and a refresh token

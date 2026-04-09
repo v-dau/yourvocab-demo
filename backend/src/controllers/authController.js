@@ -64,6 +64,13 @@ export const signIn = async (req, res) => {
     console.error('Error during signIn', error);
 
     if (error.statusCode) {
+      if (error.code === 'USER_BANNED') {
+        return res.status(error.statusCode).json({
+          code: error.code,
+          message: error.message,
+          details: error.details,
+        });
+      }
       return res.status(error.statusCode).json({ message: error.message });
     }
 

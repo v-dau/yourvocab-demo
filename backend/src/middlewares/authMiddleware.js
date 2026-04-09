@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import * as userRepository from '../repositories/userRepository.js';
+import { checkAndUpdatedUserBanStatus } from '../services/banService.js';
 
 //authorization - verify who's the user
 export const protectedRoute = (req, res, next) => {
@@ -28,7 +29,14 @@ export const protectedRoute = (req, res, next) => {
       }
 
       if (user.is_banned) {
-        return res.status(403).json({ message: 'This account is banned' });
+        const banStatus = await checkAndUpdatedUserBanStatus(user.id);
+        if (banStatus.isBanned) {
+          return res.status(403).json({
+            code: 'USER_BANNED',
+            message: 'Tài khoản của bạn đã bị khóa',
+            details: { reason: banStatus.reason, expiry: banStatus.expiry },
+          });
+        }
       }
 
       //delete user password field before attach to the request

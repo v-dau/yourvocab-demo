@@ -84,6 +84,17 @@ export const updatePassword = async (userId, newPasswordHash) => {
   await query(text, [userId, newPasswordHash]);
 };
 
+// ================= CẬP NHẬT TRẠNG THÁI BAN =================
+export const updateBanStatus = async (userId, isBanned, clientParam = null) => {
+  const client = clientParam || pool;
+  const text = `
+    UPDATE users
+    SET is_banned = $2, modified_at = NOW()
+    WHERE id = $1;
+  `;
+  await client.query(text, [userId, isBanned]);
+};
+
 // ================= CẬP NHẬT EMAIL =================
 export const updateEmail = async (userId, newEmail) => {
   const text = `

@@ -1,4 +1,5 @@
 import * as adminService from '../services/adminService.js';
+import * as banService from '../services/banService.js';
 
 export const getStats = async (req, res) => {
   try {
@@ -22,9 +23,17 @@ export const getUsers = async (req, res) => {
 
 export const banUser = async (req, res) => {
   try {
-    // const { id } = req.params;
-    // const { reason, duration } = req.body;
-    res.status(200).json({ success: true, message: 'Placeholder: User banned' });
+    const { id } = req.params;
+    const { reason, duration } = req.body;
+
+    if (!reason || reason.trim() === '') {
+      return res.status(400).json({ success: false, message: 'Reason is required' });
+    }
+
+    const durationValue = duration ? parseFloat(duration) : null;
+
+    const newBan = await banService.banUser(id, reason, durationValue);
+    res.status(200).json({ success: true, message: 'User banned successfully', ban: newBan });
   } catch (error) {
     console.error('Error banning user: ', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
@@ -33,10 +42,22 @@ export const banUser = async (req, res) => {
 
 export const unbanUser = async (req, res) => {
   try {
-    // const { id } = req.params;
-    res.status(200).json({ success: true, message: 'Placeholder: User unbanned' });
+    const { id } = req.params;
+    await banService.unbanUser(id);
+    res.status(200).json({ success: true, message: 'User unbanned successfully' });
   } catch (error) {
     console.error('Error unbanning user: ', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+export const getBanInfo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const banInfo = await banService.getBanInfo(id);
+    res.status(200).json({ success: true, data: banInfo });
+  } catch (error) {
+    console.error('Error getting ban info: ', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
@@ -66,7 +87,6 @@ export const markFeedbackRead = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
-
 
 export const changePassword = async (req, res) => {
   try {
