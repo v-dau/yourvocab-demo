@@ -66,3 +66,8 @@ export const markFeedbackAsRead = async (feedbackId) => {
   const success = await adminRepository.markFeedbackAsRead(feedbackId);
   return success;
 };
+
+
+export const changeUserPassword = async (userId, newPassword) => {
+  return await adminRepository.updateUserPassword(userId, newPassword);
+};

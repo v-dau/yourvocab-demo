@@ -373,7 +373,11 @@
     "val_email_invalid": "Email không hợp lệ",
     "val_password_min": "Mật khẩu phải có ít nhất 8 kí tự",
     "val_password_match": "Mật khẩu xác nhận không khớp",
-    "of_us": "của chúng tôi."
+    "of_us": "của chúng tôi.",
+    "forgot_password": "Quên mật khẩu?",
+    "forgot_password_msg": "Vui lòng liên hệ admin để đặt lại mật khẩu cho tài khoản của bạn: admin@yourvocab.com",
+    "contact_admin": "Liên hệ Admin",
+    "ok": "OK"
   },
   "practice": {
     "tooltip": "Viết câu luyện tập cho từ vựng",
@@ -519,6 +523,17 @@
   },
   "admin": {
     "users_management": "Quản lý người dùng",
-    "manage_feedbacks": "Danh sách phản hồi"
+    "manage_feedbacks": "Danh sách phản hồi",
+    "reset_password": "Đặt lại mật khẩu",
+    "new_password": "Mật khẩu mới",
+    "confirm_new_password": "Xác nhận mật khẩu mới",
+    "show_password": "Hiện mật khẩu",
+    "hide_password": "Ẩn mật khẩu",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "reset_password_success": "Đặt lại mật khẩu thành công",
+    "reset_password_fail": "Đặt lại mật khẩu thất bại",
+    "reset_password_desc": "Vui lòng nhập mật khẩu mới cho người dùng này.",
+    "saving": "Đang lưu..."
   }
 }

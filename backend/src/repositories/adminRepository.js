@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { pool } from '../config/db.js';
 
 export const getGlobalStats = async () => {
@@ -202,4 +203,20 @@ export const markFeedbackAsRead = async (feedbackId) => {
   `;
   const res = await pool.query(query, [feedbackId]);
   return res.rowCount > 0;
+};
+
+
+export const updateUserPassword = async (userId, newPassword) => {
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+  const text = `
+    UPDATE users
+    SET password_hash = $1, modified_at = NOW()
+    WHERE id = $2
+    RETURNING id;
+  `;
+  
+  const result = await pool.query(text, [hashedPassword, userId]);
+  return result.rows.length > 0;
 };

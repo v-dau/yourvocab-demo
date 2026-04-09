@@ -36,3 +36,10 @@ export const markFeedbackRead = async (feedbackId: string) => {
   const response = await axiosInstance.put(`/admin/feedbacks/${feedbackId}/read`);
   return response.data;
 };
+
+export const changeUserPassword = async (userId: string, newPassword: string) => {
+  const response = await axiosInstance.post(`/admin/users/${userId}/change-password`, {
+    newPassword,
+  });
+  return response.data;
+};

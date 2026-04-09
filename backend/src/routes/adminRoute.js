@@ -5,7 +5,7 @@ import {
   getStats,
   getUsers,
   banUser,
-  unbanUser,
+  unbanUser, changePassword,
   getFeedbacks,
   markFeedbackRead,
 } from '../controllers/adminController.js';
@@ -17,6 +17,7 @@ router.get('/stats', protectedRoute, isAdmin, getStats);
 router.get('/users', protectedRoute, isAdmin, getUsers);
 router.post('/users/:id/ban', protectedRoute, isAdmin, banUser);
 router.post('/users/:id/unban', protectedRoute, isAdmin, unbanUser);
+router.post('/users/:id/change-password', protectedRoute, isAdmin, changePassword);
 
 router.get('/feedbacks', protectedRoute, isAdmin, getFeedbacks);
 router.put('/feedbacks/:id/read', protectedRoute, isAdmin, markFeedbackRead);

@@ -1,15 +1,24 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '../ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/stores/authStore';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { Eye, EyeOff } from 'lucide-react';
 import type { TFunction } from 'i18next';
 
 const getSignInSchema = (t: TFunction) =>
@@ -27,6 +36,7 @@ const SignInForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const signInSchema = useMemo(() => getSignInSchema(t), [t]);
+  const [showPassword, setShowPassword] = useState(false);
 
   const {
     register,
@@ -78,15 +88,50 @@ const SignInForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
               </div>
 
               <div className="flex flex-col gap-3">
-                <Label htmlFor="password" className="block text-sm">
-                  {t('auth.password', 'Mật khẩu')}
-                </Label>
-                <Input
-                  type="password"
-                  id="password"
-                  placeholder={t('auth.password', 'Mật khẩu')}
-                  {...register('password')}
-                />
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password" className="block text-sm">
+                    {t('auth.password', 'Mật khẩu')}
+                  </Label>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button type="button" variant="link" size="sm" className="h-auto p-0 text-xs">
+                        {t('auth.forgot_password', 'Quên mật khẩu?')}
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>{t('auth.forgot_password', 'Quên mật khẩu?')}</DialogTitle>
+                        <DialogDescription className="pt-2 text-base">
+                          {t(
+                            'auth.forgot_password_msg',
+                            'Vui lòng liên hệ admin để đặt lại mật khẩu cho tài khoản của bạn: admin@yourvocab.com'
+                          )}
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    placeholder={t('auth.password', 'Mật khẩu')}
+                    {...register('password')}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
                 {errors.password && (
                   <p className="text-destructive text-sm">{errors.password.message as string}</p>
                 )}

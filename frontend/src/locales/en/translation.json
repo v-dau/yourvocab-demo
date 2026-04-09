@@ -375,7 +375,11 @@
     "val_email_invalid": "Invalid email",
     "val_password_min": "Password must be at least 8 characters",
     "val_password_match": "Passwords do not match",
-    "of_us": ""
+    "of_us": "",
+    "forgot_password": "Forgot password?",
+    "forgot_password_msg": "Please contact admin to reset your password: admin@yourvocab.com",
+    "contact_admin": "Contact Admin",
+    "ok": "OK"
   },
   "practice": {
     "tooltip": "Write practice sentences for this word",
@@ -521,6 +525,17 @@
   },
   "admin": {
     "users_management": "Users Management",
-    "manage_feedbacks": "Manage Feedbacks"
+    "manage_feedbacks": "Manage Feedbacks",
+    "reset_password": "Reset password",
+    "new_password": "New password",
+    "confirm_new_password": "Confirm new password",
+    "show_password": "Show password",
+    "hide_password": "Hide password",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "reset_password_success": "Password reset successfully",
+    "reset_password_fail": "Failed to reset password",
+    "reset_password_desc": "Please enter a new password for this user.",
+    "saving": "Saving..."
   }
 }

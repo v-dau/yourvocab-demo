@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -10,6 +10,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/stores/authStore';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
+import { Eye, EyeOff } from 'lucide-react';
 import type { TFunction } from 'i18next';
 
 const getSignUpSchema = (t: TFunction) =>
@@ -34,6 +35,9 @@ const SignUpForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const signUpSchema = useMemo(() => getSignUpSchema(t), [t]);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -106,12 +110,27 @@ const SignUpForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
                 <Label htmlFor="password" className="block text-sm">
                   {t('auth.password', 'Mật khẩu')}
                 </Label>
-                <Input
-                  type="password"
-                  id="password"
-                  placeholder={t('auth.password', 'Mật khẩu')}
-                  {...register('password')}
-                />
+                <div className="relative">
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    placeholder={t('auth.password', 'Mật khẩu')}
+                    {...register('password')}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
                 {errors.password && (
                   <p className="text-destructive text-sm">{errors.password.message as string}</p>
                 )}
@@ -121,12 +140,27 @@ const SignUpForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
                 <Label htmlFor="confirmPassword" className="block text-sm">
                   {t('auth.confirm_password', 'Xác nhận mật khẩu')}
                 </Label>
-                <Input
-                  type="password"
-                  id="confirmPassword"
-                  placeholder={t('auth.confirm_password', 'Xác nhận mật khẩu')}
-                  {...register('confirmPassword')}
-                />
+                <div className="relative">
+                  <Input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    id="confirmPassword"
+                    placeholder={t('auth.confirm_password', 'Xác nhận mật khẩu')}
+                    {...register('confirmPassword')}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <Eye className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </Button>
+                </div>
                 {errors.confirmPassword && (
                   <p className="text-destructive text-sm">
                     {errors.confirmPassword.message as string}
