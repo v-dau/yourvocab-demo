@@ -1,5 +1,19 @@
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import type { TFunction } from 'i18next';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+
+
+
+
+
+
+
+
+
+
 import {
   Search,
   Layers,
@@ -11,11 +25,21 @@ import {
   ChevronRight,
   Tag,
   Bot,
+  KeyRound,
+  Eye,
+  EyeOff,
 } from 'lucide-react';
 import { useDebounce } from '@/hooks/useDebounce';
-import { getAdminUsers, banUser, unbanUser } from '@/services/adminService';
+import { getAdminUsers, banUser, unbanUser, changeUserPassword } from '@/services/adminService';
 
 import { Input } from '@/components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -57,6 +81,17 @@ interface PaginationData {
   limit: number;
 }
 
+const getResetPwdSchema = (t: TFunction) =>
+  z.object({
+    newPassword: z.string().min(8, t('auth.val_password_min', 'Mật khẩu phải có ít nhất 8 kí tự')),
+    confirmNewPassword: z.string(),
+  }).refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: t('auth.val_password_match', 'Mật khẩu xác nhận không khớp'),
+    path: ['confirmNewPassword'],
+  });
+
+type ResetPwdFormValues = z.infer<ReturnType<typeof getResetPwdSchema>>;
+
 const AdminUsersPage: React.FC = () => {
   const { t } = useTranslation();
 
@@ -66,8 +101,41 @@ const AdminUsersPage: React.FC = () => {
 
   const [search, setSearch] = useState<string>('');
   const debouncedSearch = useDebounce(search, 500);
+
+  const resetPwdSchema = React.useMemo(() => getResetPwdSchema(t), [t]);
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<ResetPwdFormValues>({ resolver: zodResolver(resetPwdSchema) });
   const [sortBy, setSortBy] = useState<string>('newest');
   const [filterBanned, setFilterBanned] = useState<boolean>(false);
+
+  const [resetPwdUserId, setResetPwdUserId] = useState<string | null>(null);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
+
+  const onSubmitResetPwd = async (data: ResetPwdFormValues) => {
+    const yes = window.confirm(t('admin.confirm_new_password', 'Xác nhận thay đổi mật khẩu?'));
+    if (!yes) return;
+
+    if (resetPwdUserId) {
+      setIsResetting(true);
+      try {
+        await changeUserPassword(resetPwdUserId, data.newPassword);
+        alert(t('admin.reset_password_success', 'Đặt lại mật khẩu thành công'));
+        setResetPwdUserId(null);
+        reset();
+      } catch (e) {
+        console.error(e);
+        alert(t('admin.reset_password_fail', 'Đặt lại mật khẩu thất bại'));
+      } finally {
+        setIsResetting(false);
+      }
+    }
+  };
+
+  const openResetPwdDialog = (id: string) => {
+    setResetPwdUserId(id);
+    reset();
+  };
 
   const fetchUsers = async () => {
     setIsLoading(true);
@@ -298,6 +366,22 @@ const AdminUsersPage: React.FC = () => {
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Button
+                            variant="outline"
+                            size="icon"
+                            className="mr-2"
+                            onClick={() => openResetPwdDialog(user.id)}
+                          >
+                            <KeyRound className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-popover text-popover-foreground border z-50">
+                          <p>{t('admin.reset_password', 'Đặt lại mật khẩu')}</p>
+                        </TooltipContent>
+                      </Tooltip>
+
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
                             variant={user.is_banned ? 'outline' : 'destructive'}
                             size="icon"
                             onClick={() => handleToggleBan(user.id, user.is_banned)}
@@ -359,6 +443,83 @@ const AdminUsersPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Reset Password Dialog */}
+      <Dialog open={!!resetPwdUserId} onOpenChange={(open) => !open && setResetPwdUserId(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t('admin.reset_password', 'Đặt lại mật khẩu')}</DialogTitle>
+            <DialogDescription>
+              {t('admin.reset_password_desc', 'Vui lòng nhập mật khẩu mới cho người dùng này.')}
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleSubmit(onSubmitResetPwd)}>
+          <div className="flex flex-col gap-4 py-4">
+            <div className="flex flex-col gap-2">
+              <Label>{t('admin.new_password', 'Mật khẩu mới')}</Label>
+              <div className="relative">
+                <Input
+                  type={showNewPassword ? 'text' : 'password'}
+                  placeholder={t('admin.new_password', 'Mật khẩu mới')}
+                  {...register('newPassword')}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                >
+                  {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </Button>
+              </div>
+              {errors.newPassword && (
+                <p className="text-destructive text-sm">{errors.newPassword.message as string}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Label>{t('admin.confirm_new_password', 'Xác nhận mật khẩu mới')}</Label>
+              <div className="relative">
+                <Input
+                  type={showConfirmNewPassword ? 'text' : 'password'}
+                  placeholder={t('admin.confirm_new_password', 'Xác nhận mật khẩu mới')}
+                  {...register('confirmNewPassword')}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowConfirmNewPassword(!showConfirmNewPassword)}
+                >
+                  {showConfirmNewPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+              {errors.confirmNewPassword && (
+                <p className="text-destructive text-sm">
+                  {errors.confirmNewPassword.message as string}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 mt-4">
+            <Button type="button" variant="outline" onClick={() => setResetPwdUserId(null)}>
+              {t('admin.cancel', 'Hủy')}
+            </Button>
+            <Button type="submit" disabled={isResetting}>
+              {isResetting ? t('admin.saving', 'Đang lưu...') : t('admin.confirm', 'Xác nhận')}
+            </Button>
+          </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

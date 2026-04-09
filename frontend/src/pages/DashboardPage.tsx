@@ -202,7 +202,7 @@ const DashboardPage = () => {
                       <Tooltip
                         cursor={{ fill: 'transparent' }}
                         contentStyle={{ borderRadius: '8px' }}
-                        formatter={(value, name, props) => [value, props.payload.name]}
+                        formatter={(value, _name, props) => [value, props.payload.name]}
                         labelStyle={{ display: 'none' }}
                       />
                       <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
@@ -232,9 +232,9 @@ const DashboardPage = () => {
                         outerRadius={100}
                         fill="#8884d8"
                         dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        label={({ name, percent }) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
                       >
-                        {data.cardsByLevel.map((entry, index) => (
+                        {data.cardsByLevel.map((_entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
