@@ -111,6 +111,16 @@ export const refreshToken = async (req, res) => {
     return res.status(200).json({ accessToken });
   } catch (error) {
     console.error('Error during refreshToken', error);
+    if (error.statusCode) {
+      if (error.code === 'USER_BANNED') {
+        return res.status(error.statusCode).json({
+          code: error.code,
+          message: error.message,
+          details: error.details,
+        });
+      }
+      return res.status(error.statusCode).json({ message: error.message });
+    }
     return res.status(500).json({ message: 'Internal server error' });
   }
 };

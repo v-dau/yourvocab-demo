@@ -385,7 +385,13 @@
       "permanent": "Vĩnh viễn",
       "contact": "Vui lòng liên hệ admin để biết thêm chi tiết: admin@yourvocab.com",
       "close": "Đóng"
-    }
+    },
+    "banned_title": "Tài khoản của bạn đã bị khóa",
+    "banned_desc": "Tài khoản này hiện không thể truy cập vào hệ thống.",
+    "ban_reason": "Lý do:",
+    "ban_expiry": "Thời gian hết hạn:",
+    "ban_permanent": "Vĩnh viễn",
+    "ban_contact_admin": "Vui lòng liên hệ với ban quản trị qua trang hỗ trợ để được giải đáp."
   },
   "practice": {
     "tooltip": "Viết câu luyện tập cho từ vựng",
@@ -563,6 +569,33 @@
     "reset_password_success": "Đặt lại mật khẩu thành công",
     "reset_password_fail": "Đặt lại mật khẩu thất bại",
     "reset_password_desc": "Vui lòng nhập mật khẩu mới cho người dùng này.",
-    "saving": "Đang lưu..."
+    "saving": "Đang lưu...",
+    "ban_success": "Khóa tài khoản thành công",
+    "ban_fail": "Khóa tài khoản thất bại",
+    "ban_user_title": "Khóa tài khoản",
+    "ban_user_desc": "Bạn đang khóa tài khoản của người dùng {{username}}",
+    "ban_duration": "Thời hạn khóa",
+    "select_duration": "Chọn thời hạn",
+    "duration_24h": "24 giờ (1 ngày)",
+    "duration_7d": "168 giờ (7 ngày)",
+    "duration_30d": "720 giờ (30 ngày)",
+    "duration_permanent": "Vĩnh viễn",
+    "ban_reason": "Lý do khóa",
+    "ban_reason_placeholder": "Nhập lý do khóa tài khoản",
+    "confirm_ban": "Xác nhận khóa",
+    "fetch_ban_error": "Không thể lấy thông tin ban",
+    "confirm_unban_prompt": "Bạn có chắc chắn muốn mở khóa tài khoản này?",
+    "unban_success": "Đã mở khóa tài khoản",
+    "unban_fail": "Mở khóa thất bại",
+    "ban_details_title": "Chi tiết lệnh khóa",
+    "ban_details_desc": "Thông tin khóa của người dùng {{username}}",
+    "no_active_ban": "Không tìm thấy lệnh khóa hợp lệ",
+    "ban_start": "Ngày bắt đầu:",
+    "hours_template": "{{hours}} giờ",
+    "unban_btn": "Mở khóa tài khoản",
+    "close": "Đóng",
+    "confirm_sure": "Bạn chắc chắn đặt lại không?",
+    "reset_password_btn": "Đặt lại mật khẩu",
+    "confirm_reset_action": "Chắc chắn"
   }
 }

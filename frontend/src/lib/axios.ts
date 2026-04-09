@@ -39,7 +39,13 @@ api.interceptors.response.use(
     // Intercept banned user check (only for protected routes)
     if (error.response?.status === 403 && error.response?.data?.code === 'USER_BANNED') {
       useAuthStore.getState().clearState();
-      window.location.href = '/signin?banned=true';
+
+      const reason = error.response.data.details?.reason || '';
+      const expiry = error.response.data.details?.expiry || '';
+
+      if (!window.location.pathname.includes('/signin')) {
+        window.location.href = `/signin?banned=true&reason=${encodeURIComponent(reason)}&expiry=${encodeURIComponent(expiry)}`;
+      }
       return Promise.reject(error);
     }
 

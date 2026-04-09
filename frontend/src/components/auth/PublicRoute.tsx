@@ -35,7 +35,7 @@ const PublicRoute = () => {
       }
     };
     initAuth();
-  }, [refresh, fetchMe, accessToken]);
+  }, [refresh, fetchMe]);
 
   if (starting || loading) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>;

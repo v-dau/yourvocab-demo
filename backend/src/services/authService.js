@@ -82,6 +82,25 @@ export const refreshToken = async (token) => {
     //the verify function will automatically throw an error if the token expires or the signature is incorrect
     const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 
+    const user = await userRepository.findById(decoded.id);
+
+    if (!user) {
+      const error = new Error('User not found');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (user.is_banned) {
+      const banStatus = await checkAndUpdatedUserBanStatus(user.id);
+      if (banStatus.isBanned) {
+        const error = new Error('Tài khoản của bạn đã bị khóa');
+        error.statusCode = 403;
+        error.code = 'USER_BANNED';
+        error.details = { reason: banStatus.reason, expiry: banStatus.expiry };
+        throw error;
+      }
+    }
+
     //get the id only, avoid attaching old token's 'exp' or 'iat' field to the new token
     const newAccessToken = generateAccessToken(decoded.id);
 
@@ -89,8 +108,10 @@ export const refreshToken = async (token) => {
   } catch (error) {
     console.error('Refresh Token Error:', error.message);
 
-    const customError = new Error('Invalid or expired refresh token');
-    customError.statusCode = 403; //attach 403 status code so the controller can handle it accordingly
+    const customError = new Error(error.message || 'Invalid or expired refresh token');
+    customError.statusCode = error.statusCode || 403; //attach 403 status code so the controller can handle it accordingly
+    customError.code = error.code;
+    customError.details = error.details;
     throw customError;
   }
 };

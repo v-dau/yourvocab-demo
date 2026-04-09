@@ -40,7 +40,15 @@ const SignInForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const [bannedData, setBannedData] = useState<{ reason?: string; expiry?: string | null } | null>(
-    searchParams.get('banned') ? { reason: '', expiry: null } : null
+    searchParams.get('banned')
+      ? {
+          reason: searchParams.get('reason') || '',
+          expiry:
+            searchParams.get('expiry') === 'null' || !searchParams.get('expiry')
+              ? null
+              : searchParams.get('expiry'),
+        }
+      : null
   );
 
   const {
