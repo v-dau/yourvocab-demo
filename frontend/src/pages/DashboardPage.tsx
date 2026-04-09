@@ -180,7 +180,7 @@ const DashboardPage = () => {
               </CardHeader>
               <CardContent className="h-80 min-h-[320px] w-full">
                 {data.cardsByPartOfSpeech.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%" minHeight={320} minWidth={100}>
+                  <ResponsiveContainer width="100%" height={320}>
                     <BarChart
                       data={data.cardsByPartOfSpeech}
                       margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -222,7 +222,7 @@ const DashboardPage = () => {
               </CardHeader>
               <CardContent className="h-80 min-h-[320px] w-full">
                 {data.cardsByLevel.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%" minHeight={320} minWidth={100}>
+                  <ResponsiveContainer width="100%" height={320}>
                     <PieChart>
                       <Pie
                         data={data.cardsByLevel}

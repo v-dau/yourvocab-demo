@@ -596,8 +596,11 @@
     "hours_template": "{{hours}} hours",
     "unban_btn": "Unban user",
     "close": "Close",
-    "confirm_sure": "Are you sure?",
     "reset_password_btn": "Reset password",
-    "confirm_reset_action": "Confirm reset"
+    "confirm_reset_action": "Confirm reset",
+    "reset_password_desc_user": "Enter new password for {{username}}",
+    "ban_details": "Ban details",
+    "confirm_reset_sure": "Are you sure you want to reset the password?",
+    "confirm_unban_sure": "Are you sure you want to unban this user?"
   }
 }

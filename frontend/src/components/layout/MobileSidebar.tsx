@@ -63,8 +63,8 @@ export const MobileSidebar: React.FC<MobileSidebarProps> = ({
     setOpen(false);
   };
 
-  const handleLogout = () => {
-    onLogout();
+  const handleLogout = async () => {
+    await onLogout();
     navigate('/signin');
     setOpen(false);
   };

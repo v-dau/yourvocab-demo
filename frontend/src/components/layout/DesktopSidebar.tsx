@@ -62,8 +62,8 @@ export const DesktopSidebar: React.FC<DesktopSidebarProps> = ({
     navigate(path);
   };
 
-  const handleLogout = () => {
-    onLogout();
+  const handleLogout = async () => {
+    await onLogout();
     navigate('/signin');
   };
 

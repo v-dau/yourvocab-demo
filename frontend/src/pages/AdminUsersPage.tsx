@@ -529,7 +529,7 @@ const AdminUsersPage: React.FC = () => {
             <div className="flex justify-end gap-3 mt-4 items-center">
               {isConfirmingReset && (
                 <span className="text-sm text-destructive font-medium mr-auto animate-in fade-in zoom-in duration-200">
-                  {t('admin.confirm_sure', 'Bạn chắc chắn đặt lại không?')}
+                  {t('admin.confirm_reset_sure', 'Bạn chắc chắn đặt lại không?')}
                 </span>
               )}
               <Button

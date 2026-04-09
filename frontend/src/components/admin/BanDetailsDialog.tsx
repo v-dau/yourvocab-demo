@@ -34,10 +34,12 @@ export function BanDetailsDialog({ user, onClose, onSuccess }: BanDetailsDialogP
   const [banData, setBanData] = useState<BanData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isUnbanning, setIsUnbanning] = useState(false);
+  const [showConfirmUnban, setShowConfirmUnban] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
       setIsLoading(true);
+      setShowConfirmUnban(false);
       getBanInfo(user.id)
         .then((res) => {
           if (res.success) {
@@ -54,16 +56,15 @@ export function BanDetailsDialog({ user, onClose, onSuccess }: BanDetailsDialogP
 
   const handleUnban = async () => {
     if (!user) return;
-
-    const confirmUnban = window.confirm(
-      t('admin.confirm_unban_prompt', 'Bạn có chắc chắn muốn mở khóa tài khoản này?')
-    );
-    if (!confirmUnban) return;
+    if (!showConfirmUnban) {
+      setShowConfirmUnban(true);
+      return;
+    }
 
     setIsUnbanning(true);
     try {
       await unbanUser(user.id);
-      toast.success(t('admin.unban_success', 'Đã mở khóa tài khoản'));
+      toast.success(t('admin.unban_success', 'Ä£ má»Ÿ khÃ³a tÃi khoáº£n'));
       onSuccess();
       onClose();
     } catch (error: unknown) {
@@ -134,18 +135,33 @@ export function BanDetailsDialog({ user, onClose, onSuccess }: BanDetailsDialogP
           )}
         </div>
 
-        <div className="flex justify-end gap-3 mt-2">
-          <Button type="button" variant="outline" onClick={onClose} disabled={isUnbanning}>
-            {t('admin.close', 'Đóng')}
+        <div className="flex justify-end gap-3 mt-2 items-center">
+          {showConfirmUnban && (
+            <span className="text-sm text-destructive font-medium mr-auto animate-in fade-in zoom-in duration-200">
+              {t('admin.confirm_unban_sure', 'Báº¡n cháº¯c cháº¯n má»Ÿ khÃ³a khÃ´ng?')}
+            </span>
+          )}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              if (showConfirmUnban) setShowConfirmUnban(false);
+              else onClose();
+            }}
+            disabled={isUnbanning}
+          >
+            {t('admin.close', 'Ä³ng')}
           </Button>
           <Button
             type="button"
-            variant="default"
+            variant={showConfirmUnban ? 'destructive' : 'default'}
             onClick={handleUnban}
             disabled={isUnbanning || isLoading || !banData}
           >
             {isUnbanning ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-            {t('admin.unban_btn', 'Mở khóa tài khoản')}
+            {showConfirmUnban
+              ? t('admin.confirm', 'XÃ¡c nháºn')
+              : t('admin.unban_btn', 'Má»Ÿ khÃ³a tÃ i khoáº£n')}
           </Button>
         </div>
       </DialogContent>

@@ -34,8 +34,8 @@ export const Header: React.FC<HeaderProps> = ({
   const { t } = useTranslation();
   const { user } = useAuthStore();
 
-  const handleLogout = () => {
-    onLogout();
+  const handleLogout = async () => {
+    await onLogout();
     navigate('/signin');
   };
 

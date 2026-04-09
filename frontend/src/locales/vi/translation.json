@@ -133,7 +133,9 @@
       "has_definition": "Có định nghĩa",
       "has_synonyms": "Có từ đồng nghĩa",
       "has_antonyms": "Có từ trái nghĩa",
-      "has_near_synonyms": "Có từ gần nghĩa"
+      "has_near_synonyms": "Có từ gần nghĩa",
+      "has_completed_review": "Đã hoàn thành ôn tập",
+      "tags": "Nhãn"
     }
   },
   "dashboard_page": {
@@ -594,8 +596,11 @@
     "hours_template": "{{hours}} giờ",
     "unban_btn": "Mở khóa tài khoản",
     "close": "Đóng",
-    "confirm_sure": "Bạn chắc chắn đặt lại không?",
     "reset_password_btn": "Đặt lại mật khẩu",
-    "confirm_reset_action": "Chắc chắn"
+    "confirm_reset_action": "Chắc chắn",
+    "reset_password_desc_user": "Nhập mật khẩu mới cho {{username}}",
+    "ban_details": "Chi tiết lệnh khóa",
+    "confirm_reset_sure": "Bạn chắc chắn muốn đặt lại mật khẩu?",
+    "confirm_unban_sure": "Bạn chắc chắn muốn mở khóa người dùng này?"
   }
 }
