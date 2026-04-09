@@ -34,9 +34,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   signIn: async (identifier, password) => {
+    set({ loading: true });
     try {
-      set({ loading: true });
-
       const { accessToken } = await authService.signIn(identifier, password);
 
       get().setAccessToken(accessToken); //update accessToken's value in the authStore
@@ -44,18 +43,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       await get().fetchMe();
 
       toast.success('Đăng nhập thành công, chúc bạn một ngày học tập chăm chỉ!');
-      return true;
+      return { success: true };
     } catch (error: unknown) {
       console.error(error);
 
       // Custom text based on backend error message
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const axiosError = error as any;
-      const backendMessage = axiosError?.response?.data?.message || '';
+      const backendError = axiosError?.response?.data;
+      const backendMessage = backendError?.message || '';
+
+      if (backendError?.code === 'USER_BANNED') {
+        // Return banned details instead of throwing so form can handle it silently
+        return { success: false, banned: true, details: backendError.details };
+      }
 
       toast.error(backendMessage || 'Đăng nhập không thành công!');
 
-      return false;
+      return { success: false };
     } finally {
       set({ loading: false });
     }

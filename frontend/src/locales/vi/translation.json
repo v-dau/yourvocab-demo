@@ -377,7 +377,15 @@
     "forgot_password": "Quên mật khẩu?",
     "forgot_password_msg": "Vui lòng liên hệ admin để đặt lại mật khẩu cho tài khoản của bạn: admin@yourvocab.com",
     "contact_admin": "Liên hệ Admin",
-    "ok": "OK"
+    "ok": "OK",
+    "banned_dialog": {
+      "title": "Tài khoản bị khóa",
+      "reason": "Lý do khóa:",
+      "expiry": "Thời gian hết hạn:",
+      "permanent": "Vĩnh viễn",
+      "contact": "Vui lòng liên hệ admin để biết thêm chi tiết: admin@yourvocab.com",
+      "close": "Đóng"
+    }
   },
   "practice": {
     "tooltip": "Viết câu luyện tập cho từ vựng",
@@ -455,7 +463,8 @@
       "banned": "Đã khóa"
     },
     "actions": {
-      "ban": "Khóa người dùng",
+      "ban": "Khóa tài khoản",
+      "view_ban": "Chi tiết lệnh cấm",
       "unban": "Mở khóa"
     },
     "empty_list": "Không tìm thấy người dùng.",
@@ -479,6 +488,26 @@
       "to": "đến",
       "of": "/",
       "page": "Trang"
+    },
+    "ban_dialog": {
+      "title": "Khóa tài khoản",
+      "duration_label": "Thời hạn",
+      "duration_24h": "24 giờ",
+      "duration_7d": "7 ngày",
+      "duration_30d": "30 ngày",
+      "duration_permanent": "Vĩnh viễn",
+      "reason_label": "Lý do khóa",
+      "reason_placeholder": "Nhập lý do khóa tài khoản người dùng này...",
+      "submit": "Xác nhận khóa",
+      "cancel": "Hủy"
+    },
+    "ban_details": {
+      "title": "Chi tiết lệnh cấm",
+      "reason": "Lý do:",
+      "banned_at": "Ngày bắt đầu:",
+      "expiry": "Hết hạn vào:",
+      "permanent": "Cấm vĩnh viễn",
+      "unban_button": "Gỡ lệnh cấm (Unban)"
     }
   },
   "feedbacks": {

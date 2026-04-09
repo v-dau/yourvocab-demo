@@ -11,13 +11,21 @@ export const getAdminUsers = async (params: {
   return response.data;
 };
 
-export const banUser = async (userId: string) => {
-  const response = await axiosInstance.post(`/admin/users/${userId}/ban`);
+export const banUser = async (userId: string, reason: string, duration?: number) => {
+  const response = await axiosInstance.post(`/admin/users/${userId}/ban`, {
+    reason,
+    duration,
+  });
   return response.data;
 };
 
 export const unbanUser = async (userId: string) => {
   const response = await axiosInstance.post(`/admin/users/${userId}/unban`);
+  return response.data;
+};
+
+export const getBanInfo = async (userId: string) => {
+  const response = await axiosInstance.get(`/admin/users/${userId}/ban-info`);
   return response.data;
 };
 

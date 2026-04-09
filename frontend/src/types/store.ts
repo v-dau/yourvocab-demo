@@ -13,7 +13,14 @@ export interface AuthState {
     language?: string,
     theme?: string
   ) => Promise<void>;
-  signIn: (identifier: string, password: string) => Promise<boolean>;
+  signIn: (
+    identifier: string,
+    password: string
+  ) => Promise<{
+    success: boolean;
+    banned?: boolean;
+    details?: { reason: string; expiry: string | null };
+  }>;
   signOut: () => Promise<void>;
   fetchMe: (silent?: boolean) => Promise<void>;
   refresh: (silent?: boolean) => Promise<void>;

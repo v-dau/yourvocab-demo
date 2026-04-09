@@ -12,7 +12,7 @@ import {
   CheckCircle,
   PenTool,
   BanIcon,
-  UnlockIcon,
+  ShieldAlert,
   ChevronLeft,
   ChevronRight,
   Tag,
@@ -22,7 +22,7 @@ import {
   EyeOff,
 } from 'lucide-react';
 import { useDebounce } from '@/hooks/useDebounce';
-import { getAdminUsers, banUser, unbanUser, changeUserPassword } from '@/services/adminService';
+import { getAdminUsers, changeUserPassword } from '@/services/adminService';
 
 import { Input } from '@/components/ui/input';
 import {
@@ -45,6 +45,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { BanUserDialog } from '@/components/admin/BanUserDialog';
+import { BanDetailsDialog } from '@/components/admin/BanDetailsDialog';
 import {
   Table,
   TableBody,
@@ -107,6 +109,14 @@ const AdminUsersPage: React.FC = () => {
   } = useForm<ResetPwdFormValues>({ resolver: zodResolver(resetPwdSchema) });
   const [sortBy, setSortBy] = useState<string>('newest');
   const [filterBanned, setFilterBanned] = useState<boolean>(false);
+
+  const [banUserDialogUser, setBanUserDialogUser] = useState<{
+    id: string;
+    username: string;
+  } | null>(null);
+  const [banDetailsUser, setBanDetailsUser] = useState<{ id: string; username: string } | null>(
+    null
+  );
 
   const [resetPwdUser, setResetPwdUser] = useState<{ id: string; username: string } | null>(null);
   const [isConfirmingReset, setIsConfirmingReset] = useState(false);
@@ -174,24 +184,6 @@ const AdminUsersPage: React.FC = () => {
   useEffect(() => {
     setPagination((prev) => ({ ...prev, page: 1 }));
   }, [debouncedSearch, sortBy, filterBanned]);
-
-  const handleToggleBan = async (userId: string, currentlyBanned: boolean) => {
-    // Placeholder
-    console.log(`Toggle ban for user ${userId} (current: ${currentlyBanned})`);
-    try {
-      if (currentlyBanned) {
-        await unbanUser(userId);
-      } else {
-        await banUser(userId);
-      }
-      // Optimistically update
-      setUsers((prev) =>
-        prev.map((u) => (u.id === userId ? { ...u, is_banned: !currentlyBanned } : u))
-      );
-    } catch (error) {
-      console.error('Failed to toggle user ban status', error);
-    }
-  };
 
   const totalPages = Math.ceil(pagination.total / pagination.limit) || 1;
 
@@ -392,10 +384,21 @@ const AdminUsersPage: React.FC = () => {
                           <Button
                             variant={user.is_banned ? 'outline' : 'destructive'}
                             size="icon"
-                            onClick={() => handleToggleBan(user.id, user.is_banned)}
+                            className={
+                              user.is_banned
+                                ? 'text-orange-500 border-orange-500 hover:text-orange-600 hover:bg-orange-50'
+                                : ''
+                            }
+                            onClick={() => {
+                              if (user.is_banned) {
+                                setBanDetailsUser({ id: user.id, username: user.username });
+                              } else {
+                                setBanUserDialogUser({ id: user.id, username: user.username });
+                              }
+                            }}
                           >
                             {user.is_banned ? (
-                              <UnlockIcon className="h-4 w-4" />
+                              <ShieldAlert className="h-4 w-4" />
                             ) : (
                               <BanIcon className="h-4 w-4" />
                             )}
@@ -404,7 +407,7 @@ const AdminUsersPage: React.FC = () => {
                         <TooltipContent className="bg-popover text-popover-foreground border z-50">
                           <p>
                             {user.is_banned
-                              ? t('admin_users.actions.unban')
+                              ? t('admin.ban_details', 'Chi tiết lệnh khóa')
                               : t('admin_users.actions.ban')}
                           </p>
                         </TooltipContent>
@@ -554,6 +557,19 @@ const AdminUsersPage: React.FC = () => {
           </form>
         </DialogContent>
       </Dialog>
+      {/* Ban User Dialog */}
+      <BanUserDialog
+        user={banUserDialogUser}
+        onClose={() => setBanUserDialogUser(null)}
+        onSuccess={fetchUsers}
+      />
+
+      {/* Ban Details Dialog */}
+      <BanDetailsDialog
+        user={banDetailsUser}
+        onClose={() => setBanDetailsUser(null)}
+        onSuccess={fetchUsers}
+      />
     </div>
   );
 };

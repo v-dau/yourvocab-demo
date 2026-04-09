@@ -379,7 +379,15 @@
     "forgot_password": "Forgot password?",
     "forgot_password_msg": "Please contact admin to reset your password: admin@yourvocab.com",
     "contact_admin": "Contact Admin",
-    "ok": "OK"
+    "ok": "OK",
+    "banned_dialog": {
+      "title": "Account Suspended",
+      "reason": "Reason:",
+      "expiry": "Expiration time:",
+      "permanent": "Permanent",
+      "contact": "Please contact admin for more details: admin@yourvocab.com",
+      "close": "Close"
+    }
   },
   "practice": {
     "tooltip": "Write practice sentences for this word",
@@ -457,7 +465,8 @@
       "banned": "Banned"
     },
     "actions": {
-      "ban": "Ban User",
+      "ban": "Suspend User",
+      "view_ban": "View Suspension Details",
       "unban": "Unban"
     },
     "empty_list": "No users found.",
@@ -481,6 +490,26 @@
       "to": "to",
       "of": "of",
       "page": "Page"
+    },
+    "ban_dialog": {
+      "title": "Suspend Account",
+      "duration_label": "Duration",
+      "duration_24h": "24 hours",
+      "duration_7d": "7 days",
+      "duration_30d": "30 days",
+      "duration_permanent": "Permanent",
+      "reason_label": "Reason",
+      "reason_placeholder": "Enter the reason for suspension...",
+      "submit": "Confirm Suspension",
+      "cancel": "Cancel"
+    },
+    "ban_details": {
+      "title": "Suspension Details",
+      "reason": "Reason:",
+      "banned_at": "Banned at:",
+      "expiry": "Expires at:",
+      "permanent": "Permanent",
+      "unban_button": "Lift Suspension (Unban)"
     }
   },
   "feedbacks": {

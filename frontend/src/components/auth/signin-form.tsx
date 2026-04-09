@@ -16,7 +16,7 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAuthStore } from '@/stores/authStore';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Eye, EyeOff } from 'lucide-react';
 import type { TFunction } from 'i18next';
@@ -34,9 +34,14 @@ type SignInFormValues = z.infer<ReturnType<typeof getSignInSchema>>;
 const SignInForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
   const { signIn } = useAuthStore();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation();
   const signInSchema = useMemo(() => getSignInSchema(t), [t]);
   const [showPassword, setShowPassword] = useState(false);
+
+  const [bannedData, setBannedData] = useState<{ reason?: string; expiry?: string | null } | null>(
+    searchParams.get('banned') ? { reason: '', expiry: null } : null
+  );
 
   const {
     register,
@@ -48,14 +53,49 @@ const SignInForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
 
   const onSubmit = async (data: SignInFormValues) => {
     const { identifier, password } = data;
-    const success = await signIn(identifier, password);
-    if (success) {
+    const result = await signIn(identifier, password);
+    if (result && result.success) {
       navigate('/dashboard');
+    } else if (result && result.banned) {
+      setBannedData(result.details || { reason: '', expiry: null });
     }
   };
 
   return (
     <div className={cn('flex flex-col gap-6', className)} {...props}>
+      <Dialog open={!!bannedData} onOpenChange={(open) => !open && setBannedData(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-destructive">
+              {t('auth.banned_title', 'Tài khoản của bạn đã bị khóa')}
+            </DialogTitle>
+            <DialogDescription>
+              {t('auth.banned_desc', 'Tài khoản này hiện không thể truy cập vào hệ thống.')}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 py-4">
+            {bannedData?.reason && (
+              <p>
+                <span className="font-semibold">{t('auth.ban_reason', 'Lý do:')}</span>{' '}
+                {bannedData.reason}
+              </p>
+            )}
+            <p>
+              <span className="font-semibold">{t('auth.ban_expiry', 'Thời gian hết hạn:')}</span>{' '}
+              {bannedData?.expiry
+                ? new Date(bannedData.expiry).toLocaleString()
+                : t('auth.ban_permanent', 'Vĩnh viễn')}
+            </p>
+            <p className="mt-4 text-sm font-medium">
+              {t(
+                'auth.ban_contact_admin',
+                'Vui lòng liên hệ admin để biết thêm chi tiết: admin@yourvocab.com'
+              )}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-4 md:p-6" onSubmit={handleSubmit(onSubmit)}>
