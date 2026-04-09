@@ -53,6 +53,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const backendError = axiosError?.response?.data;
       const backendMessage = backendError?.message || '';
 
+      console.log('Login Error: ', backendError);
+
       if (backendError?.code === 'USER_BANNED') {
         // Return banned details instead of throwing so form can handle it silently
         return { success: false, banned: true, details: backendError.details };

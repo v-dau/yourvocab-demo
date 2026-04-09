@@ -3,39 +3,14 @@ import { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router';
 
 const PublicRoute = () => {
-  const { accessToken, refresh, fetchMe } = useAuthStore();
+  const { accessToken } = useAuthStore();
   const [starting, setStarting] = useState(true);
 
   useEffect(() => {
-    const initAuth = async () => {
-      try {
-        let currentToken = useAuthStore.getState().accessToken;
-
-        if (!currentToken) {
-          try {
-            await refresh(true);
-          } catch {
-            // Ignore error
-          }
-          currentToken = useAuthStore.getState().accessToken;
-        }
-
-        const currentUser = useAuthStore.getState().user;
-        if (currentToken && !currentUser) {
-          try {
-            await fetchMe(true);
-          } catch {
-            // Ignore error
-          }
-        }
-      } catch (error) {
-        console.error('Auth initialization error', error);
-      } finally {
-        setStarting(false);
-      }
-    };
-    initAuth();
-  }, [refresh, fetchMe]);
+    // Không tự động cấu hình lại token hoặc user ở route này
+    // Tránh spam API refresh tới server khi user vừa truy cập trang Đăng Nhập / Đăng Ký
+    setStarting(false);
+  }, []);
 
   if (starting) {
     return <div className="flex h-screen items-center justify-center">Loading...</div>;
