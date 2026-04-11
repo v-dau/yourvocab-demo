@@ -26,7 +26,9 @@ export const changeAvatar = async (req, res) => {
       avatar_url: updatedUser.avatar_url,
     });
   } catch (error) {
-    return res.status(400).json({ message: error.message || 'Lỗi hệ thống' });
+    return res
+      .status(error.statusCode || 400)
+      .json({ code: error.code, message: error.message || 'Lỗi hệ thống' });
   }
 };
 
@@ -38,7 +40,9 @@ export const changePassword = async (req, res) => {
     await userService.changePassword(userId, oldPassword, newPassword);
     return res.status(200).json({ message: 'Đổi mật khẩu thành công' });
   } catch (error) {
-    return res.status(400).json({ message: error.message || 'Lỗi hệ thống' });
+    return res
+      .status(error.statusCode || 400)
+      .json({ code: error.code, message: error.message || 'Lỗi hệ thống' });
   }
 };
 
@@ -53,7 +57,9 @@ export const changeEmail = async (req, res) => {
       user: userObj,
     });
   } catch (error) {
-    return res.status(400).json({ message: error.message || 'Lỗi hệ thống' });
+    return res
+      .status(error.statusCode || 400)
+      .json({ code: error.code, message: error.message || 'Lỗi hệ thống' });
   }
 };
 

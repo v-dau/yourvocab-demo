@@ -271,7 +271,12 @@
     "saving": "Đang lưu...",
     "change_password_dialog_title": "Đổi Mật Khẩu",
     "change_password_dialog_desc": "Nhập mật khẩu cũ và tài khoản mới.",
-    "old_password": "Mật khẩu cũ"
+    "old_password": "Mật khẩu cũ",
+    "error_wrong_old_password": "Mật khẩu cũ không chính xác",
+    "error_email_in_use": "Email này đã được sử dụng bởi người khác",
+    "success_email": "Cập nhật email thành công",
+    "error_empty_email": "Vui lòng nhập email",
+    "error_invalid_email": "Email không đúng định dạng"
   },
   "common": {
     "typeToCreateTags": "Nhập để tạo hoặc chọn nhãn dán...",

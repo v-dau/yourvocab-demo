@@ -4,17 +4,14 @@ export const signUp = async (req, res) => {
   try {
     const { username, password, email, language, theme } = req.body;
 
-    //basic validation
     if (!username || !password || !email) {
       return res.statusCode(400).json({
         message: 'Username, password and email are required',
       });
     }
 
-    //call the service layer to handle the business logic
     const newUser = await authService.signUp({ username, email, password, language, theme });
 
-    //return successful result (201 created)
     return res.status(201).json({
       message: 'Registered successfully',
       user: newUser,
@@ -22,12 +19,12 @@ export const signUp = async (req, res) => {
   } catch (error) {
     console.error('Error during signUp:', error);
 
-    //handle known service-layer errors
+    //xử lý lỗi của tầng service
     if (error.statusCode) {
       return res.status(error.statusCode).json({ code: error.code, message: error.message });
     }
 
-    //fallback for unexpected errors
+    //xử lí lỗi bên ngoài
     return res.status(500).json({ message: 'Internal server error' });
   }
 };

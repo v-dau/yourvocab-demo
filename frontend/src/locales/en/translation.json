@@ -271,7 +271,12 @@
     "saving": "Saving...",
     "change_password_dialog_title": "Change Password",
     "change_password_dialog_desc": "Enter old password and new password.",
-    "old_password": "Old password"
+    "old_password": "Old password",
+    "error_wrong_old_password": "Old password is incorrect",
+    "error_email_in_use": "This email is already in use by someone else",
+    "success_email": "Email updated successfully",
+    "error_empty_email": "Please enter an email",
+    "error_invalid_email": "Invalid email format"
   },
   "common": {
     "typeToCreateTags": "Type to create or select tags...",

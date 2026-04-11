@@ -88,12 +88,12 @@ const ProfileSettingsPage = () => {
 
   const handleUpdateEmail = async () => {
     if (!newEmail.trim()) {
-      toast.error('Vui lòng nhập email');
+      toast.error(t('profile_settings.error_empty_email', 'Vui lòng nhập email'));
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(newEmail)) {
-      toast.error('Email không đúng định dạng');
+      toast.error(t('profile_settings.error_invalid_email', 'Email không đúng định dạng'));
       return;
     }
 
@@ -101,11 +101,18 @@ const ProfileSettingsPage = () => {
     try {
       const res = await api.patch('/users/me/email', { newEmail });
       setUser({ ...user!, email: res.data.user.email });
-      toast.success('Cập nhật email thành công');
+      toast.success(t('profile_settings.success_email', 'Cập nhật email thành công'));
       setIsEmailDialogOpen(false);
       setNewEmail('');
     } catch (error: any) {
-      toast.error(error.response?.data?.message || t('profile_settings.error_change_email'));
+      const code = error.response?.data?.code;
+      if (code === 'EMAIL_IN_USE') {
+        toast.error(
+          t('profile_settings.error_email_in_use', 'Email này đã được sử dụng bởi người khác')
+        );
+      } else {
+        toast.error(error.response?.data?.message || t('profile_settings.error_change_email'));
+      }
     } finally {
       setIsUpdatingEmail(false);
     }
@@ -129,7 +136,12 @@ const ProfileSettingsPage = () => {
       setOldPassword('');
       setNewPassword('');
     } catch (error: any) {
-      toast.error(error.response?.data?.message || t('profile_settings.error_change_password'));
+      const code = error.response?.data?.code;
+      if (code === 'WRONG_OLD_PASSWORD') {
+        toast.error(t('profile_settings.error_wrong_old_password', 'Mật khẩu cũ không chính xác'));
+      } else {
+        toast.error(error.response?.data?.message || t('profile_settings.error_change_password'));
+      }
     } finally {
       setIsUpdatingPassword(false);
     }

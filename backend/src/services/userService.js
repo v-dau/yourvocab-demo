@@ -3,11 +3,19 @@ import * as userRepository from '../repositories/userRepository.js';
 import { uploadStream, deleteImage } from '../utils/cloudinary.js';
 
 export const changeAvatar = async (userId, fileBuffer) => {
-  if (!fileBuffer) throw new Error('Vui lòng upload ảnh');
+  if (!fileBuffer) {
+    const error = new Error('Vui lòng upload ảnh');
+    error.code = 'MISSING_IMAGE';
+    throw error;
+  }
 
   // 1. Lấy user hiện tại để kiểm tra avatar cũ
   const user = await userRepository.findById(userId);
-  if (!user) throw new Error('Không tìm thấy người dùng');
+  if (!user) {
+    const error = new Error('Không tìm thấy người dùng');
+    error.code = 'USER_NOT_FOUND';
+    throw error;
+  }
 
   // 2. Xóa ảnh cũ trên cloudinary nếu có
   if (user.avatar_key) {
@@ -28,15 +36,28 @@ export const changeAvatar = async (userId, fileBuffer) => {
 };
 
 export const changePassword = async (userId, oldPassword, newPassword) => {
-  if (!oldPassword || !newPassword) throw new Error('Dữ liệu không hợp lệ');
+  if (!oldPassword || !newPassword) {
+    const error = new Error('Dữ liệu không hợp lệ');
+    error.code = 'INVALID_DATA';
+    throw error;
+  }
 
   // 1. Lấy record user chứa cả password_hash
   const user = await userRepository.findByIdWithPassword(userId);
-  if (!user) throw new Error('Không tìm thấy người dùng');
+  if (!user) {
+    const error = new Error('Không tìm thấy người dùng');
+    error.code = 'USER_NOT_FOUND';
+    throw error;
+  }
 
   // 2. So sánh mật khẩu cũ
   const isMatch = await bcrypt.compare(oldPassword, user.password_hash);
-  if (!isMatch) throw new Error('Mật khẩu cũ không chính xác');
+  if (!isMatch) {
+    const error = new Error('Mật khẩu cũ không chính xác');
+    error.code = 'WRONG_OLD_PASSWORD';
+    error.statusCode = 401;
+    throw error;
+  }
 
   // 3. Mã hóa và lưu mật khẩu mới
   const salt = await bcrypt.genSalt(10);
@@ -45,14 +66,21 @@ export const changePassword = async (userId, oldPassword, newPassword) => {
 };
 
 export const changeEmail = async (userId, newEmail) => {
-  if (!newEmail) throw new Error('Email không được để trống');
+  if (!newEmail) {
+    const error = new Error('Email không được để trống');
+    error.code = 'MISSING_EMAIL';
+    throw error;
+  }
   try {
     const updatedUser = await userRepository.updateEmail(userId, newEmail);
     return updatedUser;
   } catch (error) {
     // 23505 là mã lỗi PostgreSQL với Unique Violation constraint
     if (error.code === '23505') {
-      throw new Error('Email này đã được sử dụng bởi người khác', { cause: error });
+      const customError = new Error('Email này đã được sử dụng bởi người khác', { cause: error });
+      customError.code = 'EMAIL_IN_USE';
+      customError.statusCode = 409;
+      throw customError;
     }
     throw error;
   }

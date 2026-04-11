@@ -1,6 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 
-// Configure explicitly using env var instead of relying on auto-detect implicitly
+// Nếu có url cấu hình trong env thì thiết lặp cấu hình Cloudinary rõ ràng và bắt buộc dùng https
 if (process.env.CLOUDINARY_URL) {
   cloudinary.config({
     secure: true,
@@ -29,7 +29,7 @@ export const uploadStream = (buffer, folderName = 'avatars') => {
 export const deleteImage = async (publicId) => {
   if (!publicId) return;
   try {
-    // Thêm timeout (ví dụ 10 giây) để tránh request bị treo quá lâu
+    // Thêm timeout để tránh request bị treo quá lâu
     // invalidate: true giúp xóa cache trên CDN của Cloudinary ngay lập tức
     const result = await cloudinary.uploader.destroy(publicId, {
       invalidate: true,

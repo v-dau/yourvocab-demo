@@ -2,17 +2,15 @@ import { useAuthStore } from '@/stores/authStore';
 import axios from 'axios';
 
 const api = axios.create({
-  //use localhost in development; use same domain with the backend in production
+  //khi development thì gọi localhost; khi production thì gọi /api
   baseURL: import.meta.env.MODE === 'development' ? 'http://localhost:3000/api' : '/api',
-  withCredentials: true,
+  withCredentials: true, //gửi cookie kèm theo request vì lưu refresh token trong đó
 });
 
-//assign the access token to req header everytime user send a req
+//gắn access token vào req header mỗi khi người dùng gửi req
 api.interceptors.request.use((config) => {
   const { accessToken } = useAuthStore.getState();
-  //interceptors are normal JS functions, so we CANNOT use useAuthStore() (which requires a React component).
-  //use getState(): Retrieves the token only at the moment this code executes.
-  //it doesn't subscribe to store updates, so the value remains static even if the store changes later.
+  //interceptors là hàm JS thuần nên phải dùng getState() để lấy AT thay vì useAuthStore() (chỉ có react component mới được dùng được).
 
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
@@ -21,13 +19,13 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-//automatically call the refresh api when the access token expires
+//tự động refresh token khi cần
 api.interceptors.response.use(
   (res) => res,
   async (error) => {
-    const originalRequest = error.config; //config of the failed request
+    const originalRequest = error.config; //config của request bị thất bại
 
-    //the apis don't need to check
+    //trả về lỗi thẳng với những request này
     if (
       originalRequest.url.includes('/auth/signup') ||
       originalRequest.url.includes('/auth/refresh')
@@ -43,7 +41,7 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Intercept banned user check (only for protected routes)
+    //xử lý user bị ban
     if (error.response?.status === 403 && error.response?.data?.code === 'USER_BANNED') {
       useAuthStore.getState().clearState();
 
@@ -56,7 +54,7 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    //limit the retry time to 4
+    //giới hạn lượt gửi lại request là 4
     originalRequest._retryCount = originalRequest._retryCount || 0;
 
     if (error.response?.status === 403 && originalRequest._retryCount < 4) {
@@ -70,16 +68,16 @@ api.interceptors.response.use(
 
         useAuthStore.getState().setAccessToken(newAccessToken);
 
-        //attach new access token to the header of the old request
+        //gắn AT mới vào header của request cũ
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return api(originalRequest); //resend the request
+        return api(originalRequest); //gửi lại request với AT mới
       } catch (refreshError) {
         useAuthStore.getState().clearState();
         return Promise.reject(refreshError);
       }
     }
 
-    //if not 403
+    //nếu không phải lỗi 403
     return Promise.reject(error);
   }
 );
