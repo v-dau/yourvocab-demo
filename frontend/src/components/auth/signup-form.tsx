@@ -54,8 +54,10 @@ const SignUpForm = ({ className, ...props }: React.ComponentProps<'div'>) => {
     const language = localStorage.getItem('i18nextLng') || 'en';
     const theme = localStorage.getItem('vite-ui-theme') || 'system';
 
-    await signUp(username, email, password, language, theme);
-    navigate('/signin');
+    const res = await signUp(username, email, password, language, theme);
+    if (res?.success) {
+      navigate('/signin');
+    }
   };
 
   return (

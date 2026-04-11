@@ -24,7 +24,7 @@ export const signUp = async (req, res) => {
 
     //handle known service-layer errors
     if (error.statusCode) {
-      return res.status(error.statusCode).json({ message: error.message });
+      return res.status(error.statusCode).json({ code: error.code, message: error.message });
     }
 
     //fallback for unexpected errors

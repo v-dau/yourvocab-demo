@@ -406,7 +406,9 @@
       "fetch_user": "Error fetching user data. Please try again",
       "session_expired": "Session expired, please sign in again!",
       "user_not_found": "Account or email is not registered",
-      "wrong_password": "Incorrect account or password!"
+      "wrong_password": "Incorrect account or password!",
+      "username_in_use": "Username is already in use",
+      "email_in_use": "Email is already in use"
     }
   },
   "practice": {

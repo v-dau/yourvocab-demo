@@ -28,9 +28,25 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       toast.success(
         i18n.t('auth.success.signup', 'Đăng ký thành công! Đang chuyển sang trang đăng nhập')
       );
-    } catch (error) {
+      return { success: true };
+    } catch (error: unknown) {
       console.error(error);
-      toast.error(i18n.t('auth.error.signup', 'Đăng ký không thành công'));
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const axiosError = error as any;
+      const backendError = axiosError?.response?.data;
+      const backendMessage = backendError?.message || '';
+
+      let errorMessage = backendMessage || i18n.t('auth.error.signup', 'Đăng ký không thành công');
+
+      if (backendError?.code === 'USERNAME_IN_USE') {
+        errorMessage = i18n.t('auth.error.username_in_use', 'Tên đăng nhập đã được sử dụng');
+      } else if (backendError?.code === 'EMAIL_IN_USE') {
+        errorMessage = i18n.t('auth.error.email_in_use', 'Email đã được sử dụng');
+      }
+
+      toast.error(errorMessage);
+      return { success: false };
     } finally {
       set({ loading: false });
     }

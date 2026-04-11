@@ -10,6 +10,7 @@ export const signUp = async ({ username, email, password, language, theme }) => 
   if (duplicatedUsername) {
     const error = new Error('Username is already in use');
     error.statusCode = 409;
+    error.code = 'USERNAME_IN_USE';
     throw error;
   }
 
@@ -18,6 +19,7 @@ export const signUp = async ({ username, email, password, language, theme }) => 
   if (duplicatedEmail) {
     const error = new Error('Email is already in use');
     error.statusCode = 409;
+    error.code = 'EMAIL_IN_USE';
     throw error;
   }
 

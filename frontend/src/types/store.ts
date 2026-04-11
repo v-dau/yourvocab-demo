@@ -12,7 +12,7 @@ export interface AuthState {
     password: string,
     language?: string,
     theme?: string
-  ) => Promise<void>;
+  ) => Promise<{ success: boolean; banned?: boolean; details?: any }>;
   signIn: (
     identifier: string,
     password: string

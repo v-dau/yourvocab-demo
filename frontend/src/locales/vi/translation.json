@@ -406,7 +406,9 @@
       "fetch_user": "Lỗi xảy ra khi lấy dữ liệu người dùng. Hãy thử lại",
       "session_expired": "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!",
       "user_not_found": "Tài khoản hoặc email chưa được đăng ký",
-      "wrong_password": "Sai tài khoản hoặc mật khẩu!"
+      "wrong_password": "Sai tài khoản hoặc mật khẩu!",
+      "username_in_use": "Tên đăng nhập đã được sử dụng",
+      "email_in_use": "Email đã được sử dụng"
     }
   },
   "practice": {
