@@ -404,7 +404,9 @@
       "signin": "Sign in failed!",
       "signout": "Error during sign out. Please try again!",
       "fetch_user": "Error fetching user data. Please try again",
-      "session_expired": "Session expired, please sign in again!"
+      "session_expired": "Session expired, please sign in again!",
+      "user_not_found": "Account or email is not registered",
+      "wrong_password": "Incorrect account or password!"
     }
   },
   "practice": {

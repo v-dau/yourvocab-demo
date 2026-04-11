@@ -44,6 +44,7 @@ export const signIn = async ({ identifier, password }) => {
   if (!user) {
     const error = new Error('Tài khoản hoặc email chưa được đăng ký');
     error.statusCode = 404; // Not Found
+    error.code = 'USER_NOT_FOUND';
     throw error;
   }
 
@@ -52,6 +53,7 @@ export const signIn = async ({ identifier, password }) => {
   if (!isMatch) {
     const error = new Error('Sai tài khoản hoặc mật khẩu!');
     error.statusCode = 401;
+    error.code = 'WRONG_PASSWORD';
     throw error;
   }
 

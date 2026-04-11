@@ -65,7 +65,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         return { success: false, banned: true, details: backendError.details };
       }
 
-      toast.error(backendMessage || i18n.t('auth.error.signin', 'Đăng nhập không thành công!'));
+      let errorMessage =
+        backendMessage || i18n.t('auth.error.signin', 'Đăng nhập không thành công!');
+      if (backendError?.code === 'USER_NOT_FOUND') {
+        errorMessage = i18n.t(
+          'auth.error.user_not_found',
+          'Tài khoản hoặc email chưa được đăng ký'
+        );
+      } else if (backendError?.code === 'WRONG_PASSWORD') {
+        errorMessage = i18n.t('auth.error.wrong_password', 'Sai tài khoản hoặc mật khẩu!');
+      }
+
+      toast.error(errorMessage);
 
       return { success: false };
     } finally {

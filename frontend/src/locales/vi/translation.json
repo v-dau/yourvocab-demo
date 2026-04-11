@@ -404,7 +404,9 @@
       "signin": "Đăng nhập không thành công!",
       "signout": "Lỗi xảy ra khi đăng xuất. Hãy thử lại!",
       "fetch_user": "Lỗi xảy ra khi lấy dữ liệu người dùng. Hãy thử lại",
-      "session_expired": "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!"
+      "session_expired": "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!",
+      "user_not_found": "Tài khoản hoặc email chưa được đăng ký",
+      "wrong_password": "Sai tài khoản hoặc mật khẩu!"
     }
   },
   "practice": {
