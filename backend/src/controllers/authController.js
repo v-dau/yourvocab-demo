@@ -24,37 +24,36 @@ export const signUp = async (req, res) => {
       return res.status(error.statusCode).json({ code: error.code, message: error.message });
     }
 
-    //xử lí lỗi bên ngoài
+    //xử lí lỗi đột xuất
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
 
 export const signIn = async (req, res) => {
   try {
-    //extract user credentials from the request body
+    //lấy thông tin đăng nhập từ req body
     const { identifier, password } = req.body;
 
     if (!identifier || !password) {
       return res.status(400).json({ message: 'Vui lòng nhập đầy đủ tài khoản và mật khẩu' });
     }
 
-    //delegate password verifiction and JWT generation to the service layer
+    //kiểm tra mật khẩu và tạo token ở tầng service
     const { user, accessToken, refreshToken } = await authService.signIn({ identifier, password });
 
-    //set the refresh token in an HTTP-only cookie
+    //đưa refresh token vào HTTP-only cookie
     res.cookie('refreshToken', refreshToken, {
-      httpOnly: true, //prevents client-side JS access (mitigates XSS)
-      //enable only in prod (requires HTTPS); disable in local dev
+      httpOnly: true, //không cho nhúng mã JS phía client (giảm nguy cơ XSS)
+      //nếu đang production thì bật https
       secure: process.env.NODE_ENV === 'production',
-      //use 'none' in cross-site cookies in prod; 'strict' for local dev
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
       maxAge: Number(process.env.JWT_REFRESH_TOKEN_TTL_MS),
     });
 
-    //return the access token in the response body
+    //trả access token vô response
     return res.status(200).json({
       message: `User ${user.username} logged in successfully`,
-      accessToken, //client should store this in memory or localStorage
+      accessToken,
       user,
     });
   } catch (error) {
@@ -77,7 +76,7 @@ export const signIn = async (req, res) => {
 
 export const signOut = async (req, res) => {
   try {
-    //clearCookie must use the same options as when the cookie was set (except maxAge)
+    //hủy cookie (config phải giống lúc đưa RT vào cookie)
     res.clearCookie('refreshToken', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -92,19 +91,19 @@ export const signOut = async (req, res) => {
   }
 };
 
-//create new access token from the refresh token
+//tạo AT mới từ RT
 export const refreshToken = async (req, res) => {
   try {
-    //get the refresh token from the cookie
+    //lấy RT từ cookie
     const token = req.cookies?.refreshToken;
     if (!token) {
       return res.status(401).json({ message: 'Refresh token not found' });
     }
 
-    //handle logic in the service layer
+    //logic ở service
     const accessToken = await authService.refreshToken(token);
 
-    //return new access token for the frontend
+    //trả AT mới cho client
     return res.status(200).json({ accessToken });
   } catch (error) {
     console.error('Error during refreshToken', error);

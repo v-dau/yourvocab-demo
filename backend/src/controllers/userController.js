@@ -2,7 +2,7 @@ import * as userService from '../services/userService.js';
 
 export const autMe = async (req, res) => {
   try {
-    const user = req.user; //get from authMiddleware
+    const user = req.user; // Lấy từ authMiddleware
 
     return res.status(200).json({ user });
   } catch (error) {
