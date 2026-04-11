@@ -423,18 +423,42 @@ export const Card: React.FC<CardProps> = ({
             {/* Right: Action Icons */}
             <div className="flex items-center gap-2">
               <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(
+                    `https://www.google.com/search?q=${encodeURIComponent(card.word)}&sclient=img&udm=2`,
+                    '_blank'
+                  );
+                }}
                 className="p-1.5 hover:bg-muted/60 rounded-md transition-colors"
-                title="Image"
+                title={i18n.language === 'vi' ? 'Google Hình ảnh' : 'Google Image'}
               >
                 <ImageIcon className="h-4 w-4 text-muted-foreground" />
               </button>
               <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(
+                    `https://www.google.com/search?q=${encodeURIComponent(card.word)}`,
+                    '_blank'
+                  );
+                }}
                 className="p-1.5 hover:bg-muted/60 rounded-md transition-colors"
                 title="Google"
               >
                 <Globe className="h-4 w-4 text-muted-foreground" />
               </button>
-              <button className="p-1.5 hover:bg-muted/60 rounded-md transition-colors" title="Wiki">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  window.open(
+                    `https://en.wikipedia.org/wiki/${encodeURIComponent(card.word)}`,
+                    '_blank'
+                  );
+                }}
+                className="p-1.5 hover:bg-muted/60 rounded-md transition-colors"
+                title="Wiki"
+              >
                 <BookOpen className="h-4 w-4 text-muted-foreground" />
               </button>
             </div>
