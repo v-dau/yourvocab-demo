@@ -50,6 +50,19 @@ const ProfileSettingsPage = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Check file size limit (5MB)
+    const MAX_FILE_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error(
+        t(
+          'profile_settings.error_avatar_size',
+          'Kích thước ảnh vượt quá 5MB. Vui lòng chọn ảnh nhỏ hơn.'
+        )
+      );
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
     const formData = new FormData();
     formData.append('avatar', file);
 
@@ -59,9 +72,12 @@ const ProfileSettingsPage = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       setUser({ ...user!, avatar_url: res.data.avatar_url });
-      toast.success('Cập nhật ảnh đại diện thành công');
+      toast.success(t('profile_settings.success_profile', 'Cập nhật ảnh đại diện thành công'));
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Có lỗi xảy ra khi đổi ảnh');
+      toast.error(
+        error.response?.data?.message ||
+          t('profile_settings.error_unexpected', 'Có lỗi xảy ra khi đổi ảnh')
+      );
     } finally {
       setIsUploadingAvatar(false);
       if (fileInputRef.current) {

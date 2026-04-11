@@ -144,8 +144,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         await fetchMe(silent);
       }
     } catch (error) {
-      console.error(error);
       if (!silent) {
+        console.error(error);
         toast.error(
           i18n.t(
             'auth.error.session_expired',

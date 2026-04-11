@@ -260,6 +260,7 @@
     "change_avatar": "Đổi Avatar",
     "uploading": "Đang tải lên...",
     "avatar_hint": "Khuyên dùng ảnh vuông, tối đa 5MB",
+    "error_avatar_size": "Kích thước ảnh vượt quá 5MB. Vui lòng chọn ảnh nhỏ hơn.",
     "account_security": "Tài khoản & Bảo mật",
     "change_email": "Đổi Email",
     "security_desc_suffix": "để tăng tính bảo mật",

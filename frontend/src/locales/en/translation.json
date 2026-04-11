@@ -260,6 +260,7 @@
     "change_avatar": "Change Avatar",
     "uploading": "Uploading...",
     "avatar_hint": "Square image recommended, up to 5MB",
+    "error_avatar_size": "Image size exceeds 5MB. Please choose a smaller image.",
     "account_security": "Account & Security",
     "change_email": "Change Email",
     "security_desc_suffix": "to improve security",
