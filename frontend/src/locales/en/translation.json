@@ -393,7 +393,19 @@
     "ban_reason": "Reason:",
     "ban_expiry": "Expiry:",
     "ban_permanent": "Permanent",
-    "ban_contact_admin": "Please contact the admin via the support page for assistance."
+    "ban_contact_admin": "Please contact the admin via the support page for assistance.",
+    "success": {
+      "signup": "Sign up successful! Redirecting to login page",
+      "signin": "Sign in successful, have a great day of learning!",
+      "signout": "Sign out successful!"
+    },
+    "error": {
+      "signup": "Sign up failed",
+      "signin": "Sign in failed!",
+      "signout": "Error during sign out. Please try again!",
+      "fetch_user": "Error fetching user data. Please try again",
+      "session_expired": "Session expired, please sign in again!"
+    }
   },
   "practice": {
     "tooltip": "Write practice sentences for this word",

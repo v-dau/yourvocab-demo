@@ -393,7 +393,19 @@
     "ban_reason": "Lý do:",
     "ban_expiry": "Thời gian hết hạn:",
     "ban_permanent": "Vĩnh viễn",
-    "ban_contact_admin": "Vui lòng liên hệ với ban quản trị qua trang hỗ trợ để được giải đáp."
+    "ban_contact_admin": "Vui lòng liên hệ với ban quản trị qua trang hỗ trợ để được giải đáp.",
+    "success": {
+      "signup": "Đăng ký thành công! Đang chuyển sang trang đăng nhập",
+      "signin": "Đăng nhập thành công, chúc bạn một ngày học tập chăm chỉ!",
+      "signout": "Đăng xuất thành công!"
+    },
+    "error": {
+      "signup": "Đăng ký không thành công",
+      "signin": "Đăng nhập không thành công!",
+      "signout": "Lỗi xảy ra khi đăng xuất. Hãy thử lại!",
+      "fetch_user": "Lỗi xảy ra khi lấy dữ liệu người dùng. Hãy thử lại",
+      "session_expired": "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!"
+    }
   },
   "practice": {
     "tooltip": "Viết câu luyện tập cho từ vựng",

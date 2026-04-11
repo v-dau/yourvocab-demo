@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { toast } from 'sonner';
 import { authService } from '@/services/authService';
 import type { AuthState } from '@/types/store';
+import i18n from '@/i18n';
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   accessToken: null,
@@ -24,10 +25,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       //call api at service layer
       await authService.signUp(username, email, password, language, theme);
 
-      toast.success('Đăng ký thành công! Đang chuyển sang trang đăng nhập');
+      toast.success(
+        i18n.t('auth.success.signup', 'Đăng ký thành công! Đang chuyển sang trang đăng nhập')
+      );
     } catch (error) {
       console.error(error);
-      toast.error('Đăng ký không thành công');
+      toast.error(i18n.t('auth.error.signup', 'Đăng ký không thành công'));
     } finally {
       set({ loading: false });
     }
@@ -42,7 +45,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       await get().fetchMe();
 
-      toast.success('Đăng nhập thành công, chúc bạn một ngày học tập chăm chỉ!');
+      toast.success(
+        i18n.t('auth.success.signin', 'Đăng nhập thành công, chúc bạn một ngày học tập chăm chỉ!')
+      );
       return { success: true };
     } catch (error: unknown) {
       console.error(error);
@@ -60,7 +65,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         return { success: false, banned: true, details: backendError.details };
       }
 
-      toast.error(backendMessage || 'Đăng nhập không thành công!');
+      toast.error(backendMessage || i18n.t('auth.error.signin', 'Đăng nhập không thành công!'));
 
       return { success: false };
     } finally {
@@ -73,10 +78,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ loading: true });
       await authService.signOut();
       get().clearState();
-      toast.success('Đăng xuất thành công!');
+      toast.success(i18n.t('auth.success.signout', 'Đăng xuất thành công!'));
     } catch (error) {
       console.error(error);
-      toast.error('Lỗi xảy ra khi đăng xuất. Hãy thử lại!');
+      toast.error(i18n.t('auth.error.signout', 'Lỗi xảy ra khi đăng xuất. Hãy thử lại!'));
       set({ loading: false });
     }
   },
@@ -91,7 +96,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       console.error(error);
       set({ user: null, accessToken: null });
       if (!silent) {
-        toast.error('Lỗi xảy ra khi lấy dữ liệu người dùng. Hãy thử lại');
+        toast.error(
+          i18n.t('auth.error.fetch_user', 'Lỗi xảy ra khi lấy dữ liệu người dùng. Hãy thử lại')
+        );
       }
     } finally {
       set({ loading: false });
@@ -112,7 +119,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch (error) {
       console.error(error);
       if (!silent) {
-        toast.error('Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!');
+        toast.error(
+          i18n.t(
+            'auth.error.session_expired',
+            'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại!'
+          )
+        );
       }
       get().clearState(); //delete all current login information
     } finally {
