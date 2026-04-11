@@ -29,9 +29,16 @@ export const uploadStream = (buffer, folderName = 'avatars') => {
 export const deleteImage = async (publicId) => {
   if (!publicId) return;
   try {
-    const result = await cloudinary.uploader.destroy(publicId);
+    // Thêm timeout (ví dụ 10 giây) để tránh request bị treo quá lâu
+    // invalidate: true giúp xóa cache trên CDN của Cloudinary ngay lập tức
+    const result = await cloudinary.uploader.destroy(publicId, {
+      invalidate: true,
+      timeout: 10000,
+    });
     return result;
   } catch (error) {
-    console.error('Lỗi khi xóa file trên Cloudinary:', error);
+    console.error(`Lỗi khi xóa file ${publicId} trên Cloudinary:`, error.message || error);
+    // Return null thay vì throw lỗi để không làm gián đoạn luồng chính (ví dụ người dùng đổi avatar mới)
+    return null;
   }
 };
