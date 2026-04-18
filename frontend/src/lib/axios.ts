@@ -2,8 +2,9 @@ import { useAuthStore } from '@/stores/authStore';
 import axios from 'axios';
 
 const api = axios.create({
-  //khi development thì gọi localhost; khi production thì gọi /api
-  baseURL: import.meta.env.MODE === 'development' ? 'http://localhost:3000/api' : '/api',
+  //nếu ở Local (máy tính) không có biến này, nó tự lấy localhost.
+  //nếu trên Vercel, nó sẽ lấy cái link Render (backend api).
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
   withCredentials: true, //gửi cookie kèm theo request vì lưu refresh token trong đó
 });
 
