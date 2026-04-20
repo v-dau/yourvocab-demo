@@ -371,6 +371,7 @@ const CreateEditCardPage = () => {
                       value={field.value || ''}
                       onChange={field.onChange}
                       placeholder={t('create_edit_page.synonyms_placeholder')}
+                      tagClassName="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100"
                     />
                   )}
                 />
@@ -386,6 +387,7 @@ const CreateEditCardPage = () => {
                       value={field.value || ''}
                       onChange={field.onChange}
                       placeholder={t('create_edit_page.antonyms_placeholder')}
+                      tagClassName="bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-100"
                     />
                   )}
                 />
@@ -401,6 +403,7 @@ const CreateEditCardPage = () => {
                       value={field.value || ''}
                       onChange={field.onChange}
                       placeholder={t('create_edit_page.near_synonyms_placeholder')}
+                      tagClassName="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-100"
                     />
                   )}
                 />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { KeyboardEvent } from 'react';
 import { X } from 'lucide-react';
 
@@ -8,15 +8,24 @@ interface TagInputProps {
   onChange: (value: string) => void;
   placeholder?: string;
   className?: string;
+  tagClassName?: string;
 }
 
-export function TagInput({ id, value, onChange, placeholder, className }: TagInputProps) {
+export function TagInput({
+  id,
+  value,
+  onChange,
+  placeholder,
+  className,
+  tagClassName,
+}: TagInputProps) {
   const [inputValue, setInputValue] = useState('');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const tags = value ? value.split('&&').filter((tag) => tag.trim() !== '') : [];
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       const newTag = inputValue.trim();
       if (newTag && !tags.includes(newTag)) {
@@ -32,6 +41,13 @@ export function TagInput({ id, value, onChange, placeholder, className }: TagInp
     onChange(newTags.join('&&'));
   };
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [inputValue]);
+
   return (
     <div className={`flex flex-col gap-2 ${className || ''}`}>
       {tags.length > 0 && (
@@ -39,13 +55,13 @@ export function TagInput({ id, value, onChange, placeholder, className }: TagInp
           {tags.map((tag, index) => (
             <span
               key={index}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-secondary text-secondary-foreground text-sm font-medium"
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-sm font-medium ${tagClassName || 'bg-secondary text-secondary-foreground'}`}
             >
-              <span className="break-all">{tag}</span>
+              <span className="break-words max-w-[200px]">{tag}</span>
               <button
                 type="button"
                 onClick={() => removeTag(index)}
-                className="hover:bg-muted p-0.5 rounded-full transition-colors flex-shrink-0"
+                className="hover:bg-muted/50 p-0.5 rounded-full transition-colors flex-shrink-0"
                 aria-label={`Remove ${tag}`}
               >
                 <X className="h-3 w-3" />
@@ -54,14 +70,15 @@ export function TagInput({ id, value, onChange, placeholder, className }: TagInp
           ))}
         </div>
       )}
-      <input
+      <textarea
         id={id}
-        type="text"
+        ref={textareaRef}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
-        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        rows={1}
+        className="flex w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 overflow-hidden min-h-[40px]"
       />
     </div>
   );

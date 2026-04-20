@@ -517,7 +517,7 @@ export const Card: React.FC<CardProps> = ({
                 <div className="mb-4">
                   <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('card.synonyms')}</h4>
                   <div className="flex flex-wrap gap-2">
-                    {card.synonyms.split(',').map((syn, idx) => (
+                    {card.synonyms.split('&&').map((syn, idx) => (
                       <span
                         key={idx}
                         className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 text-xs rounded"
@@ -534,7 +534,7 @@ export const Card: React.FC<CardProps> = ({
                 <div className="mb-4">
                   <h4 className="text-sm font-semibold text-gray-700 mb-2">{t('card.antonyms')}</h4>
                   <div className="flex flex-wrap gap-2">
-                    {card.antonyms.split(',').map((ant, idx) => (
+                    {card.antonyms.split('&&').map((ant, idx) => (
                       <span
                         key={idx}
                         className="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-100 text-xs rounded"
@@ -553,7 +553,7 @@ export const Card: React.FC<CardProps> = ({
                     {t('card.near_synonyms')}
                   </h4>
                   <div className="flex flex-wrap gap-2">
-                    {card.nearSynonyms.split(',').map((near, idx) => (
+                    {card.nearSynonyms.split('&&').map((near, idx) => (
                       <span
                         key={idx}
                         className="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-100 text-xs rounded"

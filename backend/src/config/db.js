@@ -2,25 +2,25 @@ import pg from 'pg';
 
 const { Pool } = pg;
 
-/*
-//initialize connection pool for local posgresql
-export const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT,
-});
-*/
+// Initialize connection pool dynamically
+// If process.env.DATABASE_URL exists, use it (e.g. for Supabase)
+// Otherwise fallback to local PostgreSQL environment variables
+const poolConfig = process.env.DATABASE_URL
+  ? {
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    }
+  : {
+      user: process.env.DB_USER,
+      host: process.env.DB_HOST,
+      database: process.env.DB_NAME,
+      password: process.env.DB_PASSWORD,
+      port: process.env.DB_PORT,
+    };
 
-// initialize connection pool for SUPABASE
-export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-});
-
+export const pool = new Pool(poolConfig);
 //function to verify db connectivity (used in server.js)
 export const connectDB = async () => {
   try {
