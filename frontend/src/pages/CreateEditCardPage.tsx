@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { TagCreatableSelect } from '@/components/ui/TagCreatableSelect';
+import { TagInput } from '@/components/ui/TagInput';
 import type { TagOption } from '@/components/ui/TagCreatableSelect';
 import { GenerateAIDialog } from '@/components/cards/GenerateAIDialog';
 import * as cardService from '@/services/cardService';
@@ -361,26 +362,47 @@ const CreateEditCardPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="synonyms">{t('create_edit_page.synonyms')}</Label>
-                <Input
-                  id="synonyms"
-                  placeholder={t('create_edit_page.synonyms_placeholder')}
-                  {...register('synonyms')}
+                <Controller
+                  name="synonyms"
+                  control={control}
+                  render={({ field }) => (
+                    <TagInput
+                      id="synonyms"
+                      value={field.value || ''}
+                      onChange={field.onChange}
+                      placeholder={t('create_edit_page.synonyms_placeholder')}
+                    />
+                  )}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="antonyms">{t('create_edit_page.antonyms')}</Label>
-                <Input
-                  id="antonyms"
-                  placeholder={t('create_edit_page.antonyms_placeholder')}
-                  {...register('antonyms')}
+                <Controller
+                  name="antonyms"
+                  control={control}
+                  render={({ field }) => (
+                    <TagInput
+                      id="antonyms"
+                      value={field.value || ''}
+                      onChange={field.onChange}
+                      placeholder={t('create_edit_page.antonyms_placeholder')}
+                    />
+                  )}
                 />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="nearSynonyms">{t('create_edit_page.near_synonyms')}</Label>
-                <Input
-                  id="nearSynonyms"
-                  placeholder={t('create_edit_page.near_synonyms_placeholder')}
-                  {...register('nearSynonyms')}
+                <Controller
+                  name="nearSynonyms"
+                  control={control}
+                  render={({ field }) => (
+                    <TagInput
+                      id="nearSynonyms"
+                      value={field.value || ''}
+                      onChange={field.onChange}
+                      placeholder={t('create_edit_page.near_synonyms_placeholder')}
+                    />
+                  )}
                 />
               </div>
             </div>
