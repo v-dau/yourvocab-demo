@@ -467,9 +467,11 @@ export const Card: React.FC<CardProps> = ({
           {/* Row 4: Part of Speech */}
           <div className="border-t border-t-muted">
             <p
-              className={`font-semibold text-sm mt-2 ${card.partOfSpeech ? 'text-orange-500' : 'text-gray-600 dark:text-gray-300'}`}
+              className={`font-semibold text-sm mt-2 ${card.partOfSpeech || (card as CardType & { part_of_speech?: string }).part_of_speech ? 'text-orange-500' : 'text-gray-600 dark:text-gray-300'}`}
             >
-              {card.partOfSpeech || 'N/A'}
+              {card.partOfSpeech ||
+                (card as CardType & { part_of_speech?: string }).part_of_speech ||
+                'N/A'}
             </p>
           </div>
 
@@ -547,20 +549,26 @@ export const Card: React.FC<CardProps> = ({
               )}
 
               {/* Near Synonyms */}
-              {card.nearSynonyms && (
+              {(card.nearSynonyms ||
+                (card as CardType & { near_synonyms?: string }).near_synonyms) && (
                 <div>
                   <h4 className="text-sm font-semibold text-gray-700 mb-2">
                     {t('card.near_synonyms')}
                   </h4>
                   <div className="flex flex-wrap gap-2">
-                    {card.nearSynonyms.split('&&').map((near, idx) => (
-                      <span
-                        key={idx}
-                        className="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-100 text-xs rounded"
-                      >
-                        {near.trim()}
-                      </span>
-                    ))}
+                    {(
+                      (card.nearSynonyms ||
+                        (card as CardType & { near_synonyms?: string }).near_synonyms) as string
+                    )
+                      .split('&&')
+                      .map((near, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-100 text-xs rounded"
+                        >
+                          {near.trim()}
+                        </span>
+                      ))}
                   </div>
                 </div>
               )}

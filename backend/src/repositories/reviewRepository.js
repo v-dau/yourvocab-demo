@@ -4,7 +4,7 @@ class ReviewRepository {
   async getDueReviewCards(userId, now = new Date()) {
     const query = `
       SELECT
-        c.id, c.word, c.part_of_speech, c.meaning, c.definition, c.ipa, c.example, c.level, c.popularity, c.synonyms, c.antonyms, c.near_synonyms,
+        c.id, c.word, c.part_of_speech AS "partOfSpeech", c.meaning, c.definition, c.ipa, c.example, c.level, c.popularity, c.synonyms, c.antonyms, c.near_synonyms AS "nearSynonyms",
         crt.step_index,
         crt.next_review_date,
         COALESCE(
